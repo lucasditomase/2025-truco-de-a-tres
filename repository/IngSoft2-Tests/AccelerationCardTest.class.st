@@ -16,6 +16,7 @@ AccelerationCardTest >> testActivateForAddsCardToShipActiveCards [
 
 { #category : 'tests' }
 AccelerationCardTest >> testModifyRollAddsOne [
+"testing pharo git integration"
     | card result |
     card := AccelerationCard new.
     result := card modifyRoll: 3 forShip: (Spaceship withName: 'Pilot') inGame: nil.
