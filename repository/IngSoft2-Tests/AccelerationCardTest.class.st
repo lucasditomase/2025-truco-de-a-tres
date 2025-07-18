@@ -16,8 +16,9 @@ AccelerationCardTest >> testActivateForAddsCardToShipActiveCards [
 
 { #category : 'tests' }
 AccelerationCardTest >> testModifyRollAddsOne [
-    | card result |
+    | card card2 result |
     card := AccelerationCard new.
+	card2 := AccelerationCard new.
     result := card modifyRoll: 3 forShip: (Spaceship withName: 'Pilot') inGame: nil.
     self assert: result equals: 4.
 ]
