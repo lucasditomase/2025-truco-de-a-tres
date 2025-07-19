@@ -93,9 +93,13 @@ Game >> advanceTurn [
 Game >> startTurnFor: aShip [
 
         | history count |
-        history := fuelHistories at: aShip.
+        history := fuelHistories
+                at: aShip
+                ifAbsentPut: [ OrderedCollection new ].
         history addLast: (aShip instVarNamed: 'fuel').
-        count := turnCounts at: aShip.
+        count := turnCounts
+                at: aShip
+                ifAbsentPut: [ 0 ].
         turnCounts at: aShip put: count + 1
 ]
 
