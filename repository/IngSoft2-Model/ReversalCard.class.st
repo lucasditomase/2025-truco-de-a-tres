@@ -8,7 +8,7 @@ Class {
 { #category : 'playing' }
 ReversalCard >> activateFor: aShip inGame: aGame [
     | position board |
-    board := aGame instVarNamed: 'board'.
+    board := aGame board.
     position := board positionOf: aShip.
     board reverseAt: position.
 ]
