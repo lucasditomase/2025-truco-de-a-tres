@@ -49,3 +49,16 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
         ^ self ].
     ^ self
 ]
+
+{ #category : 'operations' }
+ReversedEffect >> applyTo: aShip [
+    self applyTo: aShip inBoard: nil
+]
+
+{ #category : 'operations' }
+ReversedEffect >> applyTo: aShip inBoard: aBoard [
+    | board |
+    board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
+    self applyEffectTo: aShip inBoard: board.
+    ^ self
+]
