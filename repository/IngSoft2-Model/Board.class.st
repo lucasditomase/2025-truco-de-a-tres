@@ -245,7 +245,7 @@ Board >> reverseAt: aPosition [
     wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ nil ].
     wormhole ifNotNil: [
         wormholes remove: wormhole.
-        newW := wormhole isKindOf: ReversedWormhole
+        newW := (wormhole isKindOf: ReversedWormhole)
             ifTrue: [ Wormhole from: wormhole entry to: wormhole exit ]
             ifFalse: [ ReversedWormhole from: wormhole entry to: wormhole exit ].
         wormholes add: newW.
