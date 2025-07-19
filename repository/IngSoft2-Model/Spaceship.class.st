@@ -169,10 +169,11 @@ Spaceship >> removeCard: aCard [
 
 { #category : 'cards' }
 Spaceship >> allies [
-        ^ activeCards
-                select: [ :card | card isKindOf: AllyCard ]
-                thenCollect: [ :card | card allyFor: self ]
-                reject: [ :each | each isNil ]
+        | allies |
+        allies := activeCards select: [ :card | card isKindOf: AllyCard ].
+        allies := allies collect: [ :card | card allyFor: self ].
+        allies := allies reject: [ :each | each isNil ].
+        ^ allies
 ]
 
 { #category : 'methods' }
