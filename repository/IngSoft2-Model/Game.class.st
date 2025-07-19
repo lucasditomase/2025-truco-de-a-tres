@@ -12,10 +12,11 @@ Class {
 		'totalLaps',
 		'state',
 		'lastSteps',
-		'lastPreviousPosition',
-		'shipStatuses',
-		'lastCardPlayed'
-	],
+                'lastPreviousPosition',
+                'shipStatuses',
+                'lastCardPlayed',
+                'fuelHistory'
+        ],
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
 }
@@ -186,9 +187,12 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 		2 timesRepeat: [ ship addCard: board drawCard ] ].
 	state := GameInProgress new.
 
-	lastSteps := 0.
-	lastPreviousPosition := 0.
-	lastCardPlayed := nil
+        lastSteps := 0.
+        lastPreviousPosition := 0.
+        lastCardPlayed := nil.
+        fuelHistory := Dictionary new.
+        spaceShips do: [ :ship |
+            fuelHistory at: ship put: (OrderedCollection with: (ship instVarNamed: 'fuel')) ]
 ]
 
 { #category : 'testing' }
@@ -234,8 +238,9 @@ Game >> modifyRoll: aNumber forShip: aShip [
 { #category : 'process actions' }
 Game >> passTurn [
 
-	self currentShip restoreFuel.
-	self advanceTurn
+        self recordFuelStartFor: self currentShip.
+        self currentShip restoreFuel.
+        self advanceTurn
 ]
 
 { #category : 'process actions' }
@@ -259,9 +264,9 @@ Game >> penaltyShip [
 
 { #category : 'process actions' }
 Game >> playTurn [
-
-	self ensureGameIsNotOver.
-	self handlePenaltyOrPassIfNeeded ifTrue: [ ^ self ].
+        self recordFuelStartFor: self currentShip.
+        self ensureGameIsNotOver.
+        self handlePenaltyOrPassIfNeeded ifTrue: [ ^ self ].
 	self rollAndMoveCurrentShip.
 
 	self
@@ -335,6 +340,19 @@ Game >> removeActiveCard: aCard [
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
 
+]
+
+{ #category : 'process actions' }
+Game >> recordFuelStartFor: aShip [
+        | history |
+        history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
+        history addLast: (aShip instVarNamed: 'fuel').
+        history size > 2 ifTrue: [ history removeFirst ]
+]
+
+{ #category : 'accessing' }
+Game >> fuelHistoryFor: aShip [
+        ^ fuelHistory at: aShip ifAbsent: [ OrderedCollection new ]
 ]
 
 { #category : 'process actions' }

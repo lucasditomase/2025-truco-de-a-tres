@@ -164,7 +164,15 @@ Spaceship >> reducePenalty [
 { #category : 'cards' }
 Spaceship >> removeCard: aCard [
 
-	cards remove: aCard ifAbsent: [  ]
+        cards remove: aCard ifAbsent: [  ]
+]
+
+{ #category : 'cards' }
+Spaceship >> allies [
+        ^ activeCards
+                select: [ :card | card isKindOf: AllyCard ]
+                thenCollect: [ :card | card allyFor: self ]
+                reject: [ :each | each isNil ]
 ]
 
 { #category : 'methods' }
