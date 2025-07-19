@@ -122,14 +122,15 @@ BoardTest >> testBoardCellCountIsCorrect [
 
 { #category : 'tests - instance' }
 BoardTest >> testBoardCellsContainRecognizedEffects [
-	| board validClasses |
+        | board validClasses |
 
-	validClasses := { BlackHoleEffect. HyperGravityEffect. NoEffect. CardEffect }.
+        validClasses := { NoEffect. BlackHoleEffect. HyperGravityEffect.
+            MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
 
-	board := Board of: 20 andWormholeAt: OrderedCollection new.
+        board := Board of: 20 andWormholeAt: OrderedCollection new.
 
-	self assert: (board cells values allSatisfy: [:e |
-		validClasses anySatisfy: [:c | e class = c ] ]).
+        self assert: (board cells values allSatisfy: [:e |
+                validClasses anySatisfy: [:c | e class = c ] ]).
 ]
 
 { #category : 'tests - instance' }
@@ -526,7 +527,8 @@ BoardTest >> testRandomEffectProducesRecognizedClass [
     | board effect valid |
     board := Board of: 5 andWormholeAt: #().
     effect := board randomEffect.
-    valid := { CardEffect. NoEffect. BlackHoleEffect. HyperGravityEffect }.
+    valid := { NoEffect. BlackHoleEffect. HyperGravityEffect.
+        MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
 
     self assert: (valid anySatisfy: [ :cls | effect class = cls ]).
 ]

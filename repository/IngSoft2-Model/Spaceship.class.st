@@ -53,6 +53,19 @@ Spaceship >> decreaseFuelBy: anAmount [
     fuel := (fuel - anAmount) max: 0.
 ]
 
+{ #category : 'fuel' }
+Spaceship >> consumeFuel: anAmount [
+    maxFuel = 0 ifTrue: [ ^ self ].
+    self decreaseFuelBy: anAmount.
+    fuel = 0 ifTrue: [ self outOfFuel ].
+]
+
+{ #category : 'fuel' }
+Spaceship >> outOfFuel [
+    position := 0.
+    state := PenalizedShipState forTurns: 2.
+]
+
 { #category : 'initialize' }
 Spaceship >> hasReachedGoalOn: aBoard [
 
@@ -94,18 +107,21 @@ Spaceship >> lap [
 { #category : 'methods' }
 Spaceship >> moveBack: steps [
 
-	position := position - steps max: 0
+        self consumeFuel: steps.
+        position := position - steps max: 0
 ]
 
 { #category : 'methods' }
 Spaceship >> moveForward: steps [
 
-	position := position + steps
+        self consumeFuel: steps.
+        position := position + steps
 ]
 
 { #category : 'methods' }
 Spaceship >> moveTo: aPosition [
 
+    self consumeFuel: (aPosition - position) abs.
     position := aPosition.
 
 ]
