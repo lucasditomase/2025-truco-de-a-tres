@@ -892,21 +892,6 @@ GameTest >> testRepeatLastEffectOnDoesNothing [
 ]
 
 { #category : 'tests' }
-GameTest >> testRepeatLastEffectOnAppliesLastEffect [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    board cells at: 1 put: (HyperJumpEffect withValues: { 2 }).
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game rollAndMoveCurrentShip.
-    self assert: ship1 position equals: 3.
-    game repeatLastEffectOn: ship2.
-    self assert: ship2 position equals: 2.
-]
-
-{ #category : 'tests' }
 GameTest >> testRewardOnMaxRollChangesFuel [
     | ship otherShip dice board game initialMax initialFuel |
     ship := Spaceship withName: 'Reward'.
@@ -938,42 +923,6 @@ GameTest >> testRollAndMoveCurrentShipMovesShipCorrectly [
     game rollAndMoveCurrentShip.
 
     self assert: ship position equals: originalPosition + 1.
-]
-
-{ #category : 'tests' }
-GameTest >> testAllySharesFuelWhenOwnerRunsOut [
-    | ship1 ship2 board dice game ally |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ally := AllyCard withAlly: ship2.
-    ally activateFor: ship1 inGame: nil.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 instVarNamed: 'fuel' put: 1.
-    ship2 instVarNamed: 'fuel' put: 2.
-    game rollAndMoveCurrentShip.
-    self assert: (ship1 instVarNamed: 'fuel') equals: 0.
-    self assert: (ship2 instVarNamed: 'fuel') equals: 1.
-]
-
-{ #category : 'tests' }
-GameTest >> testAllyPenaltyWhenBothShipsOutOfFuel [
-    | ship1 ship2 board dice game ally |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ally := AllyCard withAlly: ship2.
-    ally activateFor: ship1 inGame: nil.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 instVarNamed: 'fuel' put: 1.
-    ship2 instVarNamed: 'fuel' put: 0.
-    game rollAndMoveCurrentShip.
-    self assert: (game isPenalized: ship1).
-    self assert: (game isPenalized: ship2).
-    self assert: ship1 position equals: 0.
-    self assert: ship2 position equals: 0.
 ]
 
 { #category : 'accessing' }

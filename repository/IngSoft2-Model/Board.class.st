@@ -107,7 +107,6 @@ Board >> applyEffectTo: aSpaceship [
 
     effect := self effectAt: (self positionOf: aSpaceship).
     effect ifNotNil: [ effect applyTo: aSpaceship inBoard: self ].
-    ^ effect
 ]
 
 { #category : 'initialize' }
