@@ -1,8 +1,8 @@
 Class {
-	#name : 'NullBoard',
-	#superclass : 'Object',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'NullBoard',
+    #superclass : 'Object',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'spaceships' }

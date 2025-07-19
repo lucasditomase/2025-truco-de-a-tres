@@ -1,8 +1,8 @@
 Class {
-	#name : 'CancellationCardTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'CancellationCardTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests - instance' }

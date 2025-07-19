@@ -1,8 +1,8 @@
 Class {
-	#name : 'PenalizedShipStateTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'PenalizedShipStateTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'asserting' }

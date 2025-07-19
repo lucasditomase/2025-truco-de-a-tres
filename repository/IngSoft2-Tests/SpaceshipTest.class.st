@@ -1,8 +1,8 @@
 Class {
-	#name : 'SpaceshipTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'SpaceshipTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests - instance' }
@@ -108,11 +108,11 @@ SpaceshipTest >> testIncreaseMaxFuelByAddsAmount [
 { #category : 'tests - instance' }
 SpaceshipTest >> testInitializeInPositionZero [
 
-	| player |
+    | player |
 
-	player := Spaceship withName: 'JohnDoe'.
+    player := Spaceship withName: 'JohnDoe'.
 
-	self assert: player position equals: 0.
+    self assert: player position equals: 0.
 ]
 
 { #category : 'tests - instance' }

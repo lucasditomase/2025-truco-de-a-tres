@@ -1,13 +1,13 @@
 Class {
-	#name : 'TurnManagerTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'TurnManagerTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests' }
 TurnManagerTest >> testAdvanceTurnCyclesAndIncrementsTurn [
-	| ship1 ship2 manager |
+    | ship1 ship2 manager |
     ship1 := Spaceship withName: 'A'.
     ship2 := Spaceship withName: 'B'.
     manager := TurnManager withShips: { ship1 . ship2 }.
@@ -23,7 +23,7 @@ TurnManagerTest >> testAdvanceTurnCyclesAndIncrementsTurn [
 
 { #category : 'tests' }
 TurnManagerTest >> testInitializeWithShipsReturnsSelf [
-	| ship1 ship2 manager result |
+    | ship1 ship2 manager result |
     ship1 := Spaceship withName: 'X'.
     ship2 := Spaceship withName: 'Y'.
     manager := TurnManager new.
@@ -36,7 +36,7 @@ TurnManagerTest >> testInitializeWithShipsReturnsSelf [
 
 { #category : 'tests' }
 TurnManagerTest >> testWithShipsInitializesCorrectly [
-	| ship1 ship2 manager |
+    | ship1 ship2 manager |
     ship1 := Spaceship withName: 'One'.
     ship2 := Spaceship withName: 'Two'.
     manager := TurnManager withShips: { ship1 . ship2 }.

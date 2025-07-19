@@ -1,15 +1,15 @@
 Class {
-	#name : 'Board',
-	#superclass : 'Object',
-	#instVars : [
-		'cellCount',
-		'wormholes',
-		'cells',
-		'totalLengthInParsecs',
-		'positionManager'
-	],
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'Board',
+    #superclass : 'Object',
+    #instVars : [
+        'cellCount',
+        'wormholes',
+        'cells',
+        'totalLengthInParsecs',
+        'positionManager'
+    ],
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'initialize' }
@@ -22,66 +22,66 @@ Board class >> convertToParsecs: aLength [
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells andWormholeAt: positions [
 
-	self validateCellCount: anAmountOfCells.
-	self validateWormholes: positions.
-	^ self new
-		  initializeWithCells: anAmountOfCells
-		  andWormholes: positions
+    self validateCellCount: anAmountOfCells.
+    self validateWormholes: positions.
+    ^ self new
+          initializeWithCells: anAmountOfCells
+          andWormholes: positions
 ]
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells length: parsecLength andWormholeAt: positions [
 
-	| lengthOnParsecs |
-	self validateCellCount: anAmountOfCells.
-	self validateWormholes: positions.
-	lengthOnParsecs := self convertToParsecs: parsecLength.
+    | lengthOnParsecs |
+    self validateCellCount: anAmountOfCells.
+    self validateWormholes: positions.
+    lengthOnParsecs := self convertToParsecs: parsecLength.
 
-	^ self new
-		  initializeWithCells: anAmountOfCells
-		  length: lengthOnParsecs
-		  andWormholes: positions
+    ^ self new
+          initializeWithCells: anAmountOfCells
+          length: lengthOnParsecs
+          andWormholes: positions
 ]
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells length: parsecLength lengthLightYears: lightYears andWormholeAt: positions [
 
-	self
-		validateLengthConsistencyBetweenParsecs: parsecLength
-		andLightYears: lightYears.
-	self validateCellCount: anAmountOfCells.
-	self validateWormholes: positions.
+    self
+        validateLengthConsistencyBetweenParsecs: parsecLength
+        andLightYears: lightYears.
+    self validateCellCount: anAmountOfCells.
+    self validateWormholes: positions.
 
-	parsecLength
-		ifNil: [
-			^ self
-				  of: anAmountOfCells
-				  lengthLightYears: lightYears
-				  andWormholeAt: positions ]
-		ifNotNil: [
-			^ self
-				  of: anAmountOfCells
-				  length: parsecLength
-				  andWormholeAt: positions ]
+    parsecLength
+        ifNil: [
+            ^ self
+                  of: anAmountOfCells
+                  lengthLightYears: lightYears
+                  andWormholeAt: positions ]
+        ifNotNil: [
+            ^ self
+                  of: anAmountOfCells
+                  length: parsecLength
+                  andWormholeAt: positions ]
 ]
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells lengthLightYears: lightYears andWormholeAt: positions [
 
-	self validateCellCount: anAmountOfCells.
-	self validateWormholes: positions.
+    self validateCellCount: anAmountOfCells.
+    self validateWormholes: positions.
 
-	^ self
-		  of: anAmountOfCells
-		  length: (Distance lightYears: lightYears) asParsecs
-		  andWormholeAt: positions
+    ^ self
+          of: anAmountOfCells
+          length: (Distance lightYears: lightYears) asParsecs
+          andWormholeAt: positions
 ]
 
 { #category : 'initialize' }
 Board class >> validateCellCount: aCount [
 
-	(aCount isInteger and: [ aCount > 0 ]) ifFalse: [
-		self error: 'Board must have a positive number of cells' ]
+    (aCount isInteger and: [ aCount > 0 ]) ifFalse: [
+        self error: 'Board must have a positive number of cells' ]
 ]
 
 { #category : 'initialize' }
@@ -96,9 +96,9 @@ Board class >> validateLengthConsistencyBetweenParsecs: parsecLength andLightYea
 { #category : 'initialize' }
 Board class >> validateWormholes: aCollection [
 
-	(aCollection isCollection and: [
-		 aCollection allSatisfy: [ :each | each isValid ] ]) ifFalse: [
-		self error: 'All wormholes must be valid objects' ]
+    (aCollection isCollection and: [
+         aCollection allSatisfy: [ :each | each isValid ] ]) ifFalse: [
+        self error: 'All wormholes must be valid objects' ]
 ]
 
 { #category : 'initialize' }
@@ -124,13 +124,13 @@ Board >> applyWormholeIfPresentAt: aPosition [
 { #category : 'initialize' }
 Board >> calculateNewPositionFrom: current after: steps moves: aShipStatus [
 
-	| newPosition |
+    | newPosition |
 
-	newPosition := (current + steps) \\ cellCount.
+    newPosition := (current + steps) \\ cellCount.
 
-	(newPosition <= current) ifTrue: [ aShipStatus addLap ].
+    (newPosition <= current) ifTrue: [ aShipStatus addLap ].
 
-	^ newPosition.
+    ^ newPosition.
 ]
 
 { #category : 'initialize' }
@@ -140,7 +140,7 @@ Board >> cellCount [
 
 { #category : 'initialize' }
 Board >> cells [
-	^ cells.
+    ^ cells.
 
 ]
 
@@ -172,7 +172,7 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     cellCount := aCount.
     totalLengthInParsecs := aLengthInParsecs.
     wormholes := aCollection asOrderedCollection.
-         cells := Dictionary new.
+    cells := Dictionary new.
 
         0 to: aCount - 1 do: [ :i |
                 cells at: i put: self randomEffect ].
@@ -213,19 +213,19 @@ Board >> moveShip: aShip to: aPosition [
 { #category : 'spaceships' }
 Board >> positionOf: aShip [
 
-	positionManager ifNil: [ self error: 'Board has no registered ships' ].
-	^ positionManager positionOf: aShip
+    positionManager ifNil: [ self error: 'Board has no registered ships' ].
+    ^ positionManager positionOf: aShip
 ]
 
 { #category : 'initialize' }
 Board >> randomEffect [
 
-	| randomNumber |
-	randomNumber := (1 to: 100) atRandom.
-	randomNumber <= 10 ifTrue: [ ^ CardEffect new ].
-	randomNumber <= 48 ifTrue: [ ^ NoEffect new ].
-	randomNumber <= 74 ifTrue: [ ^ BlackHoleEffect new ].
-	^ HyperGravityEffect new
+    | randomNumber |
+    randomNumber := (1 to: 100) atRandom.
+    randomNumber <= 10 ifTrue: [ ^ CardEffect new ].
+    randomNumber <= 48 ifTrue: [ ^ NoEffect new ].
+    randomNumber <= 74 ifTrue: [ ^ BlackHoleEffect new ].
+    ^ HyperGravityEffect new
 
 ]
 
@@ -263,16 +263,16 @@ Board >> stepsFromDistance: aDistance [
 { #category : 'initialize' }
 Board >> stepsFromLightYears: someLightYears [
 
-	^ self stepsFromParsecs:
-		  (Distance lightYears: someLightYears) asParsecs
+    ^ self stepsFromParsecs:
+          (Distance lightYears: someLightYears) asParsecs
 ]
 
 { #category : 'initialize' }
 Board >> stepsFromParsecs: someParsecs [
 
-	| ratio |
-	ratio := someParsecs / totalLengthInParsecs.
-	^ (ratio * cellCount) rounded
+    | ratio |
+    ratio := someParsecs / totalLengthInParsecs.
+    ^ (ratio * cellCount) rounded
 ]
 
 { #category : 'accessing' }

@@ -1,8 +1,8 @@
 Class {
-	#name : 'MoonWalkEffect',
-	#superclass : 'EffectDecorator',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'MoonWalkEffect',
+    #superclass : 'EffectDecorator',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'operations' }

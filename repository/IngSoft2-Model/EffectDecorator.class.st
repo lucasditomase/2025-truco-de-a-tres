@@ -1,11 +1,11 @@
 Class {
-	#name : 'EffectDecorator',
-	#superclass : 'Object',
-	#instVars : [
-		'wrapped'
-	],
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'EffectDecorator',
+    #superclass : 'Object',
+    #instVars : [
+        'wrapped'
+    ],
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'operations' }
@@ -38,5 +38,5 @@ EffectDecorator >> decorate: anEffect [
 
 { #category : 'instance creation' }
 EffectDecorator >> wrapped [
-	^ wrapped
+    ^ wrapped
 ]

@@ -1,29 +1,29 @@
 Class {
-	#name : 'HyperJumpEffectTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'HyperJumpEffectTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'asserting' }
 HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
 
-	self
-		should: anErrorBlock
-		raise: anErrorClass
-		withExceptionDo: [ :error |
-		self assert: error messageText equals: errorMessage ]
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error |
+        self assert: error messageText equals: errorMessage ]
 ]
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testAllowsEntryWithRollAlwaysTrue [
 
-	| effect |
-	effect := HyperJumpEffect withValues: #( 3 7 12 ).
+    | effect |
+    effect := HyperJumpEffect withValues: #( 3 7 12 ).
 
-	self assert: (effect allowsEntryWithRoll: 1).
-	self assert: (effect allowsEntryWithRoll: 6).
-	self assert: (effect allowsEntryWithRoll: 100)
+    self assert: (effect allowsEntryWithRoll: 1).
+    self assert: (effect allowsEntryWithRoll: 6).
+    self assert: (effect allowsEntryWithRoll: 100)
 ]
 
 { #category : 'tests' }
@@ -108,7 +108,7 @@ HyperJumpEffectTest >> testHyperJumpEffectWithValuesInitializesCorrectly [
 { #category : 'tests' }
 HyperJumpEffectTest >> testInitializeWithSetsJumpValuesAndIndex [
 
-	| values effect |
+    | values effect |
         values := #(3 5 7).
         effect := HyperJumpEffect new initializeWith: values.
 

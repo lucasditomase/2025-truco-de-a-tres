@@ -1,11 +1,11 @@
 Class {
-	#name : 'GameFinished',
-	#superclass : 'GameState',
-	#instVars : [
-		'winner'
-	],
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'GameFinished',
+    #superclass : 'GameState',
+    #instVars : [
+        'winner'
+    ],
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'initialization' }
