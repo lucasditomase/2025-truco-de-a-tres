@@ -31,10 +31,10 @@ Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNum
     self validateLaps: aNumberLaps.
 
     ^ self new
-          initializeWithShips: someShips
-          board: aBoard
-          dice: someDices
-          laps: aNumberLaps
+        initializeWithShips: someShips
+        board: aBoard
+        dice: someDices
+        laps: aNumberLaps
 ]
 
 { #category : 'initialize' }
@@ -180,10 +180,10 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
     shipStatuses := Dictionary new.
     spaceShips do: [ :ship |
         shipStatuses at: ship put: (ShipStatus
-                 for: ship
-                 position: 0
-                 laps: 0
-                 penalized: false).
+            for: ship
+            position: 0
+            laps: 0
+            penalized: false).
         2 timesRepeat: [ ship addCard: board drawCard ] ].
     state := GameInProgress new.
 
@@ -292,16 +292,16 @@ Game >> playUntilFinish [
 Game >> ranking [
 
     ^ self allStatuses sort: [ :a :b |
-          | sameLaps samePosition |
-          sameLaps := a lapCount = b lapCount.
-          samePosition := a position = b position.
+        | sameLaps samePosition |
+        sameLaps := a lapCount = b lapCount.
+        samePosition := a position = b position.
 
-          sameLaps
-              ifTrue: [
-                  samePosition
-                      ifTrue: [ a ship name < b ship name ]
-                      ifFalse: [ a position > b position ] ]
-              ifFalse: [ a lapCount > b lapCount ] ]
+        sameLaps
+            ifTrue: [
+                samePosition
+                    ifTrue: [ a ship name < b ship name ]
+                    ifFalse: [ a position > b position ] ]
+            ifFalse: [ a lapCount > b lapCount ] ]
 ]
 
 { #category : 'process actions' }
@@ -374,8 +374,8 @@ Game >> rollAndMoveCurrentShip [
     modified >= 0
         ifTrue: [
             newPosition := board
-                               determineNewPositionFrom: lastPreviousPosition
-                               after: modified.
+                determineNewPositionFrom: lastPreviousPosition
+                after: modified.
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
     lastSteps := modified
@@ -426,8 +426,8 @@ Game >> wantsToPassTurn: aShip [
 Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
 
     ^ state
-          whenFinishedDo: finishedBlock
-          whenInProgressDo: inProgressBlock
+        whenFinishedDo: finishedBlock
+        whenInProgressDo: inProgressBlock
 ]
 
 { #category : 'accessing' }

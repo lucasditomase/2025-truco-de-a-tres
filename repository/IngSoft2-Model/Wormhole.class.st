@@ -36,7 +36,7 @@ Wormhole class >> connecting: aPosition and: anotherPosition [
 { #category : 'initialize' }
 Wormhole class >> from: entryPosition to: exitPosition [
 
-     self assertValidStateFrom: entryPosition to: exitPosition.
+    self assertValidStateFrom: entryPosition to: exitPosition.
     ^ super new initializeFrom: entryPosition to: exitPosition.
 ]
 
@@ -89,10 +89,10 @@ Wormhole >> initializeFrom: entryPosition to: exitPosition [
 Wormhole >> isValid [
 
     ^ [
-      self class assertValidStateFrom: entry to: exit.
-      true ]
-          on: Error
-          do: [ false ]
+        self class assertValidStateFrom: entry to: exit.
+        true ]
+        on: Error
+        do: [ false ]
 ]
 
 { #category : 'operations' }

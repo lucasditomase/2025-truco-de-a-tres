@@ -13,17 +13,17 @@ Class {
 HyperJumpEffect class >> withLightYearValues: aCollection [
 
     ^ self new
-          initializeWith:
-              (aCollection collect: [ :each | Distance lightYears: each ]);
-          yourself
+        initializeWith:
+            (aCollection collect: [ :each | Distance lightYears: each ]);
+        yourself
 ]
 
 { #category : 'initialization' }
 HyperJumpEffect class >> withValues: aCollection [
 
     ^ self new
-          initializeWith: aCollection;
-          yourself
+        initializeWith: aCollection;
+        yourself
 ]
 
 { #category : 'operations' }
@@ -37,7 +37,7 @@ HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     | parsecs steps |
     parsecs := self nextJumpValue.
     steps := (parsecs / aBoard totalLengthInParsecs * aBoard cellCount)
-                 rounded.
+        rounded.
     aBoard moveShip: aSpaceship forward: steps
 ]
 
