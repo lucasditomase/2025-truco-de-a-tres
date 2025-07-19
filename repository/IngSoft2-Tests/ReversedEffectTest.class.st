@@ -56,11 +56,11 @@ ReversedEffectTest >> testApplyEffectToReversesMoonWalk [
     board := Board of: 10 andWormholeAt: {}.
     ship1 := Spaceship withName: 'S1'.
     ship2 := Spaceship withName: 'S2'.
+    ship1 moveTo: 3.
+    ship2 moveTo: 3.
     board registerShips: { ship1. ship2 }.
     effect := MoonWalkEffect new.
     reversed := ReversedEffect of: effect.
-    ship1 moveTo: 3.
-    ship2 moveTo: 3.
     reversed applyEffectTo: ship1 inBoard: board.
     self assert: ship1 position equals: 3.
     self assert: ship2 position equals: 5.
