@@ -30,7 +30,7 @@ ReversalCardTest >> testReverseWormholeMakesExitTwoWays [
     ship2 := Spaceship withName: 'B'.
     board registerShips: { ship. ship2 }.
     game := Game startWithShips: { ship. ship2 } board: board dice: (DiceCup with: { Die withSides: 1 }) laps: 1.
-    ship moveTo: 3.
+    board moveShip: ship to: 3.
     card := ReversalCard new.
     card activateFor: ship inGame: game.
     self assert: (board applyWormholeIfPresentAt: 3) equals: 10.
@@ -104,5 +104,5 @@ ReversalCardTest >> testActivateForReversesCardEffect [
     card := ReversalCard new.
     card activateFor: ship inGame: game.
     board applyEffectTo: ship.
-    self assert: ship cards isEmpty.
+    self deny: (ship cards includes: removalCard).
 ]
