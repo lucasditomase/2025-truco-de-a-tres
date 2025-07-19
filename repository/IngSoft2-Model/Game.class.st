@@ -347,7 +347,9 @@ Game >> recordFuelStartFor: aShip [
         | history |
         history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
         history addLast: (aShip instVarNamed: 'fuel').
-        history size > 2 ifTrue: [ history removeFirst ]
+        "Keep fuel history for the last three turns so the Time Machine
+        card can restore the fuel to the state from two turns ago." 
+        history size > 3 ifTrue: [ history removeFirst ]
 ]
 
 { #category : 'accessing' }
