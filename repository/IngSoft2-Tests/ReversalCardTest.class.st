@@ -101,6 +101,8 @@ ReversalCardTest >> testActivateForReversesCardEffect [
     ship moveTo: 5.
     board registerShips: { ship. ship2 }.
     game := Game startWithShips: { ship. ship2 } board: board dice: (DiceCup with: { Die withSides: 1 }) laps: 1.
+    ship cards removeAll.
+    ship addCard: removalCard.
     card := ReversalCard new.
     card activateFor: ship inGame: game.
     board applyEffectTo: ship.
