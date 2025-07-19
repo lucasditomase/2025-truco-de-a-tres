@@ -34,7 +34,6 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
         board moveShip: aShip forward: 1.
         ^ self ].
     original class = HyperJumpEffect ifTrue: [
-        "Ensure board position manager is in sync with the ship's actual position"
         board moveShip: aShip to: aShip position.
         parsecs := original nextJumpValue.
         steps := (parsecs / board totalLengthInParsecs * board cellCount) rounded.
