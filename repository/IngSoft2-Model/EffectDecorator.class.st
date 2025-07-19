@@ -10,7 +10,6 @@ Class {
 
 { #category : 'operations' }
 EffectDecorator >> applyEffectTo: aShip inBoard: aBoard [
-    "Subclasses implement specific behavior"
 ]
 
 { #category : 'instance creation' }

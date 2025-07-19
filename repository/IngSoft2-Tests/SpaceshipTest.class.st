@@ -216,7 +216,6 @@ SpaceshipTest >> testPlayCardNotInHandRaisesError [
     | ship otherShip card board dice game |
 
     ship := Spaceship withName: 'Player'.
-"A second ship is required for a valid game"
     otherShip := Spaceship withName: 'Other'.
     card := AdvanceCard new.
     board := Board of: 5 andWormholeAt: #().
@@ -232,7 +231,6 @@ SpaceshipTest >> testPlayCardRemovesFromHandAndRecords [
     | ship otherShip card board dice game |
 
     ship := Spaceship withName: 'Player'.
-"A second ship is required for a valid game"
     otherShip := Spaceship withName: 'Other'.
     card := AdvanceCard new.
     ship addCard: card.

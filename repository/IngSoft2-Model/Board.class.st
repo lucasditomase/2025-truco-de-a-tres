@@ -149,8 +149,6 @@ Board >> determineNewPositionFrom: aPosition after: steps [
 
 { #category : 'deck' }
 Board >> drawCard [
-    "Return a random card from the deck"
-
     ^ CardDeck randomCard
 ]
 
@@ -171,10 +169,6 @@ Board >> initializeWithCells: aCount andWormholes: aCollection [
 Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCollection [
     cellCount := aCount.
     totalLengthInParsecs := aLengthInParsecs.
-    "The collection of wormholes must be mutable because reversing a wormhole
-    replaces the existing instance with a new one. Arrays received from callers
-    are immutable, so convert them to an OrderedCollection to allow addition and
-    removal of wormholes." 
     wormholes := aCollection asOrderedCollection.
          cells := Dictionary new.
 
