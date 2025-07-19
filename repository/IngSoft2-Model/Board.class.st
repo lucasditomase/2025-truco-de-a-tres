@@ -238,11 +238,7 @@ Board >> registerShips: someShips [
 { #category : 'effects' }
 Board >> reverseAt: aPosition [
     | effect wormhole newW |
-    wormhole := wormholes
-        detect: [ :w |
-            (w entry = aPosition) or: [ w exit = aPosition ]
-        ]
-        ifNone: [ nil ].
+    wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ nil ].
     wormhole ifNotNil: [
         wormholes remove: wormhole.
         newW := (wormhole isKindOf: ReversedWormhole)
