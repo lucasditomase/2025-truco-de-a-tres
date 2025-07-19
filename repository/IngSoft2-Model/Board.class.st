@@ -114,6 +114,8 @@ Board >> applyWormholeIfPresentAt: aPosition [
     | wormhole |
     wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ nil ].
     wormhole ifNil: [ ^ aPosition ].
+    (wormhole respondsTo: #exitFrom:inBoard:)
+        ifTrue: [ ^ wormhole exitFrom: aPosition inBoard: self ].
     (wormhole respondsTo: #exitFrom:)
         ifTrue: [ ^ wormhole exitFrom: aPosition ]
         ifFalse: [ ^ wormhole exit ]

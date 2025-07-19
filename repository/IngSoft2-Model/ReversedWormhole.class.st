@@ -16,3 +16,14 @@ ReversedWormhole >> exitFrom: aPosition [
     aPosition = self exit ifTrue: [ ^ self entry ].
     self error: 'Invalid entry'
 ]
+
+{ #category : 'operations' }
+ReversedWormhole >> exitFrom: aPosition inBoard: aBoard [
+    aPosition = self entry ifTrue: [
+        ^ (self exit - aBoard cellCount)
+    ].
+    aPosition = self exit ifTrue: [
+        ^ self entry + aBoard cellCount
+    ].
+    self error: 'Invalid entry'
+]

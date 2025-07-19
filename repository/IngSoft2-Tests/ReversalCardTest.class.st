@@ -33,8 +33,8 @@ ReversalCardTest >> testReverseWormholeMakesExitTwoWays [
     board moveShip: ship to: 3.
     card := ReversalCard new.
     card activateFor: ship inGame: game.
-    self assert: (board applyWormholeIfPresentAt: 3) equals: 10.
-    self assert: (board applyWormholeIfPresentAt: 10) equals: 3.
+    self assert: (board applyWormholeIfPresentAt: 3) equals: (10 - board cellCount).
+    self assert: (board applyWormholeIfPresentAt: 10) equals: (3 + board cellCount).
 ]
 
 { #category : 'tests' }
