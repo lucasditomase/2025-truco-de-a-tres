@@ -14,8 +14,9 @@ Class {
         'lastSteps',
                 'lastPreviousPosition',
                 'shipStatuses',
-                'lastCardPlayed',
-                'fuelHistory'
+        'lastCardPlayed',
+        'fuelHistory',
+        'lastEffect'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -190,6 +191,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         lastSteps := 0.
         lastPreviousPosition := 0.
         lastCardPlayed := nil.
+        lastEffect := nil.
         fuelHistory := Dictionary new.
         spaceShips do: [ :ship |
             fuelHistory at: ship put: (OrderedCollection with: (ship instVarNamed: 'fuel')) ]
@@ -341,7 +343,7 @@ Game >> removeActiveCard: aCard [
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
-
+lastEffect ifNotNil: [ lastEffect applyTo: aShip inBoard: board ]
 ]
 
 { #category : 'process actions' }
@@ -381,7 +383,31 @@ Game >> rollAndMoveCurrentShip [
                 after: modified.
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
-    lastSteps := modified
+    lastSteps := modified.
+    lastEffect := board applyEffectTo: self currentShip.
+    self consumeFuelFor: self currentShip
+]
+
+{ #category : 'process actions' }
+Game >> consumeFuelFor: aShip [
+    | allies contributor |
+    aShip decreaseFuelBy: 1.
+    (aShip instVarNamed: 'fuel') = 0 ifTrue: [
+        allies := aShip allies.
+        contributor := allies detect: [ :each | (each instVarNamed: 'fuel') > 0 ] ifNone: [ nil ].
+        contributor
+            ifNotNil: [ contributor decreaseFuelBy: 1.
+                ((aShip instVarNamed: 'fuel') = 0 and: [ (contributor instVarNamed: 'fuel') = 0 ]) ifTrue: [
+                    board moveShip: aShip to: 0.
+                    board moveShip: contributor to: 0.
+                    self penalize: aShip forTurns: 2.
+                    self penalize: contributor forTurns: 2 ] ]
+            ifNil: [
+                allies do: [ :ally | board moveShip: ally to: 0. self penalize: ally forTurns: 2 ].
+                board moveShip: aShip to: 0.
+                self penalize: aShip forTurns: 2
+            ].
+    ]
 ]
 
 { #category : 'accessing' }
