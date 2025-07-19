@@ -94,3 +94,9 @@ Wormhole >> isValid [
 		  on: Error
 		  do: [ false ]
 ]
+
+{ #category : 'operations' }
+Wormhole >> exitFrom: aPosition [
+    ^ self exit
+]
+

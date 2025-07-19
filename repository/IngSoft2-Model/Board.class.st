@@ -111,9 +111,12 @@ Board >> applyEffectTo: aSpaceship [
 
 { #category : 'initialize' }
 Board >> applyWormholeIfPresentAt: aPosition [
-    ^ (wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ nil ])
-        ifNil: [ aPosition ]
-        ifNotNil: [ :w | w exit ]
+    | wormhole |
+    wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ nil ].
+    wormhole ifNil: [ ^ aPosition ].
+    (wormhole respondsTo: #exitFrom:)
+        ifTrue: [ ^ wormhole exitFrom: aPosition ]
+        ifFalse: [ ^ wormhole exit ]
 ]
 
 { #category : 'initialize' }
@@ -229,7 +232,25 @@ Board >> randomEffect [
 { #category : 'spaceships' }
 Board >> registerShips: someShips [
 
-	positionManager := PositionManager forShips: someShips
+        positionManager := PositionManager forShips: someShips
+]
+
+{ #category : 'effects' }
+Board >> reverseAt: aPosition [
+    | effect wormhole newW |
+    wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ nil ].
+    wormhole ifNotNil: [
+        wormholes remove: wormhole.
+        newW := wormhole isKindOf: ReversedWormhole
+            ifTrue: [ Wormhole from: wormhole entry to: wormhole exit ]
+            ifFalse: [ ReversedWormhole from: wormhole entry to: wormhole exit ].
+        wormholes add: newW.
+        ^ self
+    ].
+    effect := self effectAt: aPosition.
+    (effect isKindOf: ReversedEffect)
+        ifTrue: [ cells at: aPosition put: effect original ]
+        ifFalse: [ cells at: aPosition put: (ReversedEffect of: effect) ]
 ]
 
 { #category : 'initialize' }
