@@ -18,9 +18,3 @@ AtomicBombEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoa
         board moveShip: ship to: 0
     ].
 ]
-
-{ #category : 'operations' }
-AtomicBombEffect >> reversed [
-    ^ self
-]
-

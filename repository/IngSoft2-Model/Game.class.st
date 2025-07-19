@@ -12,11 +12,9 @@ Class {
 		'totalLaps',
 		'state',
 		'lastSteps',
-                'lastPreviousPosition',
-                'shipStatuses',
-                'lastCardPlayed',
-                'fuelHistories',
-                'turnCounts'
+		'lastPreviousPosition',
+		'shipStatuses',
+		'lastCardPlayed'
 	],
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
@@ -85,34 +83,7 @@ Game >> activeCards [
 { #category : 'process actions' }
 Game >> advanceTurn [
 
-        turnManager advanceTurn.
-        self startTurnFor: self currentShip
-]
-
-{ #category : 'process actions' }
-Game >> startTurnFor: aShip [
-
-        | history count |
-        history := fuelHistories
-                at: aShip
-                ifAbsentPut: [ OrderedCollection new ].
-        history addLast: (aShip instVarNamed: 'fuel').
-        count := turnCounts
-                at: aShip
-                ifAbsentPut: [ 0 ].
-        turnCounts at: aShip put: count + 1
-]
-
-{ #category : 'accessing' }
-Game >> fuelHistoryFor: aShip [
-
-        ^ fuelHistories at: aShip
-]
-
-{ #category : 'accessing' }
-Game >> turnsPlayedFor: aShip [
-
-        ^ turnCounts at: aShip
+        turnManager advanceTurn
 ]
 
 { #category : 'process actions' }
@@ -205,26 +176,19 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 
 	wantsToPassTurn := Dictionary new.
 
-        shipStatuses := Dictionary new.
-        spaceShips do: [ :ship |
-                shipStatuses at: ship put: (ShipStatus
-                                 for: ship
-                                 position: 0
-                                 laps: 0
-                                 penalized: false).
-                2 timesRepeat: [ ship addCard: board drawCard ] ].
-        fuelHistories := Dictionary new.
-        turnCounts := Dictionary new.
-        spaceShips do: [ :ship |
-                fuelHistories at: ship put: OrderedCollection new.
-                turnCounts at: ship put: 0 ].
-        state := GameInProgress new.
+	shipStatuses := Dictionary new.
+	spaceShips do: [ :ship |
+		shipStatuses at: ship put: (ShipStatus
+				 for: ship
+				 position: 0
+				 laps: 0
+				 penalized: false).
+		2 timesRepeat: [ ship addCard: board drawCard ] ].
+	state := GameInProgress new.
 
-        lastSteps := 0.
-        lastPreviousPosition := 0.
-        lastCardPlayed := nil
-
-        self startTurnFor: self currentShip
+	lastSteps := 0.
+	lastPreviousPosition := 0.
+	lastCardPlayed := nil
 ]
 
 { #category : 'testing' }
@@ -389,11 +353,13 @@ Game >> rollAndMoveCurrentShip [
 	steps = dice maxRoll ifTrue: [
 		self rewardForMaxRollTo: self currentShip ].
 	modified := self modifyRoll: steps forShip: self currentShip.
-        modified >= 0
-                ifTrue: [
-                        newPosition := board applyWormholeIfPresentAt: (lastPreviousPosition + modified) forShip: self currentShip.
-                        board moveShip: self currentShip to: newPosition ]
-                ifFalse: [ board moveShip: self currentShip backward: modified abs ].
+	modified >= 0
+		ifTrue: [
+			newPosition := board
+				               determineNewPositionFrom: lastPreviousPosition
+				               after: modified.
+			board moveShip: self currentShip to: newPosition ]
+		ifFalse: [ board moveShip: self currentShip backward: modified abs ].
 	lastSteps := modified
 ]
 

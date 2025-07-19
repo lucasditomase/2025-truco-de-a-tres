@@ -7,7 +7,7 @@ Class {
 
 { #category : 'deck' }
 CardDeck class >> availableCards [
-        ^ { AdvanceCard. ShieldCard. OverloadCard. AccelerationCard. CancellationCard. AllyCard. RedoCard. RepeatCard. ReversalCard }
+	^ { AdvanceCard. ShieldCard. OverloadCard. AccelerationCard. CancellationCard. AllyCard. RedoCard. RepeatCard }
 ]
 
 { #category : 'deck' }

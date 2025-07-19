@@ -38,9 +38,3 @@ HyperGravityEffect >> requiredRoll: aNumber [
 	requiredRoll := aNumber.
 
 ]
-
-{ #category : 'operations' }
-HyperGravityEffect >> reversed [
-    ^ ReversedHyperGravityEffect new
-]
-

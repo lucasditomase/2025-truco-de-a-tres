@@ -41,9 +41,3 @@ EffectDecorator >> decorate: anEffect [
 EffectDecorator >> wrapped [
 	^ wrapped
 ]
-
-{ #category : 'operations' }
-EffectDecorator >> reversed [
-    ^ self
-]
-

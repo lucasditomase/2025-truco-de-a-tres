@@ -11,9 +11,3 @@ BlackHoleEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
     board moveShip: aSpaceship backward: 4.
 ]
-
-{ #category : 'operations' }
-BlackHoleEffect >> reversed [
-    ^ ReversedBlackHoleEffect new
-]
-

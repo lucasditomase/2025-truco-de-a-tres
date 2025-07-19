@@ -23,9 +23,3 @@ MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard
             board moveShip: ship backward: 2
         ]].
 ]
-
-{ #category : 'operations' }
-MoonWalkEffect >> reversed [
-    ^ ReversedMoonWalkEffect new
-]
-
