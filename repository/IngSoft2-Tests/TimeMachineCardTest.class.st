@@ -72,3 +72,24 @@ TimeMachineCardTest >> testApplyEffectRequiresTwoTurns [
         withMessageText: 'Not enough turns to use Time Machine'.
 ]
 
+{ #category : 'tests' }
+TimeMachineCardTest >> testApplyEffectWithAlliesRequiresTwoTurns [
+    | ship1 ship2 board dice game card ally |
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+    ally := AllyCard withAlly: ship2.
+    ally activateFor: ship1 inGame: nil.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    game instVarNamed: 'fuelHistory' put: (Dictionary new
+        at: ship1 put: (OrderedCollection with: 20 with: 10);
+        at: ship2 put: (OrderedCollection with: 15);
+        yourself).
+    card := TimeMachineCard new.
+    self
+        should: [ card applyEffectTo: ship1 inGame: game ]
+        raise: Error
+        withMessageText: 'Not enough turns to use Time Machine'.
+]
+
