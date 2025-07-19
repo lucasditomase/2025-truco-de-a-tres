@@ -177,16 +177,14 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 
 	wantsToPassTurn := Dictionary new.
 
-        shipStatuses := Dictionary new.
-        spaceShips do: [ :ship |
-                shipStatuses at: ship put: (ShipStatus
-                                 for: ship
-                                 position: 0
-                                 laps: 0
-                                 penalized: false).
-                ship instVarNamed: 'maxFuel' put: dice maxRoll * 2.
-                ship instVarNamed: 'fuel' put: dice maxRoll * 2.
-                2 timesRepeat: [ ship addCard: board drawCard ] ].
+	shipStatuses := Dictionary new.
+	spaceShips do: [ :ship |
+		shipStatuses at: ship put: (ShipStatus
+				 for: ship
+				 position: 0
+				 laps: 0
+				 penalized: false).
+		2 timesRepeat: [ ship addCard: board drawCard ] ].
 	state := GameInProgress new.
 
         lastSteps := 0.
