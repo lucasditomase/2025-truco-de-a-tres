@@ -125,7 +125,7 @@ Board >> applyWormholeIfPresentAt: aPosition [
 Board >> calculateNewPositionFrom: current after: steps moves: aShipStatus [
 
 	| newPosition |
-	
+
 	newPosition := (current + steps) \\ cellCount.
 
 	(newPosition <= current) ifTrue: [ aShipStatus addLap ].

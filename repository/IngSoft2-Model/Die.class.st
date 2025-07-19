@@ -24,7 +24,7 @@ Die class >> withSides: aNumberOfSides [
 ]
 
 { #category : 'initialize' }
-Die >> initializeWithSides: aNumberOfSides [ 
+Die >> initializeWithSides: aNumberOfSides [
 
     sides := aNumberOfSides.
 ]

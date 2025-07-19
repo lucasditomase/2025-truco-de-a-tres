@@ -67,9 +67,9 @@ Game class >> validateMinimumShips: someShips [
 
 { #category : 'initialize' }
 Game class >> validateShips: someShips [
-    
+
     (someShips isCollection and: [
-        someShips allSatisfy: [:each | each isKindOf: Spaceship]]) 
+        someShips allSatisfy: [:each | each isKindOf: Spaceship]])
     ifFalse: [self error: 'Ships must be a collection of Spaceship instances'].
 ]
 
@@ -347,8 +347,6 @@ Game >> recordFuelStartFor: aShip [
         | history |
         history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
         history addLast: (aShip instVarNamed: 'fuel').
-        "Keep fuel history for the last three turns so the Time Machine
-        card can restore the fuel to the state from two turns ago." 
         history size > 3 ifTrue: [ history removeFirst ]
 ]
 

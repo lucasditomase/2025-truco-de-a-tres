@@ -172,7 +172,6 @@ BoardTest >> testBoardPreventsEntryToHyperGravityCellWithLowRoll [
 
 	board := Board of: 5 andWormholeAt: #().
 
-	
 	ship := Spaceship withName: 'Lucas'.
 	ship moveTo: 2.
 	lappedShip := ShipStatus for: ship position: 2 laps: 0 penalized: false.
@@ -181,13 +180,13 @@ BoardTest >> testBoardPreventsEntryToHyperGravityCellWithLowRoll [
 	effect requiredRoll: 4.
 	board cells at: 4 put: effect.
 
-	newPosition := board 
-		determineNewPositionFrom: ship position 
+	newPosition := board
+		determineNewPositionFrom: ship position
 		after: 1.
 
 	self assert: newPosition equals: 3.
 	self assert: ship position equals: 2.
-	
+
 	self assert: lappedShip lapCount equals: 0.
 ]
 
@@ -311,18 +310,18 @@ BoardTest >> testHyperJumpEffectJumpsShipForward [
 	ship1 moveTo: 5.
 	self assert: ship1 position equals: 5.
 
-	newPosition := board 
-		determineNewPositionFrom: ship1 position 
+	newPosition := board
+		determineNewPositionFrom: ship1 position
 		after: 1.
 	self assert: newPosition equals: 6.
 
 	ship1 moveTo: newPosition.
 	self assert: ship1 position equals: 6.
 
-	game := Game 
+	game := Game
 		startWithShips: {ship1. ship2}
-		board: board 
-		dice: dicesGame 
+		board: board
+		dice: dicesGame
 		laps: 1.
 
 	effect applyTo: ship1 inBoard: board.
@@ -356,7 +355,7 @@ BoardTest >> testIsGoalReached [
 
     | board |
 
-    board := Board of: 10 andWormholeAt: #(). 
+    board := Board of: 10 andWormholeAt: #().
 
     self assert: (board isPositionReachedAt: 10).
     self assert: (board isPositionReachedAt: 11).
@@ -370,7 +369,7 @@ BoardTest >> testIsGoalReachedAtReturnsFalseIfPositionLower [
 
     | board |
 
-    board := Board of: 5 andWormholeAt: {}. 
+    board := Board of: 5 andWormholeAt: {}.
 
     self deny: (board isPositionReachedAt: 4).
 ]
@@ -380,7 +379,7 @@ BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionEqual [
 
     | board |
 
-    board := Board of: 5 andWormholeAt: {}. 
+    board := Board of: 5 andWormholeAt: {}.
 
     self assert: (board isPositionReachedAt: 5).
 ]
@@ -416,7 +415,7 @@ BoardTest >> testLapDoesNotIncrementWhenStayingWithinBounds [
 BoardTest >> testLapIncrementsWhenPassingLastCell [
 
 	| dice1 board ship newPosition |
-	
+
 	dice1 := Die withSides: 6.
 
 	board := Board of: 10 andWormholeAt: OrderedCollection new.

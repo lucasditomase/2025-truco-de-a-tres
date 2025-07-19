@@ -17,7 +17,7 @@ Class {
 
 { #category : 'initialize' }
 Spaceship class >> validatingName: aName [
-	
+
 	aName isEmpty ifTrue: [ self error: 'A name cannot be empty' ].
 ]
 

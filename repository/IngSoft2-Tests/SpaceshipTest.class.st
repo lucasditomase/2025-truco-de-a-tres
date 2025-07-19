@@ -109,10 +109,10 @@ SpaceshipTest >> testIncreaseMaxFuelByAddsAmount [
 SpaceshipTest >> testInitializeInPositionZero [
 
 	| player |
-	
+
 	player := Spaceship withName: 'JohnDoe'.
-	
-	self assert: player position equals: 0. 
+
+	self assert: player position equals: 0.
 ]
 
 { #category : 'tests - instance' }

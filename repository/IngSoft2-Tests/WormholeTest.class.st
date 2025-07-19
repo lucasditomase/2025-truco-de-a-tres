@@ -13,8 +13,6 @@ WormholeTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorM
 		raise: anErrorClass
 		withExceptionDo: [ :error |
 		self assert: error messageText equals: errorMessage].
-	
-
 
 ]
 
@@ -85,7 +83,7 @@ WormholeTest >> testInvalidWormholeCreation [
 
 	self
 		should: [ Wormhole connecting: 7 and: 7]
-		raise: Error 
+		raise: Error
 		withMessageText: 'Wormhole positions must be distinct'.
 ]
 
@@ -119,8 +117,8 @@ WormholeTest >> testValidWormholeCreation [
 
 { #category : 'tests - instance' }
 WormholeTest >> testWormholeNewShouldFail [
-	self 
-		should: [ Wormhole new ] 
-		raise: Error 
+	self
+		should: [ Wormhole new ]
+		raise: Error
 		withMessageText: 'Use Wormhole from:to: instead.'.
 ]

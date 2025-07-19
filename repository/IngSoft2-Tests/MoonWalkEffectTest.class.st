@@ -15,7 +15,7 @@ MoonWalkEffectTest >> testApplyToDoesNothing [
 
     originalPosition := ship position.
     effect applyTo: ship.
-    
+
     self assert: ship position equals: originalPosition.
 ]
 

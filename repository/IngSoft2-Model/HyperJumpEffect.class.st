@@ -51,17 +51,16 @@ HyperJumpEffect >> applyTo: aSpaceship inBoard: aBoard [
     self applyEffectTo: aSpaceship inBoard: aBoard.
 ]
 
-
 { #category : 'private' }
 HyperJumpEffect >> convertAndSortValues: aCollection [
     | convertedValues |
-    
+
     convertedValues := aCollection collect: [ :each |
         (each respondsTo: #asParsecs)
             ifTrue: [ each asParsecs ]
             ifFalse: [ each ]
     ].
-    
+
     ^ self sortDescendingPreservingOrder: convertedValues
 ]
 
