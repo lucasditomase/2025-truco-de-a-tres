@@ -72,10 +72,11 @@ Spaceship >> initializeWith: aName [
     position := 0.
     fuel := 0.
     maxFuel := 0.
-        lap := 0.
-        cards := OrderedCollection new.
-        activeCards := OrderedCollection new.
-        state := NormalShipState new
+
+    lap := 0.
+    cards := OrderedCollection new.
+    activeCards := OrderedCollection new.
+    state := NormalShipState new
 ]
 
 { #category : 'state' }
@@ -169,11 +170,14 @@ Spaceship >> removeCard: aCard [
 
 { #category : 'cards' }
 Spaceship >> allies [
-        | allies |
-        allies := activeCards select: [ :card | card isKindOf: AllyCard ].
-        allies := allies collect: [ :card | card allyFor: self ].
-        allies := allies reject: [ :each | each isNil ].
-        ^ allies
+
+    | allies |
+
+    allies := activeCards select: [ :card | card isKindOf: AllyCard ].
+    allies := allies collect: [ :card | card allyFor: self ].
+    allies := allies reject: [ :each | each isNil ].
+
+    ^ allies
 ]
 
 { #category : 'methods' }

@@ -230,8 +230,10 @@ Game >> modifyRoll: aNumber forShip: aShip [
 
     | value |
     value := aNumber.
+
     self activeCards do: [ :card |
         value := card modifyRoll: value forShip: aShip inGame: self ].
+
     ^ value
 ]
 
@@ -344,10 +346,11 @@ Game >> repeatLastEffectOn: aShip [
 
 { #category : 'process actions' }
 Game >> recordFuelStartFor: aShip [
-        | history |
-        history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
-        history addLast: (aShip instVarNamed: 'fuel').
-        history size > 3 ifTrue: [ history removeFirst ]
+    | history |
+    history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
+
+    history addLast: (aShip instVarNamed: 'fuel').
+    history size > 3 ifTrue: [ history removeFirst ]
 ]
 
 { #category : 'accessing' }
