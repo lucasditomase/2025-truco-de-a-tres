@@ -188,7 +188,8 @@ GameTest >> testGameEndsWithPlayUntilFinish [
 
     game playUntilFinish.
 
-    game whenFinishedDo: [ :w | self assert: true ] whenInProgressDo: [ self fail: 'Expected game to be finished' ].
+    game whenFinishedDo: [ :w | self assert: true ]
+        whenInProgressDo: [ self fail: 'Expected game to be finished' ].
 ]
 
 { #category : 'tests' }
@@ -214,7 +215,8 @@ GameTest >> testGameReturnsAllStatuses [
 
 { #category : 'tests' }
 GameTest >> testGameReturnsFinalPositionsOfSpaceships [
-    | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game positions finalPositionShip1 finalPositionShip2 pos1 pos2 |
+    | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game
+      positions finalPositionShip1 finalPositionShip2 pos1 pos2 |
 
 dice1 := Die withSides: 100.
 dicesGame := DiceCup with: (OrderedCollection with: dice1).
@@ -252,7 +254,11 @@ GameTest >> testHandlePenaltyOrPassIfNeededReturnsFalseWhenNoPenaltyAndNoPass [
     ship := Spaceship withName: 'Neutral'.
     dice := DiceCup with: { Die withSides: 6 }.
     board := Board of: 5 andWormholeAt: #().
-    game := Game startWithShips: { ship. (Spaceship withName: 'Other') } board: board dice: dice laps: 1.
+    game := Game
+        startWithShips: { ship. (Spaceship withName: 'Other') }
+        board: board
+        dice: dice
+        laps: 1.
 
     result := game handlePenaltyOrPassIfNeeded.
 
@@ -266,7 +272,11 @@ GameTest >> testHandlePenaltyOrPassIfNeededReturnsTrueWhenPenalized [
     ship := Spaceship withName: 'Penalized'.
     dice := DiceCup with: { Die withSides: 6 }.
     board := Board of: 5 andWormholeAt: #().
-    game := Game startWithShips: { ship. (Spaceship withName: 'Other') } board: board dice: dice laps: 1.
+    game := Game
+        startWithShips: { ship. (Spaceship withName: 'Other') }
+        board: board
+        dice: dice
+        laps: 1.
 
     game penalize: ship forTurns: 1.
 
@@ -282,7 +292,11 @@ GameTest >> testHandlePenaltyOrPassIfNeededReturnsTrueWhenShipWantsToPassTurn [
     ship := Spaceship withName: 'Pasante'.
     dice := DiceCup with: { Die withSides: 6 }.
     board := Board of: 5 andWormholeAt: #().
-    game := Game startWithShips: { ship. (Spaceship withName: 'Other') } board: board dice: dice laps: 1.
+    game := Game
+        startWithShips: { ship. (Spaceship withName: 'Other') }
+        board: board
+        dice: dice
+        laps: 1.
 
     game markShipAsWantingToPassTurn: ship to: true.
 
@@ -1353,7 +1367,8 @@ GameTest >> testWhenGameCreatedWithoutTwoOrMoreShipsThenIsInvalid [
 { #category : 'tests' }
 GameTest >> testWhenPlayTurnThenAdvancesShip [
 
-    | spaceShip1 spaceShip2 spaceShipsGame dice1 dice2 dicesGame boardGame game originalPosition newPosition |
+    | spaceShip1 spaceShip2 spaceShipsGame dice1 dice2 dicesGame boardGame game
+      originalPosition newPosition |
 
     dice1 := Die withSides: 1.
     dice2 := Die withSides: 6.
@@ -1496,8 +1511,8 @@ GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [
 ]
 
 { #category : 'tests' }
-GameTest >> testWhenSpaceShipEndsTurnThenRotatesPlayerTurn [
-| spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game expectedSequence actualSequence |
+| spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game
+  expectedSequence actualSequence |
 
 dice1 := Die withSides: 1.
 dicesGame := DiceCup with: (OrderedCollection with: dice1).

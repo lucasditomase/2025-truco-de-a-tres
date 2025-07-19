@@ -7,8 +7,20 @@ Class {
 
 { #category : 'deck' }
 CardDeck class >> availableCards [
-        ^ { AdvanceCard. ShieldCard. OverloadCard. AccelerationCard. CancellationCard. AllyCard. RedoCard. RepeatCard. ReversalCard. TimeMachineCard }
+        ^ {
+            AdvanceCard.
+            ShieldCard.
+            OverloadCard.
+            AccelerationCard.
+            CancellationCard.
+            AllyCard.
+            RedoCard.
+            RepeatCard.
+            ReversalCard.
+            TimeMachineCard
+        }
 ]
+
 
 { #category : 'deck' }
 CardDeck class >> randomCard [

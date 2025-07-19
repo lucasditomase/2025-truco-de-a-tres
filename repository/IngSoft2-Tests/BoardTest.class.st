@@ -422,7 +422,10 @@ BoardTest >> testLapIncrementsWhenPassingLastCell [
     ship := Spaceship withName: 'Lucas'.
     ship moveTo: 8.
 
-    newPosition := board calculateNewPositionFrom: ship position after: 3 moves: (ShipStatus for: ship position: 8 laps: 0 penalized: false) .
+    newPosition := board
+        calculateNewPositionFrom: ship position
+        after: 3
+        moves: (ShipStatus for: ship position: 8 laps: 0 penalized: false).
 
     self assert: newPosition equals: 1.
     self assert: (ShipStatus for: ship position: 8 laps: 0 penalized: false) lapCount equals: 0.
