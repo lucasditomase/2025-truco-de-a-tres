@@ -248,6 +248,7 @@ Board >> reverseAt: aPosition [
         ^ self
     ].
     effect := self effectAt: aPosition.
+    effect class = AtomicBombEffect ifTrue: [ ^ self ].
     (effect isKindOf: ReversedEffect)
         ifTrue: [ cells at: aPosition put: effect original ]
         ifFalse: [ cells at: aPosition put: (ReversedEffect of: effect) ]

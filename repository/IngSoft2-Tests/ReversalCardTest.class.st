@@ -108,3 +108,23 @@ ReversalCardTest >> testActivateForReversesCardEffect [
     board applyEffectTo: ship.
     self deny: (ship cards includes: removalCard).
 ]
+
+{ #category : 'tests' }
+ReversalCardTest >> testActivateForDoesNothingWithAtomicBombEffect [
+    | board ship ship2 card game effect |
+    board := Board of: 10 andWormholeAt: {}.
+    effect := AtomicBombEffect new.
+    board cells at: 5 put: effect.
+    ship := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+    ship moveTo: 5.
+    ship2 moveTo: 3.
+    board registerShips: { ship. ship2 }.
+    game := Game startWithShips: { ship. ship2 } board: board dice: (DiceCup with: { Die withSides: 1 }) laps: 1.
+    card := ReversalCard new.
+    card activateFor: ship inGame: game.
+    self assert: (board cells at: 5) class equals: AtomicBombEffect.
+    (board cells at: 5) applyTo: ship inContextOf: { ship. ship2 } inBoard: board.
+    self assert: ship position equals: 0.
+    self assert: ship2 position equals: 0.
+]
