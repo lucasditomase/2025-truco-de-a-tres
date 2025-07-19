@@ -9,3 +9,9 @@ Class {
 CardEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
         aSpaceship addCard: (aBoard drawCard).
 ]
+
+{ #category : 'operations' }
+CardEffect >> reversed [
+    ^ ReversedCardEffect new
+]
+

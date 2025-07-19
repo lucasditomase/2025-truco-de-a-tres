@@ -107,3 +107,9 @@ HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
 HyperJumpEffect >> values [
 	^ jumpValues
 ]
+
+{ #category : 'operations' }
+HyperJumpEffect >> reversed [
+    ^ ReversedHyperJumpEffect withValues: self values
+]
+

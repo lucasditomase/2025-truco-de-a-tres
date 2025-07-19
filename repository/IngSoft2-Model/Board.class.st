@@ -4,9 +4,10 @@ Class {
 	#instVars : [
 		'cellCount',
 		'wormholes',
-		'cells',
-		'totalLengthInParsecs',
-		'positionManager'
+                'cells',
+                'totalLengthInParsecs',
+                'positionManager',
+                'reversedCells'
 	],
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
@@ -103,17 +104,47 @@ Board class >> validateWormholes: aCollection [
 
 { #category : 'initialize' }
 Board >> applyEffectTo: aSpaceship [
-    | effect |
+    | effect position |
 
-    effect := self effectAt: (self positionOf: aSpaceship).
+    position := self positionOf: aSpaceship.
+    effect := self effectAt: position.
+    (self isCellReversed: position) ifTrue: [ effect := effect reversed ].
     effect ifNotNil: [ effect applyTo: aSpaceship inBoard: self ].
 ]
 
 { #category : 'initialize' }
 Board >> applyWormholeIfPresentAt: aPosition [
-    ^ (wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ nil ])
-        ifNil: [ aPosition ]
-        ifNotNil: [ :w | w exit ]
+    ^ self applyWormholeIfPresentAt: aPosition forShip: nil
+]
+
+{ #category : 'initialize' }
+Board >> applyWormholeIfPresentAt: aPosition forShip: aShip [
+    | wormhole |
+    wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ nil ].
+    wormhole ifNil: [ ^ aPosition ].
+    (self isCellReversed: aPosition)
+        ifTrue: [
+            wormhole entry = aPosition
+                ifTrue: [
+                    aShip ifNotNil: [ aShip removeLap ].
+                    ^ wormhole exit
+                ]
+                ifFalse: [
+                    aShip ifNotNil: [ aShip addLap ].
+                    ^ wormhole entry
+                ]
+        ]
+        ifFalse: [ ^ wormhole exit ]
+]
+
+{ #category : 'initialize' }
+Board >> isCellReversed: aPosition [
+    ^ reversedCells at: aPosition ifAbsent: [ false ]
+]
+
+{ #category : 'initialize' }
+Board >> reverseCellAt: aPosition [
+    reversedCells at: aPosition put: true
 ]
 
 { #category : 'initialize' }
@@ -169,6 +200,7 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     cellCount := aCount.
     totalLengthInParsecs := aLengthInParsecs.
     wormholes := aCollection.
+    reversedCells := Dictionary new.
          cells := Dictionary new.
 
         0 to: aCount - 1 do: [ :i |

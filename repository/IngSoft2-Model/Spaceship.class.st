@@ -184,3 +184,14 @@ Spaceship >> state: aState [
 
 	state := aState
 ]
+
+{ #category : 'methods' }
+Spaceship >> addLap [
+    lap := lap + 1
+]
+
+{ #category : 'methods' }
+Spaceship >> removeLap [
+    lap := (lap - 1) max: 0
+]
+
