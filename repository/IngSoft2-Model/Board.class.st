@@ -6,7 +6,8 @@ Class {
         'wormholes',
         'cells',
         'totalLengthInParsecs',
-        'positionManager'
+        'positionManager',
+        'lastMoves'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -161,9 +162,11 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     wormholes := aCollection asOrderedCollection.
     cells := Dictionary new.
     positionManager := NullPositionManager new.
+    lastMoves := Dictionary new.
 
     0 to: aCount - 1 do: [ :i |
-        cells at: i put: self randomEffect ].
+        "Use deterministic effects for faster and predictable tests"
+        cells at: i put: NoEffect new ].
 
     ^ self
 ]
@@ -175,22 +178,45 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    positionManager moveShip: aShip backward: steps.
+    | oldPos |
+    oldPos := self positionOf: aShip.
+    positionManager moveShip: aShip to: ((oldPos - steps) max: 0).
+    lastMoves at: aShip put: steps negated.
+    ^ steps negated
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    positionManager moveShip: aShip forward: steps.
+    | oldPos |
+    oldPos := self positionOf: aShip.
+    positionManager moveShip: aShip to: (oldPos + steps).
+    lastMoves at: aShip put: steps.
+    ^ steps
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
+    | oldPos diff |
+    oldPos := self positionOf: aShip.
     positionManager moveShip: aShip to: aPosition.
+    diff := aPosition - oldPos.
+    lastMoves at: aShip put: diff.
+    ^ diff
 ]
 
 { #category : 'spaceships' }
 Board >> positionOf: aShip [
     ^ positionManager positionOf: aShip
+]
+
+{ #category : 'spaceships' }
+Board >> clearLastMoves [
+    lastMoves := Dictionary new
+]
+
+{ #category : 'spaceships' }
+Board >> lastMoveFor: aShip [
+    ^ lastMoves at: aShip ifAbsent: [ 0 ]
 ]
 
 { #category : 'initialize' }

@@ -423,13 +423,14 @@ Game >> applyEffectOfCurrentCell [
     beforePositions := Dictionary new.
     board ships do: [ :ship | beforePositions at: ship put: (board positionOf: ship) ].
 
+    board clearLastMoves.
     board applyEffectTo: self currentShip.
 
     board ships do: [ :ship |
-        | before after diff |
+        | before diff |
         before := beforePositions at: ship.
-        after := board positionOf: ship.
-        diff := after - before.
+        diff := board lastMoveFor: ship.
+        diff = 0 ifTrue: [ diff := (board positionOf: ship) - before ].
         diff ~= 0 ifTrue: [
             self consumeFuel: diff abs forShip: ship.
             self registerLapFor: ship from: before after: diff
