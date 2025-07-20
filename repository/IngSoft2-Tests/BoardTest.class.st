@@ -237,8 +237,8 @@ BoardTest >> testEffectAtHandlesAllCases [
 
     self assert: (board effectAt: 5) equals: customEffect.
     self assert: (board effectAt: 8) class equals: NoEffect.
-    self assert: (board effectAt: -1) class equals: NoEffect.
-    self assert: (board effectAt: 100) class equals: NoEffect.
+    self assert: (board effectAt: -1) class equals: NullEffect.
+    self assert: (board effectAt: 100) class equals: NullEffect.
 ]
 
 { #category : 'tests - instance' }
