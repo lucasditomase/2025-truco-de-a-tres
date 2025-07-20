@@ -380,7 +380,7 @@ Game >> rollAndMoveCurrentShip [
                 after: modified.
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
-    lastSteps := modified
+    lastSteps := modified.
     self consumeFuel: modified abs forShip: self currentShip
 ]
 

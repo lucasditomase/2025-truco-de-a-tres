@@ -737,8 +737,9 @@ GameTest >> testRewardOnMaxRollChangesFuel [
     initialMax := ship maxFuel.
     initialFuel := ship fuel.
     game rollAndMoveCurrentShip.
-    self assert: ((ship maxFuel) = (initialMax + 1)
-    or: [ (ship fuel) = (initialFuel - 1) ]).
+    self assert: (
+        (ship maxFuel = (initialMax + 1) and: [ ship fuel = (initialFuel - 1) ])
+        or: [ ship maxFuel = initialMax and: [ ship fuel = (initialFuel - 2) ] ]).
 ]
 
 { #category : 'tests' }
