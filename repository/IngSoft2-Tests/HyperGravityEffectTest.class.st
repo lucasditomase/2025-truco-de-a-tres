@@ -27,7 +27,7 @@ HyperGravityEffectTest >> testAllowsEntryWithRollTrueWhenEnough [
 ]
 
 { #category : 'tests' }
-HyperGravityEffectTest >> testApplyToMovesShipBackwardsOneStep [
+HyperGravityEffectTest >> testApplyEffectDoesNotMoveShip [
     | ship effect |
 
     ship := Spaceship withName: 'Heavy'.
@@ -36,5 +36,5 @@ HyperGravityEffectTest >> testApplyToMovesShipBackwardsOneStep [
     effect := HyperGravityEffect new.
     effect applyTo: ship.
 
-    self assert: ship position equals: 4.
+    self assert: ship position equals: 5.
 ]

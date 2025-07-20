@@ -30,7 +30,8 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
         aBoard moveShip: aShip forward: 4.
         ^ self ].
     original class = HyperGravityEffect ifTrue: [
-        aBoard moveShip: aShip forward: 1.
+        "Reversing HyperGravity has no positional effect once the ship is on the
+        cell, therefore nothing happens."
         ^ self ].
     original class = HyperJumpEffect ifTrue: [
         aBoard moveShip: aShip to: aShip position.
@@ -40,7 +41,7 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
         ^ self ].
     original class = MoonWalkEffect ifTrue: [
         ships := aBoard ships.
-        ships do: [:ship | ship = aShip ifFalse: [ aBoard moveShip: ship forward: 2 ]].
+        ships do: [:ship | ship = aShip ifFalse: [ aBoard moveShip: ship forward: original steps ]].
         ^ self ].
     original class = CardEffect ifTrue: [
         (aShip cards isEmpty) ifFalse: [ aShip cards removeAt: (1 to: aShip cards size) atRandom ].

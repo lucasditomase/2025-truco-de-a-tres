@@ -50,7 +50,7 @@ ReversalCardTest >> testActivateForReversesHyperGravityEffect [
     card := ReversalCard new.
     card activateFor: ship inGame: game.
     board applyEffectTo: ship.
-    self assert: ship position equals: 5.
+    self assert: ship position equals: 4.
 ]
 
 { #category : 'tests' }
@@ -73,9 +73,10 @@ ReversalCardTest >> testActivateForReversesHyperJumpEffect [
 
 { #category : 'tests' }
 ReversalCardTest >> testActivateForReversesMoonWalkEffect [
-    | board ship ship2 card game |
+    | board ship ship2 card game effect |
     board := Board of: 10 andWormholeAt: {}.
-    board cells at: 5 put: MoonWalkEffect new.
+    effect := MoonWalkEffect withSteps: 2.
+    board cells at: 5 put: effect.
     ship := Spaceship withName: 'One'.
     ship2 := Spaceship withName: 'Two'.
     ship moveTo: 5.

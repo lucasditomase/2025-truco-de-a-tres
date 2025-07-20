@@ -33,7 +33,7 @@ ReversedEffectTest >> testApplyEffectToReversesHyperGravity [
     reversed := ReversedEffect of: effect.
     ship moveTo: 2.
     reversed applyEffectTo: ship inBoard: NullBoard new.
-    self assert: ship position equals: 3.
+    self assert: ship position equals: 2.
 ]
 
 { #category : 'tests' }
@@ -59,11 +59,11 @@ ReversedEffectTest >> testApplyEffectToReversesMoonWalk [
     ship1 moveTo: 3.
     ship2 moveTo: 3.
     board registerShips: { ship1. ship2 }.
-    effect := MoonWalkEffect new.
+    effect := MoonWalkEffect withSteps: 3.
     reversed := ReversedEffect of: effect.
     reversed applyEffectTo: ship1 inBoard: board.
     self assert: ship1 position equals: 3.
-    self assert: ship2 position equals: 5.
+    self assert: ship2 position equals: 6.
 ]
 
 { #category : 'tests' }
