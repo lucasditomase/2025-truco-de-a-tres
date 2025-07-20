@@ -273,12 +273,6 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
     self assert: pos2 position equals: finalPositionShip2.
 ]
 
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
 { #category : 'tests - instance' }
 GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
 
@@ -340,8 +334,6 @@ GameTest >> testIsGameOverReturnsTrueWhenWinnerExists [
       whenInProgressDo: [ self fail: 'Expected the game to be over' ].
 ]
 
-{ #category : 'tests' }
-
 { #category : 'tests - instance' }
 GameTest >> testLastCardPlayedAccessors [
     | ship1 ship2 board dice game card |
@@ -401,12 +393,6 @@ GameTest >> testPassTurnRestoresFuelToMax [
     self assert: ship1 fuel equals: ship1 maxFuel.
     self assert: game currentShip equals: ship2.
 ]
-
-{ #category : 'tests' }
-
-{ #category : 'tests - instance' }
-
-{ #category : 'tests' }
 
 { #category : 'tests' }
 GameTest >> testPlayTurnHandlesPassTurnCorrectly [
@@ -480,8 +466,6 @@ GameTest >> testPlayTurnRaisesErrorWhenGameIsOver [
     self should: [ game playTurn ] raise: Error.
 
 ]
-
-{ #category : 'tests' }
 
 { #category : 'tests' }
 GameTest >> testPlayUntilFinishDeclaresWinner [
@@ -660,10 +644,6 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
     game redoLastCardOn: ship1.
     self assert: (ship1 activeCards includes: card).
 ]
-
-{ #category : 'tests - instance' }
-
-{ #category : 'tests' }
 
 { #category : 'tests - instance' }
 GameTest >> testRegisterLapWhenCrossesFinishLine [
@@ -1000,24 +980,6 @@ GameTest >> testStatusForReturnsCorrectShipStatus [
 ]
 
 { #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
-
-{ #category : 'tests' }
 GameTest >> testWhenPlayTurnThenAdvancesShip [
 
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dice2 dicesGame boardGame game originalPosition newPosition |
@@ -1074,8 +1036,6 @@ GameTest >> testWhenShipDecidesToPassTurnThenSkipTurn [
 
     game playUntilFinish.
 ]
-
-{ #category : 'tests' }
 
 { #category : 'tests' }
 GameTest >> testWhenShipReachesGoalThenGameEnds [
