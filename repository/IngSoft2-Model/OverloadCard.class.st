@@ -26,6 +26,11 @@ OverloadCard >> initializeForShip: aShip [
     ^ self
 ]
 
+{ #category : 'accessing' }
+OverloadCard >> targetShip [
+    ^ targetShip
+]
+
 { #category : 'effects' }
 OverloadCard >> modifyRoll: aNumber forShip: aShip inGame: aGame [
 

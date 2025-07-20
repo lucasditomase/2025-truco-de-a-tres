@@ -14,7 +14,7 @@ AllyCardTest >> testActivateForAddsCardToOwnerAndAlly [
     card activateFor: owner inGame: nil.
     self assert: (owner activeCards includes: card).
     self assert: (ally activeCards includes: card).
-    self assert: (card instVarNamed: 'ownerShip') equals: owner.
+    self assert: card ownerShip equals: owner.
 ]
 
 { #category : 'tests' }
@@ -35,7 +35,7 @@ AllyCardTest >> testInitializeWithAllySetsAllyShip [
     | ally card |
     ally := Spaceship withName: 'Friend'.
     card := AllyCard new initializeWithAlly: ally.
-    self assert: (card instVarNamed: 'allyShip') equals: ally.
+    self assert: card allyShip equals: ally.
 ]
 
 { #category : 'tests' }
@@ -43,5 +43,5 @@ AllyCardTest >> testWithAllyInitializesAllyShip [
     | ally card |
     ally := Spaceship withName: 'Ally'.
     card := AllyCard withAlly: ally.
-    self assert: (card instVarNamed: 'allyShip') equals: ally.
+    self assert: card allyShip equals: ally.
 ]

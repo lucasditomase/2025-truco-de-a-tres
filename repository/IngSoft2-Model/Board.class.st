@@ -140,6 +140,11 @@ Board >> cells [
 
 ]
 
+{ #category : 'initialize' }
+Board >> cells: aCollection [
+    cells := aCollection
+]
+
 { #category : 'moves' }
 Board >> determineNewPositionFrom: aPosition after: steps [
     ^ self applyWormholeIfPresentAt: (aPosition + steps).
@@ -229,6 +234,12 @@ Board >> randomEffect [
 Board >> registerShips: someShips [
 
         positionManager := PositionManager forShips: someShips
+]
+
+{ #category : 'spaceships' }
+Board >> ships [
+    positionManager ifNil: [ ^ #() ].
+    ^ positionManager ships
 ]
 
 { #category : 'effects' }

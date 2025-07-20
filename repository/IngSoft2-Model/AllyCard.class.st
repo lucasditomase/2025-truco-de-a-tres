@@ -36,3 +36,13 @@ AllyCard >> initializeWithAlly: aShip [
     allyShip := aShip.
     ^ self
 ]
+
+{ #category : 'accessing' }
+AllyCard >> allyShip [
+    ^ allyShip
+]
+
+{ #category : 'accessing' }
+AllyCard >> ownerShip [
+    ^ ownerShip
+]

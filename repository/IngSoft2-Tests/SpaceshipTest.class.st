@@ -58,11 +58,11 @@ SpaceshipTest >> testDecreaseFuelByDoesNotGoBelowZero [
     | ship |
 
     ship := Spaceship withName: 'Fueler'.
-    ship instVarNamed: 'fuel' put: 5.
+    ship fuel: 5.
     ship decreaseFuelBy: 3.
-    self assert: (ship instVarNamed: 'fuel') equals: 2.
+    self assert: ship fuel equals: 2.
     ship decreaseFuelBy: 10.
-    self assert: (ship instVarNamed: 'fuel') equals: 0.
+    self assert: ship fuel equals: 0.
 ]
 
 { #category : 'tests - instance' }
@@ -99,10 +99,10 @@ SpaceshipTest >> testIncreaseMaxFuelByAddsAmount [
     | ship |
 
     ship := Spaceship withName: 'Booster'.
-    ship instVarNamed: 'maxFuel' put: 4.
+    ship maxFuel: 4.
     ship increaseMaxFuelBy: 3.
 
-    self assert: (ship instVarNamed: 'maxFuel') equals: 7.
+    self assert: ship maxFuel equals: 7.
 ]
 
 { #category : 'tests - instance' }
@@ -139,7 +139,7 @@ SpaceshipTest >> testLapAccessorReturnsCurrentValue [
     | ship |
 
     ship := Spaceship withName: 'Lapper'.
-    ship instVarNamed: 'lap' put: 2.
+    ship lap: 2.
 
     self assert: ship lap equals: 2.
 ]
@@ -278,7 +278,7 @@ SpaceshipTest >> testRestoreFuelRestoresToMax [
     ship := Spaceship withName: 'Tank'.
     ship restoreFuel.
 
-    self assert: (ship instVarNamed: 'fuel') equals: (ship instVarNamed: 'maxFuel').
+    self assert: ship fuel equals: ship maxFuel.
 ]
 
 { #category : 'tests - instance' }

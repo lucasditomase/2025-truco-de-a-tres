@@ -19,7 +19,7 @@ OverloadCardTest >> testForShipCreatesCardWithTargetShipSet [
     | ship card |
     ship := Spaceship withName: 'Target'.
     card := OverloadCard forShip: ship.
-    self assert: (card instVarNamed: 'targetShip') equals: ship.
+    self assert: card targetShip equals: ship.
 ]
 
 { #category : 'tests' }
@@ -27,7 +27,7 @@ OverloadCardTest >> testInitializeForShipSetsTargetShip [
     | ship card |
     ship := Spaceship withName: 'Alpha'.
     card := OverloadCard new initializeForShip: ship.
-    self assert: (card instVarNamed: 'targetShip') equals: ship.
+    self assert: card targetShip equals: ship.
 ]
 
 { #category : 'tests' }

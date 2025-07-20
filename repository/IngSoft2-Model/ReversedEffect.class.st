@@ -40,9 +40,7 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
         board moveShip: aShip backward: steps.
         ^ self ].
     original class = MoonWalkEffect ifTrue: [
-        ships := (board instVarNamed: 'positionManager')
-            ifNil: [ {} ]
-            ifNotNil: [ ((board instVarNamed: 'positionManager') instVarNamed: 'positions') keys ].
+        ships := board ships.
         ships do: [:ship | ship = aShip ifFalse: [ board moveShip: ship forward: 2 ]].
         ^ self ].
     original class = CardEffect ifTrue: [

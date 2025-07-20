@@ -21,14 +21,14 @@ TimeMachineCardTest >> testApplyEffectRestoresFuel [
     board := Board of: 5 andWormholeAt: {}.
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game instVarNamed: 'fuelHistory' put: (Dictionary new
+    game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 20 with: 10);
         at: ship2 put: (OrderedCollection with: 0 with: 0);
         yourself).
-    ship1 instVarNamed: 'fuel' put: 2.
+    ship1 fuel: 2.
     card := TimeMachineCard new.
     card applyEffectTo: ship1 inGame: game.
-    self assert: (ship1 instVarNamed: 'fuel') equals: 20.
+    self assert: ship1 fuel equals: 20.
 ]
 
 { #category : 'tests' }
@@ -41,16 +41,16 @@ TimeMachineCardTest >> testApplyEffectWithAlliesRestoresAll [
     board := Board of: 5 andWormholeAt: {}.
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game instVarNamed: 'fuelHistory' put: (Dictionary new
+    game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 20 with: 10);
         at: ship2 put: (OrderedCollection with: 15 with: 5);
         yourself).
-    ship1 instVarNamed: 'fuel' put: 2.
-    ship2 instVarNamed: 'fuel' put: 1.
+    ship1 fuel: 2.
+    ship2 fuel: 1.
     card := TimeMachineCard new.
     card applyEffectTo: ship1 inGame: game.
-    self assert: (ship1 instVarNamed: 'fuel') equals: 20.
-    self assert: (ship2 instVarNamed: 'fuel') equals: 15.
+    self assert: ship1 fuel equals: 20.
+    self assert: ship2 fuel equals: 15.
 ]
 
 { #category : 'tests' }
@@ -61,7 +61,7 @@ TimeMachineCardTest >> testApplyEffectRequiresTwoTurns [
     board := Board of: 5 andWormholeAt: {}.
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game instVarNamed: 'fuelHistory' put: (Dictionary new
+    game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 10);
         at: ship2 put: (OrderedCollection with: 0);
         yourself).
@@ -82,7 +82,7 @@ TimeMachineCardTest >> testApplyEffectWithAlliesRequiresTwoTurns [
     board := Board of: 5 andWormholeAt: {}.
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game instVarNamed: 'fuelHistory' put: (Dictionary new
+    game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 20 with: 10);
         at: ship2 put: (OrderedCollection with: 15);
         yourself).

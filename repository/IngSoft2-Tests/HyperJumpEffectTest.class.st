@@ -112,8 +112,8 @@ HyperJumpEffectTest >> testInitializeWithSetsJumpValuesAndIndex [
         values := #(3 5 7).
         effect := HyperJumpEffect new initializeWith: values.
 
-        self assert: (effect instVarNamed: 'jumpValues') equals: #(7 5 3).
-        self assert: (effect instVarNamed: 'currentIndex') equals: 1.
+        self assert: effect values equals: #(7 5 3).
+        self assert: effect currentIndex equals: 1.
 
 ]
 

@@ -16,6 +16,6 @@ TimeMachineCard >> applyEffectTo: aShip inGame: aGame [
             ifFalse: [ self error: 'Not enough turns to use Time Machine' ] ].
 
     ships do: [ :ship |
-        ship instVarNamed: 'fuel' put: ((aGame fuelHistoryFor: ship) first) ]
+        ship fuel: ((aGame fuelHistoryFor: ship) first) ]
 ]
 

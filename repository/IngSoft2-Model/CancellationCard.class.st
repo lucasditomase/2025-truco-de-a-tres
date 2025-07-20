@@ -24,3 +24,8 @@ CancellationCard >> initializeCancelling: aCard [
     cardToCancel := aCard.
     ^ self
 ]
+
+{ #category : 'accessing' }
+CancellationCard >> cardToCancel [
+    ^ cardToCancel
+]

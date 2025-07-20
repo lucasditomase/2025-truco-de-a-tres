@@ -174,7 +174,7 @@ CancellationCardTest >> testCancellingCreatesCardWithTarget [
     card := CancellationCard cancelling: target.
 
     self assert: card class equals: CancellationCard.
-    self assert: (card instVarNamed: 'cardToCancel') equals: target.
+    self assert: card cardToCancel equals: target.
 ]
 
 { #category : 'tests - instance' }
@@ -187,5 +187,5 @@ CancellationCardTest >> testInitializeCancellingSetsCardToCancel [
     returned := card initializeCancelling: target.
 
     self assert: returned == card.
-    self assert: (card instVarNamed: 'cardToCancel') equals: target.
+    self assert: card cardToCancel equals: target.
 ]

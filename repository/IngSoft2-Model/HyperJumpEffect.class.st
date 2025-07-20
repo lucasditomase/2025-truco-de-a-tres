@@ -104,3 +104,8 @@ HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
 HyperJumpEffect >> values [
     ^ jumpValues
 ]
+
+{ #category : 'operations' }
+HyperJumpEffect >> currentIndex [
+    ^ currentIndex
+]

@@ -192,7 +192,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         lastCardPlayed := nil.
         fuelHistory := Dictionary new.
         spaceShips do: [ :ship |
-            fuelHistory at: ship put: (OrderedCollection with: (ship instVarNamed: 'fuel')) ]
+            fuelHistory at: ship put: (OrderedCollection with: ship fuel) ]
 ]
 
 { #category : 'testing' }
@@ -349,13 +349,18 @@ Game >> recordFuelStartFor: aShip [
     | history |
     history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
 
-    history addLast: (aShip instVarNamed: 'fuel').
+    history addLast: aShip fuel.
     history size > 3 ifTrue: [ history removeFirst ]
 ]
 
 { #category : 'accessing' }
 Game >> fuelHistoryFor: aShip [
         ^ fuelHistory at: aShip ifAbsent: [ OrderedCollection new ]
+]
+
+{ #category : 'accessing' }
+Game >> fuelHistory: aDictionary [
+    fuelHistory := aDictionary
 ]
 
 { #category : 'process actions' }

@@ -463,12 +463,12 @@ GameTest >> testPassTurnRestoresFuelToMax [
     board := Board of: 5 andWormholeAt: {}.
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 instVarNamed: 'maxFuel' put: 5.
-    ship1 instVarNamed: 'fuel' put: 2.
+    ship1 maxFuel: 5.
+    ship1 fuel: 2.
 
     game passTurn.
 
-    self assert: (ship1 instVarNamed: 'fuel') equals: (ship1 instVarNamed: 'maxFuel').
+    self assert: ship1 fuel equals: ship1 maxFuel.
     self assert: game currentShip equals: ship2.
 ]
 
@@ -898,14 +898,14 @@ GameTest >> testRewardOnMaxRollChangesFuel [
     otherShip := Spaceship withName: 'Other'.
     dice := DiceCup with: { Die withSides: 1 }.
     board := Board of: 5 andWormholeAt: #().
-    ship instVarNamed: 'maxFuel' put: 5.
-    ship instVarNamed: 'fuel' put: 5.
+    ship maxFuel: 5.
+    ship fuel: 5.
     game := Game startWithShips: { ship. otherShip } board: board dice: dice laps: 1.
-    initialMax := ship instVarNamed: 'maxFuel'.
-    initialFuel := ship instVarNamed: 'fuel'.
+    initialMax := ship maxFuel.
+    initialFuel := ship fuel.
     game rollAndMoveCurrentShip.
-    self assert: ((ship instVarNamed: 'maxFuel') = (initialMax + 1)
-    or: [ (ship instVarNamed: 'fuel') = (initialFuel - 1) ]).
+    self assert: ((ship maxFuel) = (initialMax + 1)
+    or: [ (ship fuel) = (initialFuel - 1) ]).
 ]
 
 { #category : 'tests' }

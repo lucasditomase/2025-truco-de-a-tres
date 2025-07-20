@@ -26,7 +26,7 @@ BoardTest >> testApplyEffectToDoesNothingIfNoEffect [
     board := Board of: 5 andWormholeAt: {}.
 
     cells := (1 to: 5) collect: [:i | nil].
-    board instVarNamed: 'cells' put: cells asArray.
+    board cells: cells asArray.
     board registerShips: { ship }.
 
     board applyEffectTo: ship.
@@ -72,9 +72,9 @@ BoardTest >> testAtomicBombEffectResetsPositionsButKeepsLaps [
         ship2 moveTo: 3.
         ship3 moveTo: 9.
 
-        ship1 instVarNamed: 'lap' put: 1.
-        ship2 instVarNamed: 'lap' put: 2.
-        ship3 instVarNamed: 'lap' put: 3.
+        ship1 lap: 1.
+        ship2 lap: 2.
+        ship3 lap: 3.
 
         allShips := {
                 ship1.
@@ -231,7 +231,7 @@ BoardTest >> testEffectAtHandlesAllCases [
 
     board := Board of: 10 andWormholeAt: {}.
     customEffect := BlackHoleEffect new.
-    board instVarNamed: 'cells' put: (Dictionary new).
+    board cells: (Dictionary new).
     board cells at: 5 put: customEffect.
     board cells at: 8 put: NoEffect new.
 
@@ -247,7 +247,7 @@ BoardTest >> testEffectAtReturnsCorrectEffect [
 
     board := Board of: 10 andWormholeAt: {}.
     customEffect := BlackHoleEffect new.
-    board instVarNamed: 'cells' put: (Dictionary new).
+    board cells: (Dictionary new).
     board cells at: 5 put: customEffect.
     board cells at: 8 put: NoEffect new.
 
@@ -267,7 +267,7 @@ BoardTest >> testHyperGravityAllowsEntryWhenRollIsSufficient [
 
         effect := HyperGravityEffect new.
         effect requiredRoll: 4.
-        board instVarNamed: 'cells' put: (Dictionary new).
+        board cells: (Dictionary new).
         board cells at: 4 put: effect.
         board cells at: 3 put: NoEffect new.
         board registerShips: { ship }.
