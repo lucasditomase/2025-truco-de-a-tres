@@ -5,12 +5,12 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 DistanceUnit >> asLightYears: aNumber [
     self subclassResponsibility
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 DistanceUnit >> asParsecs: aNumber [
     self subclassResponsibility
 ]

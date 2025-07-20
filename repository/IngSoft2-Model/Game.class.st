@@ -8,7 +8,6 @@ Class {
         'winner',
         'turnManager',
         'wantsToPassTurn',
-        'lappedShips',
         'totalLaps',
         'state',
         'lastSteps',

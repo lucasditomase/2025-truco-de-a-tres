@@ -57,7 +57,7 @@ Distance >> unit [
     ^ unit
 ]
 
-{ #category : 'accessing' }
+{ #category : 'evaluating' }
 Distance >> value [
     ^ value
 ]

@@ -331,7 +331,7 @@ GameTest >> testIsGameOverReturnsTrueWhenWinnerExists [
     game playUntilFinish.
 
     game whenFinishedDo: [ :w | self assert: true ]
-      whenInProgressDo: [ self fail: 'Expected the game to be over' ].
+    whenInProgressDo: [ self fail: 'Expected the game to be over' ].
 ]
 
 { #category : 'tests - instance' }
@@ -461,7 +461,7 @@ GameTest >> testPlayTurnRaisesErrorWhenGameIsOver [
     game playTurn.
 
     game whenFinishedDo: [ :w | self assert: true ]
-      whenInProgressDo: [ self fail: 'Expected game to be over' ].
+    whenInProgressDo: [ self fail: 'Expected game to be over' ].
 
     self should: [ game playTurn ] raise: Error.
 
@@ -502,7 +502,7 @@ GameTest >> testPlayUntilFinishEndsWhenWinnerIsFound [
     game playUntilFinish.
 
     game whenFinishedDo: [ :w | self assert: true ]
-      whenInProgressDo: [ self fail: 'Expected game to be finished' ].
+    whenInProgressDo: [ self fail: 'Expected game to be finished' ].
 ]
 
 { #category : 'tests' }
@@ -806,8 +806,8 @@ GameTest >> testShipStatusReturnsCurrentLap [
     spaceShip1 := Spaceship withName: 'Ship Num1'.
     spaceShip2 := Spaceship withName: 'Ship Num2'.
     spaceShipsGame := OrderedCollection
-          with: spaceShip1
-          with: spaceShip2.
+        with: spaceShip1
+        with: spaceShip2.
 
     boardGame := Board of: 2 andWormholeAt: #(  ).
 
@@ -839,8 +839,8 @@ GameTest >> testShipStatusReturnsCurrentPosition [
     spaceShip1 := Spaceship withName: 'Ship Num1'.
     spaceShip2 := Spaceship withName: 'Ship Num2'.
     spaceShipsGame := OrderedCollection
-          with: spaceShip1
-          with: spaceShip2.
+        with: spaceShip1
+        with: spaceShip2.
 
     boardGame := Board of: 2 andWormholeAt: #(  ).
 
@@ -1059,7 +1059,7 @@ GameTest >> testWhenShipReachesGoalThenGameEnds [
     game playTurn.
 
     game whenFinishedDo: [ :w | self assert: true ]
-     whenInProgressDo: [ self fail: 'Expected game to be finished' ].
+    whenInProgressDo: [ self fail: 'Expected game to be finished' ].
 ]
 
 { #category : 'tests' }
@@ -1076,7 +1076,7 @@ GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [
     boardGame := Board of: 3 andWormholeAt: #(  ).
 
     totalLaps := 3.
-    
+
     game := Game
             startWithShips: spaceShipsGame
             board: boardGame
@@ -1118,7 +1118,7 @@ GameTest >> testWhenSpaceShipEndsTurnThenRotatesPlayerTurn [
 
     [ actualSequence size < expectedSequence size and: (
     game whenFinishedDo: [ :w | false ]
-     whenInProgressDo: [ true ]) ]
+    whenInProgressDo: [ true ]) ]
     whileTrue: [
     actualSequence add: game currentShip.
     game playTurn
