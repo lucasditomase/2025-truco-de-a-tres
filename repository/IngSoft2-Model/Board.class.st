@@ -106,6 +106,7 @@ Board >> applyEffectTo: aSpaceship [
     | effect |
 
     effect := self effectAt: (self positionOf: aSpaceship).
+    effect ifNil: [ ^ self ].
     effect applyTo: aSpaceship inBoard: self.
 ]
 

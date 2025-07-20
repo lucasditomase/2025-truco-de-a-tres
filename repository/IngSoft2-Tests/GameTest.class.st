@@ -649,8 +649,8 @@ GameTest >> testPlayUntilFinishDeclaresWinner [
 GameTest >> testPlayUntilFinishEndsWhenWinnerIsFound [
     | ship1 ship2 game dice |
 
-    ship1 := Spaceship withName: 'Rápida'.
-    ship2 := Spaceship withName: 'Lenta'.
+    ship1 := Spaceship withName: 'Fast'.
+    ship2 := Spaceship withName: 'Slow'.
     dice := DiceCup with: { Die withSides: 6 }.
 
     game := Game
