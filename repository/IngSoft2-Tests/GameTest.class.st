@@ -82,7 +82,7 @@ GameTest >> testAdvanceTurnRotatesToNextShip [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testBoardAccessorReturnsBoard [
     | ship1 ship2 board dice game |
     ship1 := Spaceship withName: 'A'.
@@ -97,7 +97,7 @@ GameTest >> testBoardAccessorReturnsBoard [
     self assert: game board equals: board.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testCurrentPlayerIndexMatchesTurnIndex [
     | ship1 ship2 board dice game |
     ship1 := Spaceship withName: 'One'.
@@ -112,7 +112,7 @@ GameTest >> testCurrentPlayerIndexMatchesTurnIndex [
     self assert: game currentPlayerIndex equals: game currentTurnIndex.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testCurrentShipReturnsCorrectShip [
 
     | ship1 ship2 board dice game |
@@ -133,7 +133,7 @@ GameTest >> testCurrentShipReturnsCorrectShip [
     self assert: game currentShip equals: ship2.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testDieAccessorReturnsDiceCup [
     | ship1 ship2 board dice game |
     ship1 := Spaceship withName: 'S1'.
@@ -331,7 +331,7 @@ GameTest >> testHandlePenaltyOrPassIfNeededReturnsTrueWhenShipWantsToPassTurn [
     self assert: result equals: true.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
 
     | ship1 ship2 board dice game |
@@ -353,7 +353,7 @@ GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
     self deny: (game hasWonByLaps: ship1).
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testHasWonByLapsReturnsTrueWhenEnoughLaps [
 
     | ship1 ship2 board dice game |
@@ -412,7 +412,7 @@ GameTest >> testIsPenalizedDetectsPenalizedShip [
     self deny: (game isPenalized: ship2).
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testLastCardPlayedAccessors [
     | ship1 ship2 board dice game card |
     ship1 := Spaceship withName: 'A'.
@@ -493,7 +493,7 @@ GameTest >> testPenalizeAddsPenalizedShip [
     self assert: (game isPenalized: ship1).
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testPenaltyShipReturnsPenalizedShipsCollection [
     | ship1 ship2 board dice game |
     ship1 := Spaceship withName: 'Pen'.
@@ -645,7 +645,7 @@ GameTest >> testPlayUntilFinishDeclaresWinner [
     whenInProgressDo: [ self fail: 'Expected game to be finished' ].
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testPlayUntilFinishEndsWhenWinnerIsFound [
     | ship1 ship2 game dice |
 
@@ -805,7 +805,7 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
     self assert: (ship1 activeCards includes: card).
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testReducePenaltyDecreasesTurnCount [
 
     | ship1 ship2 board dice game |
@@ -847,7 +847,7 @@ GameTest >> testReducePenaltyRemovesPenaltyEventually [
 
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testRegisterLapWhenCrossesFinishLine [
 
     | ship1 ship2 board dice game |
@@ -925,7 +925,7 @@ GameTest >> testRollAndMoveCurrentShipMovesShipCorrectly [
     self assert: ship position equals: originalPosition + 1.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testSetAndQueryWantsToPassTurn [
 
     | ship1 ship2 board dice game |
@@ -967,7 +967,7 @@ GameTest >> testShipPositionsReflectCurrentPositionsOfAllShips [
     self assert: pos2 position equals: 0.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testShipStatusReturnsCorrectValues [
 
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game status |
@@ -1074,7 +1074,7 @@ GameTest >> testShipsStartWithTwoCards [
     self assert: ship2 cards size equals: 2.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'tests - instance' }
 GameTest >> testSpaceShipsAccessorReturnsShips [
     | ship1 ship2 board dice game |
     ship1 := Spaceship withName: 'A'.
