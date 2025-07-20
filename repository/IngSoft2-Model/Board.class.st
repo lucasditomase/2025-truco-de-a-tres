@@ -52,17 +52,10 @@ Board class >> of: anAmountOfCells length: parsecLength lengthLightYears: lightY
     self validateCellCount: anAmountOfCells.
     self validateWormholes: positions.
 
-    parsecLength
-        ifNil: [
-            ^ self
-                of: anAmountOfCells
-                lengthLightYears: lightYears
-                andWormholeAt: positions ]
-        ifNotNil: [
-            ^ self
-                of: anAmountOfCells
-                length: parsecLength
-                andWormholeAt: positions ]
+    ^ self
+        of: anAmountOfCells
+        length: parsecLength
+        andWormholeAt: positions
 ]
 
 { #category : 'initialize' }
@@ -86,10 +79,8 @@ Board class >> validateCellCount: aCount [
 
 { #category : 'initialize' }
 Board class >> validateLengthConsistencyBetweenParsecs: parsecLength andLightYears: lightYears [
-    (parsecLength notNil and: [ lightYears notNil ]) ifTrue: [
-        (Distance parsecs: parsecLength) asLightYears = lightYears ifFalse: [
-            self error: 'Length mismatch between parsecs and light years'
-        ]
+    (Distance parsecs: parsecLength) asLightYears = lightYears ifFalse: [
+        self error: 'Length mismatch between parsecs and light years'
     ]
 ]
 
@@ -156,9 +147,7 @@ Board >> drawCard [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    | effect |
-    effect := cells at: aPosition ifAbsent: [ NullEffect new ].
-    ^ effect ifNil: [ NullEffect new ] ifNotNil: [ effect ]
+    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
 ]
 
 { #category : 'initialize' }

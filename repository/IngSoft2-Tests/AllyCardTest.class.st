@@ -27,7 +27,7 @@ AllyCardTest >> testAllyForReturnsCorrectShip [
     card activateFor: owner inGame: nil.
     self assert: (card allyFor: owner) equals: ally.
     self assert: (card allyFor: ally) equals: owner.
-    self assert: (card allyFor: other) isNil.
+    self assert: (card allyFor: other) isNullShip.
 ]
 
 { #category : 'tests' }

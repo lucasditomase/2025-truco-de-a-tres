@@ -442,5 +442,5 @@ Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
 { #category : 'accessing' }
 Game >> winner [
 
-    ^ state whenFinishedDo: [ :w | w ] whenInProgressDo: [ nil ]
+    ^ state whenFinishedDo: [ :w | w ] whenInProgressDo: [ NullSpaceship new ]
 ]

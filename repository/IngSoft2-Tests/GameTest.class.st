@@ -189,7 +189,7 @@ GameTest >> testFindPenaltyForReturnsExistingPenalty [
     laps: 1.
     game penalize: ship1 forTurns: 2.
 
-    self assert: (game stateOf: ship1) notNil.
+    self assert: (game isPenalized: ship1).
 
 ]
 
@@ -1270,7 +1270,7 @@ GameTest >> testWhenGameCorrectlyCreatedThenNotNil [
     dice: dicesGame
     laps: 1.
 
-    self assert: game notNil
+    self assert: game class = Game
 ]
 
 { #category : 'tests' }
@@ -1617,7 +1617,7 @@ GameTest >> testWinnerReturnsNilWhenGameInProgress [
     board := Board of: 3 andWormholeAt: {}.
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 2.
-    self assert: game winner isNil.
+    self assert: (game winner) isNullShip.
 ]
 
 { #category : 'tests' }
