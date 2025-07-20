@@ -59,39 +59,39 @@ BoardTest >> testApplyWormholeIfPresentReturnsSameWhenAbsent [
 { #category : 'tests - instance' }
 BoardTest >> testAtomicBombEffectResetsPositionsButKeepsLaps [
 
-        | effect ship1 ship2 ship3 allShips board |
+    | effect ship1 ship2 ship3 allShips board |
 
-        effect := AtomicBombEffect new.
-        board := Board of: 5 andWormholeAt: {}.
+    effect := AtomicBombEffect new.
+    board := Board of: 5 andWormholeAt: {}.
 
-        ship1 := Spaceship withName: 'Red'.
-        ship2 := Spaceship withName: 'Blue'.
-        ship3 := Spaceship withName: 'Green'.
+    ship1 := Spaceship withName: 'Red'.
+    ship2 := Spaceship withName: 'Blue'.
+    ship3 := Spaceship withName: 'Green'.
 
-        ship1 moveTo: 6.
-        ship2 moveTo: 3.
-        ship3 moveTo: 9.
+    ship1 moveTo: 6.
+    ship2 moveTo: 3.
+    ship3 moveTo: 9.
 
-        ship1 lap: 1.
-        ship2 lap: 2.
-        ship3 lap: 3.
+    ship1 lap: 1.
+    ship2 lap: 2.
+    ship3 lap: 3.
 
-        allShips := {
-                ship1.
-                ship2.
-                ship3.
-        }.
+    allShips := {
+        ship1.
+        ship2.
+        ship3.
+    }.
 
-        board registerShips: allShips.
+    board registerShips: allShips.
 
-        effect applyTo: ship2 inContextOf: allShips inBoard: board.
+    effect applyTo: ship2 inContextOf: allShips inBoard: board.
 
-        self assert: ship1 position equals: 0.
-        self assert: ship2 position equals: 0.
-        self assert: ship3 position equals: 0.
-        self assert: ship1 lap equals: 1.
-        self assert: ship2 lap equals: 2.
-        self assert: ship3 lap equals: 3.
+    self assert: ship1 position equals: 0.
+    self assert: ship2 position equals: 0.
+    self assert: ship3 position equals: 0.
+    self assert: ship1 lap equals: 1.
+    self assert: ship2 lap equals: 2.
+    self assert: ship3 lap equals: 3.
 ]
 
 { #category : 'tests - instance' }
@@ -437,30 +437,30 @@ BoardTest >> testLapIncrementsWhenPassingLastCell [
 { #category : 'tests - instance' }
 BoardTest >> testMoonWalkEffectMovesOtherSpaceshipsBackwards [
 
-        | dice1 effect ship1 ship2 ship3 allShips board |
+    | dice1 effect ship1 ship2 ship3 allShips board |
 
-        dice1 := Die withSides: 6.
+    dice1 := Die withSides: 6.
 
-        effect := MoonWalkEffect new.
+    effect := MoonWalkEffect new.
 
-        ship1 := Spaceship withName: 'Player1'.
-        ship2 := Spaceship withName: 'Player2'.
-        ship3 := Spaceship withName: 'Player3'.
+    ship1 := Spaceship withName: 'Player1'.
+    ship2 := Spaceship withName: 'Player2'.
+    ship3 := Spaceship withName: 'Player3'.
 
-        board := Board of: 5 andWormholeAt: {}.
+    board := Board of: 5 andWormholeAt: {}.
 
-        ship1 moveTo: 5.
-        ship2 moveTo: 7.
-        ship3 moveTo: 3.
+    ship1 moveTo: 5.
+    ship2 moveTo: 7.
+    ship3 moveTo: 3.
 
-        allShips := { ship1. ship2. ship3 }.
-        board registerShips: allShips.
+    allShips := { ship1. ship2. ship3 }.
+    board registerShips: allShips.
 
-        effect applyTo: ship2 inContextOf: allShips inBoard: board.
+    effect applyTo: ship2 inContextOf: allShips inBoard: board.
 
-        self assert: ship2 position equals: 7.
-        self assert: ship1 position equals: 3.
-        self assert: ship3 position equals: 1.
+    self assert: ship2 position equals: 7.
+    self assert: ship1 position equals: 3.
+    self assert: ship3 position equals: 1.
 ]
 
 { #category : 'tests - instance' }
