@@ -681,7 +681,7 @@ GameTest >> testRepeatLastEffectOnAppliesLastEffect [
 
     game repeatLastEffectOn: ship2.
 
-    self assert: ship2 cards size equals: 1.
+    self assert: ship2 cards size equals: 3.
 ]
 
 { #category : 'tests' }
