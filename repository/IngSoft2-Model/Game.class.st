@@ -173,13 +173,6 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
     dice := someDices.
     totalLaps := aNumberLaps.
 
-    | initialFuel |
-    initialFuel := dice maxRoll * 2.
-    spaceShips do: [:ship |
-        (ship instVarNamed: 'maxFuel') = 0 ifTrue: [
-            ship instVarNamed: 'maxFuel' put: initialFuel.
-            ship instVarNamed: 'fuel' put: initialFuel ] ].
-
     turnManager := TurnManager withShips: someShips.
 
     wantsToPassTurn := Dictionary new.
