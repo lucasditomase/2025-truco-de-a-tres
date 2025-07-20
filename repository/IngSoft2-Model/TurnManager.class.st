@@ -17,7 +17,6 @@ TurnManager class >> withShips: someShips [
 
 { #category : 'accessing' }
 TurnManager >> advanceTurn [
-
     currentIndex := currentIndex + 1.
     currentIndex > ships size ifTrue: [ currentIndex := 1 ].
     turn := turn + 1
@@ -25,19 +24,16 @@ TurnManager >> advanceTurn [
 
 { #category : 'accessing' }
 TurnManager >> currentShip [
-
     ^ ships at: currentIndex
 ]
 
 { #category : 'accessing' }
 TurnManager >> currentTurnIndex [
-
     ^ currentIndex
 ]
 
 { #category : 'initialize' }
 TurnManager >> initializeWithShips: someShips [
-
     ships := someShips.
     currentIndex := 1.
     turn := 1.
@@ -46,6 +42,5 @@ TurnManager >> initializeWithShips: someShips [
 
 { #category : 'accessing' }
 TurnManager >> turn [
-
     ^ turn
 ]

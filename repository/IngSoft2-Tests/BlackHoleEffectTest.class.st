@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests' }
 BlackHoleEffectTest >> testApplyToDoesNotGoBelowZero [
-
     | ship effect |
 
     ship := Spaceship withName: 'Boundary'.
@@ -21,7 +20,6 @@ BlackHoleEffectTest >> testApplyToDoesNotGoBelowZero [
 
 { #category : 'tests' }
 BlackHoleEffectTest >> testApplyToMovesShipBackBy4 [
-
     | ship effect |
 
     ship := Spaceship withName: 'Voyager'.

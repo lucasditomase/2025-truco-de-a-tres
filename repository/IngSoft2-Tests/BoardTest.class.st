@@ -7,7 +7,6 @@ Class {
 
 { #category : 'asserting' }
 BoardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-
     self
         should: anErrorBlock
         raise: anErrorClass
@@ -17,7 +16,6 @@ BoardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMess
 
 { #category : 'tests - instance' }
 BoardTest >> testApplyEffectToDoesNothingIfNoEffect [
-
     | board ship cells |
 
     ship := Spaceship withName: 'Ship'.
@@ -32,12 +30,10 @@ BoardTest >> testApplyEffectToDoesNothingIfNoEffect [
     board applyEffectTo: ship.
 
     self assert: ship position equals: 2.
-
 ]
 
 { #category : 'tests - instance' }
 BoardTest >> testApplyWormholeIfPresentReturnsExit [
-
     | board wormhole |
 
     wormhole := Wormhole from: 2 to: 7.
@@ -48,7 +44,6 @@ BoardTest >> testApplyWormholeIfPresentReturnsExit [
 
 { #category : 'tests - instance' }
 BoardTest >> testApplyWormholeIfPresentReturnsSameWhenAbsent [
-
     | board |
 
     board := Board of: 10 andWormholeAt: {}.
@@ -58,7 +53,6 @@ BoardTest >> testApplyWormholeIfPresentReturnsSameWhenAbsent [
 
 { #category : 'tests - instance' }
 BoardTest >> testAtomicBombEffectResetsPositionsButKeepsLaps [
-
     | effect ship1 ship2 ship3 allShips board |
 
     effect := AtomicBombEffect new.
@@ -162,7 +156,6 @@ BoardTest >> testBoardInitializesCorrectNumberOfEffects [
     board := Board of: 20 andWormholeAt: OrderedCollection new.
 
     self assert: board cells size equals: 20.
-
 ]
 
 { #category : 'tests - instance' }
@@ -198,7 +191,6 @@ BoardTest >> testCanEnterHyperGravityCellWithSufficientRoll [
     board cells at: 3 put: effect.
 
     self assert: (effect allowsEntryWithRoll: 5).
-
 ]
 
 { #category : 'tests - instance' }
@@ -209,7 +201,6 @@ BoardTest >> testCannotEnterHyperGravityCellWithLowRoll [
     board cells at: 3 put: effect.
 
     self deny: (effect allowsEntryWithRoll: 2).
-
 ]
 
 { #category : 'tests - instance' }
@@ -257,7 +248,6 @@ BoardTest >> testEffectAtReturnsCorrectEffect [
 
 { #category : 'tests - instance' }
 BoardTest >> testHyperGravityAllowsEntryWhenRollIsSufficient [
-
     | board ship effect newPosition |
 
         board := Board of: 5 andWormholeAt: #().
@@ -286,7 +276,6 @@ BoardTest >> testHyperGravityEffectHasCorrectDefaultRoll [
     | effect |
     effect := HyperGravityEffect new.
     self assert: effect requiredRoll equals: 4.
-
 ]
 
 { #category : 'tests - instance' }
@@ -331,7 +320,6 @@ BoardTest >> testHyperJumpEffectJumpsShipForward [
 
 { #category : 'tests - instance' }
 BoardTest >> testInvalidBoardCellCountRaisesError [
-
     self
         should: [Board of: 0 andWormholeAt: #(). ]
         raise: Error
@@ -340,7 +328,6 @@ BoardTest >> testInvalidBoardCellCountRaisesError [
 
 { #category : 'tests - instance' }
 BoardTest >> testInvalidBoardWithInvalidWormholeRaisesError [
-
     | fakeWormhole |
     fakeWormhole := Object new.
 
@@ -352,7 +339,6 @@ BoardTest >> testInvalidBoardWithInvalidWormholeRaisesError [
 
 { #category : 'tests - instance' }
 BoardTest >> testIsGoalReached [
-
     | board |
 
     board := Board of: 10 andWormholeAt: #().
@@ -361,12 +347,10 @@ BoardTest >> testIsGoalReached [
     self assert: (board isPositionReachedAt: 11).
 
     self deny: (board isPositionReachedAt: 9).
-
 ]
 
 { #category : 'tests - instance' }
 BoardTest >> testIsGoalReachedAtReturnsFalseIfPositionLower [
-
     | board |
 
     board := Board of: 5 andWormholeAt: {}.
@@ -376,7 +360,6 @@ BoardTest >> testIsGoalReachedAtReturnsFalseIfPositionLower [
 
 { #category : 'tests - instance' }
 BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionEqual [
-
     | board |
 
     board := Board of: 5 andWormholeAt: {}.
@@ -386,7 +369,6 @@ BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionEqual [
 
 { #category : 'tests - instance' }
 BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionGreater [
-
     | board |
 
     board := Board of: 5 andWormholeAt: {}.
@@ -396,7 +378,6 @@ BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionGreater [
 
 { #category : 'tests - instance' }
 BoardTest >> testLapDoesNotIncrementWhenStayingWithinBounds [
-
     | board ship newPosition |
 
     board := Board of: 10 andWormholeAt: OrderedCollection new.
@@ -408,12 +389,10 @@ BoardTest >> testLapDoesNotIncrementWhenStayingWithinBounds [
 
     self assert: newPosition equals: 7.
     self assert: ship lap equals: 0.
-
 ]
 
 { #category : 'tests - instance' }
 BoardTest >> testLapIncrementsWhenPassingLastCell [
-
     | dice1 board ship newPosition |
 
     dice1 := Die withSides: 6.
@@ -431,12 +410,10 @@ BoardTest >> testLapIncrementsWhenPassingLastCell [
     self assert:
         (ShipStatus for: ship position: 8 laps: 0 penalized: false) lapCount
             equals: 0.
-
 ]
 
 { #category : 'tests - instance' }
 BoardTest >> testMoonWalkEffectMovesOtherSpaceshipsBackwards [
-
     | dice1 effect ship1 ship2 ship3 allShips board |
 
     dice1 := Die withSides: 6.
@@ -522,7 +499,6 @@ BoardTest >> testPositionWithoutWormholeReturnsSame [
     board := Board of: 10 andWormholeAt: #().
 
     self assert: (board applyWormholeIfPresentAt: 5) equals: 5.
-
 ]
 
 { #category : 'tests - instance' }
@@ -588,5 +564,4 @@ BoardTest >> testWormholeTransportsCorrectly [
 
     self assert: (board applyWormholeIfPresentAt: 2) equals: 10.
     self assert: (board applyWormholeIfPresentAt: 10) equals: 2.
-
 ]

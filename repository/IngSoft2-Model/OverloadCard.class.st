@@ -15,13 +15,11 @@ OverloadCard class >> forShip: aShip [
 
 { #category : 'playing' }
 OverloadCard >> activateFor: aShip inGame: aGame [
-
     targetShip addActiveCard: self
 ]
 
 { #category : 'initialization' }
 OverloadCard >> initializeForShip: aShip [
-
     targetShip := aShip.
     ^ self
 ]
@@ -33,7 +31,6 @@ OverloadCard >> targetShip [
 
 { #category : 'effects' }
 OverloadCard >> modifyRoll: aNumber forShip: aShip inGame: aGame [
-
     aShip = targetShip ifTrue: [ ^ aNumber - 2 ].
     ^ aNumber
 ]

@@ -11,7 +11,6 @@ Class {
 
 { #category : 'initialization' }
 HyperJumpEffect class >> withLightYearValues: aCollection [
-
     ^ self new
         initializeWith:
             (aCollection collect: [ :each | Distance lightYears: each ]);
@@ -20,7 +19,6 @@ HyperJumpEffect class >> withLightYearValues: aCollection [
 
 { #category : 'initialization' }
 HyperJumpEffect class >> withValues: aCollection [
-
     ^ self new
         initializeWith: aCollection;
         yourself
@@ -33,7 +31,6 @@ HyperJumpEffect >> allowsEntryWithRoll: aRoll [
 
 { #category : 'operations' }
 HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
-
     | parsecs steps |
     parsecs := self nextJumpValue.
     steps := (parsecs / aBoard totalLengthInParsecs * aBoard cellCount)
@@ -64,14 +61,12 @@ HyperJumpEffect >> convertAndSortValues: aCollection [
 
 { #category : 'operations' }
 HyperJumpEffect >> initializeWith: aCollection [
-
     jumpValues := self convertAndSortValues: aCollection.
     currentIndex := 1
 ]
 
 { #category : 'operations' }
 HyperJumpEffect >> nextJumpValue [
-
     | value |
     value := jumpValues at: currentIndex.
 
@@ -89,14 +84,12 @@ HyperJumpEffect >> peekJumpValue [
 
 { #category : 'operations' }
 HyperJumpEffect >> resetJumpIndex [
-
     currentIndex := 1.
     jumpValues := self sortDescendingPreservingOrder: jumpValues
 ]
 
 { #category : 'private' }
 HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
-
     ^ aCollection sort: [ :a :b | a > b ]
 ]
 

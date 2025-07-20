@@ -16,7 +16,6 @@ AllyCard class >> withAlly: aShip [
 
 { #category : 'playing' }
 AllyCard >> activateFor: aShip inGame: aGame [
-
     ownerShip := aShip.
     ownerShip addActiveCard: self.
     allyShip addActiveCard: self
@@ -24,7 +23,6 @@ AllyCard >> activateFor: aShip inGame: aGame [
 
 { #category : 'effects' }
 AllyCard >> allyFor: aShip [
-
     aShip = ownerShip ifTrue: [ ^ allyShip ].
     aShip = allyShip ifTrue: [ ^ ownerShip ].
     ^ NullSpaceship new
@@ -32,7 +30,6 @@ AllyCard >> allyFor: aShip [
 
 { #category : 'initialization' }
 AllyCard >> initializeWithAlly: aShip [
-
     allyShip := aShip.
     ^ self
 ]

@@ -10,14 +10,12 @@ Class {
 
 { #category : 'initialize' }
 Die class >> validateMinimumSides: aNumberOfSides [
-
     (aNumberOfSides isInteger and: [ aNumberOfSides >= 1 ]) ifFalse: [
         self error: 'Die must have at least one side.' ]
 ]
 
 { #category : 'initialize' }
 Die class >> withSides: aNumberOfSides [
-
     self validateMinimumSides: aNumberOfSides.
 
     ^ self new initializeWithSides: aNumberOfSides
@@ -25,18 +23,15 @@ Die class >> withSides: aNumberOfSides [
 
 { #category : 'initialize' }
 Die >> initializeWithSides: aNumberOfSides [
-
     sides := aNumberOfSides.
 ]
 
 { #category : 'method' }
 Die >> roll [
-
     ^ sides atRandom
 ]
 
 { #category : 'initialize' }
 Die >> sides [
-
     ^ sides
 ]

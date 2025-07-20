@@ -41,7 +41,6 @@ EffectDecorator >> applyTo: aShip inBoard: aBoard [
 
 { #category : 'instance creation' }
 EffectDecorator >> decorate: anEffect [
-
     wrapped := anEffect.
 
     ^ self.

@@ -22,32 +22,27 @@ PenalizedShipState class >> validateTurns: aNumber [
 
 { #category : 'penalty' }
 PenalizedShipState >> decreaseTurns [
-
     turnsRemaining := turnsRemaining - 1
 ]
 
 { #category : 'penalty' }
 PenalizedShipState >> hasPenalty [
-
     ^ turnsRemaining > 0
 ]
 
 { #category : 'initialization' }
 PenalizedShipState >> initializeForTurns: aNumber [
-
     turnsRemaining := aNumber.
     ^ self
 ]
 
 { #category : 'penalty' }
 PenalizedShipState >> isPenalized [
-
     ^ true
 ]
 
 { #category : 'penalty' }
 PenalizedShipState >> penalizeFor: aNumber [
-
     self class validateTurns: aNumber.
     turnsRemaining := aNumber.
     ^ self
@@ -63,19 +58,16 @@ PenalizedShipState >> reducePenalty [
 
 { #category : 'penalty' }
 PenalizedShipState >> turnsRemaining [
-
     ^ turnsRemaining
 ]
 
 { #category : 'penalty' }
 PenalizedShipState >> turnsRemaining: aNumber [
-
     turnsRemaining := aNumber
 ]
 
 { #category : 'enumerating' }
 PenalizedShipState >> whenPenalizedDo: penalizedBlock whenNormalDo: normalBlock [
-
     ^ penalizedBlock value
 ]
 

@@ -7,7 +7,6 @@ Class {
 
 { #category : 'asserting' }
 AdvanceCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-
     self
         should: anErrorBlock
         raise: anErrorClass

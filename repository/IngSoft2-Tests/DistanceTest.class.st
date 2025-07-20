@@ -51,7 +51,6 @@ DistanceTest >> testLightYearsClassMethodCreatesLightYearsDistance [
 
 { #category : 'tests - instance' }
 DistanceTest >> testLightYearsInitializationFailsForInvalidNumber [
-
     self should: [ Distance lightYears: -5 ] raise: Error.
     self should: [ Distance lightYears: 'foo' ] raise: Error.
     self should: [ Distance lightYears: 0 ] raise: Error
@@ -67,7 +66,6 @@ DistanceTest >> testParsecsClassMethodCreatesParsecsDistance [
 
 { #category : 'tests - instance' }
 DistanceTest >> testParsecsInitializationFailsForInvalidNumber [
-
     self should: [ Distance parsecs: -1 ] raise: Error.
     self should: [ Distance parsecs: 'bar' ] raise: Error.
     self should: [ Distance parsecs: 0 ] raise: Error

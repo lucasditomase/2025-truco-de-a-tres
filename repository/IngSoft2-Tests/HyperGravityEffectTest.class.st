@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testAllowsEntryWithRollFalseWhenLow [
-
     | effect |
 
     effect := HyperGravityEffect new.
@@ -18,7 +17,6 @@ HyperGravityEffectTest >> testAllowsEntryWithRollFalseWhenLow [
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testAllowsEntryWithRollTrueWhenEnough [
-
     | effect |
 
     effect := HyperGravityEffect new.
@@ -30,7 +28,6 @@ HyperGravityEffectTest >> testAllowsEntryWithRollTrueWhenEnough [
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testApplyToMovesShipBackwardsOneStep [
-
     | ship effect |
 
     ship := Spaceship withName: 'Heavy'.

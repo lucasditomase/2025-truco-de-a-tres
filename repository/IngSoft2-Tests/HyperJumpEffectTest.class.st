@@ -7,7 +7,6 @@ Class {
 
 { #category : 'asserting' }
 HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-
     self
         should: anErrorBlock
         raise: anErrorClass
@@ -17,7 +16,6 @@ HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText:
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testAllowsEntryWithRollAlwaysTrue [
-
     | effect |
     effect := HyperJumpEffect withValues: #( 3 7 12 ).
 
@@ -107,14 +105,12 @@ HyperJumpEffectTest >> testHyperJumpEffectWithValuesInitializesCorrectly [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testInitializeWithSetsJumpValuesAndIndex [
-
     | values effect |
         values := #(3 5 7).
         effect := HyperJumpEffect new initializeWith: values.
 
         self assert: effect values equals: #(7 5 3).
         self assert: effect currentIndex equals: 1.
-
 ]
 
 { #category : 'tests' }
@@ -132,7 +128,6 @@ HyperJumpEffectTest >> testNextJumpValueCyclesCorrectly [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testNextJumpValueReturnsValuesCyclically [
-
         | effect values |
         values := #(3 5 7).
         effect := HyperJumpEffect withValues: values.
@@ -146,7 +141,6 @@ HyperJumpEffectTest >> testNextJumpValueReturnsValuesCyclically [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testPeekJumpValueReturnsCurrentValueWithoutAdvancing [
-
         | effect values |
         values := #(10 20 30).
         effect := HyperJumpEffect withValues: values.
@@ -173,7 +167,6 @@ HyperJumpEffectTest >> testResetJumpIndexRestartsSequence [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testResetJumpIndexSetsIndexBackToOne [
-
         | effect values |
         values := #(3 6 9).
         effect := HyperJumpEffect withValues: values.

@@ -7,13 +7,11 @@ Class {
 
 { #category : 'tests' }
 DiceCupTest >> testInitializationWithoutDiceRaisesError [
-
     self should: [ DiceCup with: #() ] raise: Error.
 ]
 
 { #category : 'tests' }
 DiceCupTest >> testRollReturnsSumOfRolls [
-
     | die1 die2 cup total |
 
     die1 := Die withSides: 1.
@@ -26,7 +24,6 @@ DiceCupTest >> testRollReturnsSumOfRolls [
 
 { #category : 'tests' }
 DiceCupTest >> testValidInitializationWithDice [
-
     | die1 die2 cup |
 
     die1 := Die withSides: 3.

@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests' }
 LappedShipTest >> testAddLapIncrementsCount [
-
     | ship lapped |
 
     ship := Spaceship withName: 'TestShip'.
@@ -21,7 +20,6 @@ LappedShipTest >> testAddLapIncrementsCount [
 
 { #category : 'tests' }
 LappedShipTest >> testHasWonReturnsFalseWhenLapsInsufficient [
-
     | ship lapped |
 
     ship := Spaceship withName: 'TestShip'.
@@ -34,7 +32,6 @@ LappedShipTest >> testHasWonReturnsFalseWhenLapsInsufficient [
 
 { #category : 'tests' }
 LappedShipTest >> testHasWonReturnsTrueWhenLapsEqualGoal [
-
     | ship lapped |
 
     ship := Spaceship withName: 'TestShip'.
@@ -47,7 +44,6 @@ LappedShipTest >> testHasWonReturnsTrueWhenLapsEqualGoal [
 
 { #category : 'tests' }
 LappedShipTest >> testInitializationSetsZeroLaps [
-
     | ship lapped |
 
     ship := Spaceship withName: 'TestShip'.
@@ -58,7 +54,6 @@ LappedShipTest >> testInitializationSetsZeroLaps [
 
 { #category : 'tests' }
 LappedShipTest >> testPositionMatchesShipPosition [
-
     | ship lapped |
 
     ship := Spaceship withName: 'TestShip'.
@@ -70,7 +65,6 @@ LappedShipTest >> testPositionMatchesShipPosition [
 
 { #category : 'tests' }
 LappedShipTest >> testShipReturnsOriginalShip [
-
     | ship lapped |
 
     ship := Spaceship withName: 'TestShip'.

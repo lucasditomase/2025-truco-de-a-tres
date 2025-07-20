@@ -7,6 +7,5 @@ Class {
 
 { #category : 'playing' }
 ShieldCard >> activateFor: aShip inGame: aGame [
-
     aShip addActiveCard: self
 ]

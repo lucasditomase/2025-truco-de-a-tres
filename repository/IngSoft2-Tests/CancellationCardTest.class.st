@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAccelerationCard [
-
     | target card ship1 ship2 board dice game |
 
     target := AccelerationCard new.
@@ -27,7 +26,6 @@ CancellationCardTest >> testApplyEffectToCancelsAccelerationCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAdvanceCard [
-
     | target card ship1 ship2 board dice game |
 
     target := AdvanceCard new.
@@ -47,7 +45,6 @@ CancellationCardTest >> testApplyEffectToCancelsAdvanceCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAllyCard [
-
     | target card ship1 ship2 board dice game |
 
     target := AllyCard withAlly: (Spaceship withName: 'Ally').
@@ -67,7 +64,6 @@ CancellationCardTest >> testApplyEffectToCancelsAllyCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsCancellationCard [
-
     | target card ship1 ship2 board dice game |
 
     target := CancellationCard cancelling: (AdvanceCard new).
@@ -87,7 +83,6 @@ CancellationCardTest >> testApplyEffectToCancelsCancellationCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsOverloadCard [
-
     | target card ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'One'.
@@ -107,7 +102,6 @@ CancellationCardTest >> testApplyEffectToCancelsOverloadCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsRedoCard [
-
     | target card ship1 ship2 board dice game |
 
     target := RedoCard new.
@@ -127,7 +121,6 @@ CancellationCardTest >> testApplyEffectToCancelsRedoCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsShieldCard [
-
     | target card ship1 ship2 board dice game |
 
     target := ShieldCard new.
@@ -147,7 +140,6 @@ CancellationCardTest >> testApplyEffectToCancelsShieldCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToRemovesCardFromGame [
-
     | target card ship1 ship2 board dice game |
 
     target := RepeatCard new.
@@ -167,7 +159,6 @@ CancellationCardTest >> testApplyEffectToRemovesCardFromGame [
 
 { #category : 'tests - class' }
 CancellationCardTest >> testCancellingCreatesCardWithTarget [
-
     | target card |
 
     target := RepeatCard new.
@@ -179,7 +170,6 @@ CancellationCardTest >> testCancellingCreatesCardWithTarget [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testInitializeCancellingSetsCardToCancel [
-
     | target card returned |
 
     target := RepeatCard new.

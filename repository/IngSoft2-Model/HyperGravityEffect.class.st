@@ -28,11 +28,9 @@ HyperGravityEffect >> initialize [
 { #category : 'initialization' }
 HyperGravityEffect >> requiredRoll [
     ^ requiredRoll
-
 ]
 
 { #category : 'initialization' }
 HyperGravityEffect >> requiredRoll: aNumber [
     requiredRoll := aNumber.
-
 ]

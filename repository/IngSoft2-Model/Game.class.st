@@ -22,7 +22,6 @@ Class {
 
 { #category : 'initialize' }
 Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
-
         self validateMinimumShips: someShips.
     self validateShips: someShips.
     self validateBoard: aBoard.
@@ -52,14 +51,12 @@ Game class >> validateDice: someDices [
 
 { #category : 'initialize' }
 Game class >> validateLaps: aNumberLaps [
-
     (aNumberLaps isInteger and: [ aNumberLaps > 0 ]) ifFalse: [
         self error: 'Laps must be a positive integer' ]
 ]
 
 { #category : 'initialize' }
 Game class >> validateMinimumShips: someShips [
-
     someShips size < 2 ifTrue: [
         self error: 'Need 2 space ships or more to initialize the game' ]
 ]
@@ -83,7 +80,6 @@ Game >> activeCards [
 
 { #category : 'process actions' }
 Game >> advanceTurn [
-
         turnManager advanceTurn
 ]
 
@@ -99,7 +95,6 @@ Game >> board [
 
 { #category : 'validation' }
 Game >> checkWinCondition [
-
     (self currentShip hasReachedGoalOn: board) ifTrue: [
         (self hasWonByLaps: self currentShip) ifTrue: [
             winner := self currentShip.
@@ -108,31 +103,26 @@ Game >> checkWinCondition [
 
 { #category : 'accessing' }
 Game >> currentPlayerIndex [
-
     ^ self currentTurnIndex
 ]
 
 { #category : 'accessing' }
 Game >> currentShip [
-
     ^ turnManager currentShip
 ]
 
 { #category : 'accessing' }
 Game >> currentTurnIndex [
-
         ^ turnManager currentTurnIndex
 ]
 
 { #category : 'accessing' }
 Game >> die [
-
     ^ dice
 ]
 
 { #category : 'process actions' }
 Game >> ensureGameIsNotOver [
-
     self
         whenFinishedDo: [ :aWinner | self error: 'Game is already over' ]
         whenInProgressDo: [  ]
@@ -140,7 +130,6 @@ Game >> ensureGameIsNotOver [
 
 { #category : 'process actions' }
 Game >> handlePenaltyOrPassIfNeeded [
-
     | ship |
     ship := self currentShip.
 
@@ -160,13 +149,11 @@ Game >> handlePenaltyOrPassIfNeeded [
 
 { #category : 'testing' }
 Game >> hasWonByLaps: aShip [
-
     ^ (self lapTrackerFor: aShip) hasWonWithTotalLaps: totalLaps
 ]
 
 { #category : 'initialization' }
 Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
-
     spaceShips := someShips.
     board := aBoard.
     board registerShips: someShips.
@@ -197,37 +184,31 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 
 { #category : 'testing' }
 Game >> isPenalized: aShip [
-
     ^ aShip isPenalized
 ]
 
 { #category : 'testing' }
 Game >> lapTrackerFor: aShip [
-
     ^ shipStatuses at: aShip
 ]
 
 { #category : 'accessing' }
 Game >> lastCardPlayed [
-
     ^ lastCardPlayed
 ]
 
 { #category : 'accessing' }
 Game >> lastCardPlayed: aCard [
-
     lastCardPlayed := aCard
 ]
 
 { #category : 'testing' }
 Game >> markShipAsWantingToPassTurn: aShip to: aBoolean [
-
     wantsToPassTurn at: aShip put: aBoolean.
 ]
 
 { #category : 'process actions' }
 Game >> modifyRoll: aNumber forShip: aShip [
-
     | value |
     value := aNumber.
 
@@ -239,7 +220,6 @@ Game >> modifyRoll: aNumber forShip: aShip [
 
 { #category : 'process actions' }
 Game >> passTurn [
-
         self recordFuelStartFor: self currentShip.
         self currentShip restoreFuel.
         self advanceTurn
@@ -247,20 +227,17 @@ Game >> passTurn [
 
 { #category : 'process actions' }
 Game >> penalize: aShip forTurns: turns [
-
     aShip penalizeFor: turns.
     (self lapTrackerFor: aShip) penalized: true
 ]
 
 { #category : 'testing' }
 Game >> penalizedTurnsRemainingFor: aShip [
-
     ^ aShip penaltyTurnsRemaining
 ]
 
 { #category : 'accessing' }
 Game >> penaltyShip [
-
     ^ spaceShips select: [ :ship | ship isPenalized ]
 ]
 
@@ -282,7 +259,6 @@ Game >> playTurn [
 
 { #category : 'process actions' }
 Game >> playUntilFinish [
-
     self whenFinishedDo: [ :aWinner | ]
         whenInProgressDo: [
             [ self whenFinishedDo: [ :aWinner | false ] whenInProgressDo: [ true ] ]
@@ -292,7 +268,6 @@ Game >> playUntilFinish [
 
 { #category : 'process actions' }
 Game >> ranking [
-
     ^ self allStatuses sort: [ :a :b |
         | sameLaps samePosition |
         sameLaps := a lapCount = b lapCount.
@@ -308,13 +283,11 @@ Game >> ranking [
 
 { #category : 'process actions' }
 Game >> redoLastCardOn: aShip [
-
     lastCardPlayed playOn: aShip inGame: self
 ]
 
 { #category : 'testing' }
 Game >> reducePenaltyFor: aShip [
-
     aShip reducePenalty.
     (self lapTrackerFor: aShip) penalized: aShip isPenalized.
     aShip restoreFuel
@@ -322,7 +295,6 @@ Game >> reducePenaltyFor: aShip [
 
 { #category : 'testing' }
 Game >> registerLapFor: aShip from: oldPosition after: someSteps [
-
     | cellCount status |
     cellCount := board cellCount.
 
@@ -334,14 +306,12 @@ Game >> registerLapFor: aShip from: oldPosition after: someSteps [
 
 { #category : 'process actions' }
 Game >> removeActiveCard: aCard [
-
     spaceShips do: [ :ship |
         ship activeCards remove: aCard ifAbsent: [  ] ]
 ]
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
-
 ]
 
 { #category : 'process actions' }
@@ -372,7 +342,6 @@ Game >> rewardForMaxRollTo: aShip [
 
 { #category : 'process actions' }
 Game >> rollAndMoveCurrentShip [
-
     | steps newPosition modified |
     lastPreviousPosition := self currentShip position.
     steps := dice roll.
@@ -391,25 +360,21 @@ Game >> rollAndMoveCurrentShip [
 
 { #category : 'accessing' }
 Game >> spaceShips [
-
     ^ spaceShips asOrderedCollection
 ]
 
 { #category : 'process actions' }
 Game >> spaceshipPositions [
-
     ^ spaceShips collect: [ :ship | ShipPosition for: ship ]
 ]
 
 { #category : 'testing' }
 Game >> stateOf: aShip [
-
     ^ aShip state
 ]
 
 { #category : 'process actions' }
 Game >> statusFor: aShip [
-
     | status |
     status := self lapTrackerFor: aShip.
     status position: (board positionOf: aShip).
@@ -419,20 +384,17 @@ Game >> statusFor: aShip [
 
 { #category : 'validation' }
 Game >> validateIsCurrentPlayer: aSpaceship [
-
     self currentShip = aSpaceship ifFalse: [
         self error: 'It is not the turn of this spaceship' ]
 ]
 
 { #category : 'process actions' }
 Game >> wantsToPassTurn: aShip [
-
     ^ wantsToPassTurn at: aShip ifAbsent: [ false ]
 ]
 
 { #category : 'testing' }
 Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
-
     ^ state
         whenFinishedDo: finishedBlock
         whenInProgressDo: inProgressBlock
@@ -440,6 +402,5 @@ Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
 
 { #category : 'accessing' }
 Game >> winner [
-
     ^ state whenFinishedDo: [ :w | w ] whenInProgressDo: [ NullSpaceship new ]
 ]

@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests' }
 MoonWalkEffectTest >> testApplyToDoesNothing [
-
     | effect ship originalPosition |
 
     effect := MoonWalkEffect new.
@@ -21,7 +20,6 @@ MoonWalkEffectTest >> testApplyToDoesNothing [
 
 { #category : 'tests' }
 MoonWalkEffectTest >> testApplyToInContextMovesOthersBack [
-
     | effect ship1 ship2 ship3 allShips |
 
     effect := MoonWalkEffect new.

@@ -20,7 +20,6 @@ CancellationCard >> applyEffectTo: aShip inGame: aGame [
 
 { #category : 'initialization' }
 CancellationCard >> initializeCancelling: aCard [
-
     cardToCancel := aCard.
     ^ self
 ]

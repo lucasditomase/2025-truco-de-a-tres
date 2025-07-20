@@ -7,13 +7,11 @@ Class {
 
 { #category : 'asserting' }
 GameTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-
     self
     should: anErrorBlock
     raise: anErrorClass
     withExceptionDo: [ :error |
     self assert: error messageText equals: errorMessage].
-
 ]
 
 { #category : 'tests' }
@@ -36,7 +34,6 @@ GameTest >> testActiveCardsReturnsAllActiveCards [
 
 { #category : 'tests' }
 GameTest >> testAdvanceTurnCyclesCorrectly [
-
     | ship1 ship2 ship3 board dice game |
 
     ship1 := Spaceship withName: 'One'.
@@ -64,7 +61,6 @@ GameTest >> testAdvanceTurnCyclesCorrectly [
 
 { #category : 'tests' }
 GameTest >> testAdvanceTurnRotatesToNextShip [
-
     | ship1 ship2 game dice |
 
     ship1 := Spaceship withName: 'One'.
@@ -79,7 +75,6 @@ GameTest >> testAdvanceTurnRotatesToNextShip [
     self assert: game currentShip equals: ship1.
     game advanceTurn.
     self assert: game currentShip equals: ship2.
-
 ]
 
 { #category : 'tests - instance' }
@@ -114,7 +109,6 @@ GameTest >> testCurrentPlayerIndexMatchesTurnIndex [
 
 { #category : 'tests - instance' }
 GameTest >> testCurrentShipReturnsCorrectShip [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'First'.
@@ -174,7 +168,6 @@ GameTest >> testEnsureGameIsNotOverRaisesErrorIfGameFinished [
 
 { #category : 'tests' }
 GameTest >> testFindPenaltyForReturnsExistingPenalty [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Penalized'.
@@ -190,12 +183,10 @@ GameTest >> testFindPenaltyForReturnsExistingPenalty [
     game penalize: ship1 forTurns: 2.
 
     self assert: (game isPenalized: ship1).
-
 ]
 
 { #category : 'tests' }
 GameTest >> testGameEndsWithPlayUntilFinish [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game |
 
     dice1 := Die withSides: 6.
@@ -275,7 +266,6 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
 
 { #category : 'tests - instance' }
 GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Almost'.
@@ -297,7 +287,6 @@ GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
 
 { #category : 'tests - instance' }
 GameTest >> testHasWonByLapsReturnsTrueWhenEnoughLaps [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Winner'.
@@ -319,7 +308,6 @@ GameTest >> testHasWonByLapsReturnsTrueWhenEnoughLaps [
 
 { #category : 'tests' }
 GameTest >> testIsGameOverReturnsTrueWhenWinnerExists [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Closer'.
@@ -362,7 +350,6 @@ GameTest >> testModifyRollAppliesActiveCardEffect [
 
 { #category : 'tests' }
 GameTest >> testPassTurnAdvancesIndex [
-
     | ship1 ship2 game board dice |
 
     ship1 := Spaceship withName: 'Skip'.
@@ -396,7 +383,6 @@ GameTest >> testPassTurnRestoresFuelToMax [
 
 { #category : 'tests' }
 GameTest >> testPlayTurnHandlesPassTurnCorrectly [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Passing'.
@@ -415,12 +401,10 @@ GameTest >> testPlayTurnHandlesPassTurnCorrectly [
 
     self assert: game currentShip equals: ship2.
     self deny: (game wantsToPassTurn: ship1).
-
 ]
 
 { #category : 'tests' }
 GameTest >> testPlayTurnMovesShipAndAdvancesTurn [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Player1'.
@@ -438,12 +422,10 @@ GameTest >> testPlayTurnMovesShipAndAdvancesTurn [
 
     self assert: ship1 position equals: 1.
     self assert: game currentShip equals: ship2.
-
 ]
 
 { #category : 'tests' }
 GameTest >> testPlayTurnRaisesErrorWhenGameIsOver [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'One'.
@@ -464,12 +446,10 @@ GameTest >> testPlayTurnRaisesErrorWhenGameIsOver [
     whenInProgressDo: [ self fail: 'Expected game to be over' ].
 
     self should: [ game playTurn ] raise: Error.
-
 ]
 
 { #category : 'tests' }
 GameTest >> testPlayUntilFinishDeclaresWinner [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Fast'.
@@ -507,7 +487,6 @@ GameTest >> testPlayUntilFinishEndsWhenWinnerIsFound [
 
 { #category : 'tests' }
 GameTest >> testRankingReturnsShipsOrderedByLapsAndPosition [
-
     | spaceShip1 spaceShip2 spaceShip3 spaceShipsGame  dice1  dicesGame boardGame game ranking |
 
     dice1 := Die withSides: 1.
@@ -612,7 +591,6 @@ GameTest >> testRedoLastCardOnReplaysOverloadCard [
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysRepeatCard [
-
     | ship1 ship2 board dice game card |
     ship1 := Spaceship withName: 'A'.
     ship2 := Spaceship withName: 'B'.
@@ -647,7 +625,6 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
 
 { #category : 'tests - instance' }
 GameTest >> testRegisterLapWhenCrossesFinishLine [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Runner'.
@@ -725,7 +702,6 @@ GameTest >> testRollAndMoveCurrentShipMovesShipCorrectly [
 
 { #category : 'tests - instance' }
 GameTest >> testSetAndQueryWantsToPassTurn [
-
     | ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'Picky'.
@@ -742,7 +718,6 @@ GameTest >> testSetAndQueryWantsToPassTurn [
 
 { #category : 'tests' }
 GameTest >> testShipPositionsReflectCurrentPositionsOfAllShips [
-
     | ship1 ship2 board dice game positions pos1 pos2 |
 
     ship1 := Spaceship withName: 'Alpha'.
@@ -767,7 +742,6 @@ GameTest >> testShipPositionsReflectCurrentPositionsOfAllShips [
 
 { #category : 'tests - instance' }
 GameTest >> testShipStatusReturnsCorrectValues [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game status |
     dice1 := Die withSides: 2.
     dicesGame := DiceCup with: (OrderedCollection with: dice1).
@@ -797,7 +771,6 @@ GameTest >> testShipStatusReturnsCorrectValues [
 
 { #category : 'tests' }
 GameTest >> testShipStatusReturnsCurrentLap [
-
     | spaceShip1 spaceShip2  spaceShipsGame die dicesGame boardGame game status1 status2 |
 
     die := Die withSides: 1.
@@ -830,7 +803,6 @@ GameTest >> testShipStatusReturnsCurrentLap [
 
 { #category : 'tests' }
 GameTest >> testShipStatusReturnsCurrentPosition [
-
     | spaceShip1 spaceShip2  spaceShipsGame die dicesGame boardGame game status1 status2 |
 
     die := Die withSides: 1.
@@ -857,7 +829,6 @@ GameTest >> testShipStatusReturnsCurrentPosition [
 
     self assert: status1 position equals: 2.
     self assert: status2 position equals: 1.
-
 ]
 
 { #category : 'tests' }
@@ -885,7 +856,6 @@ GameTest >> testSpaceShipsAccessorReturnsShips [
 
 { #category : 'tests' }
 GameTest >> testSpaceshipPositionsReturnsCorrectMapping [
-
     | ship1 ship2 game board dice positions pos1 pos2 |
 
     ship1 := Spaceship withName: 'MapOne'.
@@ -908,7 +878,6 @@ GameTest >> testSpaceshipPositionsReturnsCorrectMapping [
 
 { #category : 'tests' }
 GameTest >> testSpaceshipPositionsReturnsCorrectPositions [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game positions pos1 pos2 |
 
     dice1 := Die withSides: 1.
@@ -939,7 +908,6 @@ GameTest >> testSpaceshipPositionsReturnsCorrectPositions [
 
 { #category : 'tests' }
 GameTest >> testStatusForReturnsCorrectInfo [
-
     | ship1 ship2 board dice game status |
 
     ship1 := Spaceship withName: 'StatusShip'.
@@ -963,7 +931,6 @@ GameTest >> testStatusForReturnsCorrectInfo [
 
 { #category : 'tests' }
 GameTest >> testStatusForReturnsCorrectShipStatus [
-
     | ship1 ship2 game board dice status |
 
     ship1 := Spaceship withName: 'Alpha'.
@@ -981,7 +948,6 @@ GameTest >> testStatusForReturnsCorrectShipStatus [
 
 { #category : 'tests' }
 GameTest >> testWhenPlayTurnThenAdvancesShip [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dice2 dicesGame boardGame game originalPosition newPosition |
 
     dice1 := Die withSides: 1.
@@ -1009,7 +975,6 @@ GameTest >> testWhenPlayTurnThenAdvancesShip [
 
 { #category : 'tests' }
 GameTest >> testWhenShipDecidesToPassTurnThenSkipTurn [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game |
 
     dice1 := Die withSides: 6.
@@ -1064,7 +1029,6 @@ GameTest >> testWhenShipReachesGoalThenGameEnds [
 
 { #category : 'tests' }
 GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame totalLaps game |
     dice1 := Die withSides: 1.
     dicesGame := DiceCup with: (OrderedCollection with: dice1).
@@ -1129,7 +1093,6 @@ GameTest >> testWhenSpaceShipEndsTurnThenRotatesPlayerTurn [
 
 { #category : 'tests' }
 GameTest >> testWhenWinnerSpaceShipIsCorrectWhenGameEnds [
-
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game |
 
     dice1 := Die withSides: 100.

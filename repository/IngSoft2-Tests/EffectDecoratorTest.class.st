@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests' }
 EffectDecoratorTest >> testApplyToWithoutWrappedEffectDoesNothing [
-
     | decorator ship originalPosition |
 
     decorator := EffectDecorator new.

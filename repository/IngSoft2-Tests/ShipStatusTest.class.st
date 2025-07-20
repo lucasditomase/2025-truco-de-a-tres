@@ -7,7 +7,6 @@ Class {
 
 { #category : 'tests' }
 ShipStatusTest >> testInitializationSetsValuesCorrectly [
-
     | ship status |
 
     ship := Spaceship withName: 'Voyager'.
@@ -21,7 +20,6 @@ ShipStatusTest >> testInitializationSetsValuesCorrectly [
 
 { #category : 'tests' }
 ShipStatusTest >> testIsPenalizedReturnsFalse [
-
     | ship status |
 
     ship := Spaceship withName: 'Enterprise'.

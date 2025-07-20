@@ -10,7 +10,6 @@ Class {
 
 { #category : 'validation' }
 DiceCup class >> validateMinimumDice: someDice [
-
     (someDice isCollection and: [
         someDice isString not and: someDice notEmpty ]) ifFalse: [
         self error: 'At least one die is required to initialize the game' ]
@@ -18,7 +17,6 @@ DiceCup class >> validateMinimumDice: someDice [
 
 { #category : 'initalize' }
 DiceCup class >> with: someDice [
-
     self validateMinimumDice: someDice.
 
     ^ self new initializeWith: someDice
@@ -26,19 +24,16 @@ DiceCup class >> with: someDice [
 
 { #category : 'initialize' }
 DiceCup >> initializeWith: someDice [
-
     diceCollection := someDice
 ]
 
 { #category : 'process actions' }
 DiceCup >> maxRoll [
-
     ^ diceCollection sum: [ :die | die sides ]
 ]
 
 { #category : 'process actions' }
 DiceCup >> roll [
-
     ^ diceCollection sum: [ :die | die roll ]
 ]
 
