@@ -312,6 +312,31 @@ Game >> removeActiveCard: aCard [
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
+    | position effect |
+    (lastSteps = 0 and: [ lastPreviousPosition = 0 ]) ifTrue: [ ^ self ].
+    position := board
+        determineNewPositionFrom: lastPreviousPosition
+        after: lastSteps.
+    effect := board effectAt: position.
+    effect applyTo: aShip inBoard: board
+]
+
+{ #category : 'process actions' }
+Game >> consumeFuel: aNumber forShip: aShip [
+    | initialFuel deficit ally |
+    initialFuel := aShip fuel.
+    aShip decreaseFuelBy: aNumber.
+    initialFuel > aNumber ifTrue: [ ^ self ].
+    ally := aShip allies ifEmpty: [ nil ] ifNotEmpty: [ aShip allies first ].
+    ally ifNil: [ ^ self ].
+    deficit := aNumber - initialFuel.
+    ally decreaseFuelBy: deficit.
+    (aShip fuel = 0 and: [ ally fuel = 0 ]) ifTrue: [
+        board moveShip: aShip to: 0.
+        board moveShip: ally to: 0.
+        self penalize: aShip forTurns: 2.
+        self penalize: ally forTurns: 2
+    ]
 ]
 
 { #category : 'process actions' }
@@ -356,6 +381,7 @@ Game >> rollAndMoveCurrentShip [
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
     lastSteps := modified
+    self consumeFuel: modified abs forShip: self currentShip
 ]
 
 { #category : 'accessing' }

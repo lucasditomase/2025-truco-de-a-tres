@@ -667,6 +667,64 @@ GameTest >> testRepeatLastEffectOnDoesNothing [
 ]
 
 { #category : 'tests' }
+GameTest >> testRepeatLastEffectOnAppliesLastEffect [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+    board := Board of: 5 andWormholeAt: {}.
+    board cells at: 1 put: CardEffect new.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+
+    game rollAndMoveCurrentShip.
+    board applyEffectTo: ship1.
+
+    game repeatLastEffectOn: ship2.
+
+    self assert: ship2 cards size equals: 1.
+]
+
+{ #category : 'tests' }
+GameTest >> testAllySharesFuelWhenOwnerRunsOut [
+    | owner ally board dice game card |
+    owner := Spaceship withName: 'Owner'.
+    ally := Spaceship withName: 'Ally'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { owner. ally } board: board dice: dice laps: 1.
+    card := AllyCard withAlly: ally.
+    card activateFor: owner inGame: nil.
+    owner maxFuel: 5.
+    owner fuel: 1.
+    ally maxFuel: 5.
+    ally fuel: 4.
+    game consumeFuel: 2 forShip: owner.
+    self assert: owner fuel equals: 0.
+    self assert: ally fuel equals: 3.
+]
+
+{ #category : 'tests' }
+GameTest >> testAllyPenaltyWhenBothRunOutOfFuel [
+    | owner allyShip board dice game card |
+    owner := Spaceship withName: 'Owner'.
+    allyShip := Spaceship withName: 'Friend'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { owner. allyShip } board: board dice: dice laps: 1.
+    card := AllyCard withAlly: allyShip.
+    card activateFor: owner inGame: nil.
+    owner maxFuel: 5.
+    owner fuel: 1.
+    allyShip maxFuel: 5.
+    allyShip fuel: 1.
+    game consumeFuel: 2 forShip: owner.
+    self assert: (game isPenalized: owner).
+    self assert: (game isPenalized: allyShip).
+    self assert: (board positionOf: owner) equals: 0.
+    self assert: (board positionOf: allyShip) equals: 0.
+]
+
+{ #category : 'tests' }
 GameTest >> testRewardOnMaxRollChangesFuel [
     | ship otherShip dice board game initialMax initialFuel |
     ship := Spaceship withName: 'Reward'.
