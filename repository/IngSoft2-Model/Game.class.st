@@ -12,11 +12,10 @@ Class {
         'totalLaps',
         'state',
         'lastSteps',
-        'lastPreviousPosition',
-        'shipStatuses',
-        'lastCardPlayed',
-        'fuelHistory',
-        'lastEffect'
+                'lastPreviousPosition',
+                'shipStatuses',
+                'lastCardPlayed',
+                'fuelHistory'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -191,7 +190,6 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         lastSteps := 0.
         lastPreviousPosition := 0.
         lastCardPlayed := nil.
-        lastEffect := nil.
         fuelHistory := Dictionary new.
         spaceShips do: [ :ship |
             fuelHistory at: ship put: (OrderedCollection with: (ship instVarNamed: 'fuel')) ]
@@ -343,8 +341,7 @@ Game >> removeActiveCard: aCard [
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
-lastEffect ifNil: [ ^ self ].
-lastEffect applyTo: aShip inBoard: board
+
 ]
 
 { #category : 'process actions' }
@@ -384,9 +381,7 @@ Game >> rollAndMoveCurrentShip [
                 after: modified.
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
-    lastSteps := modified.
-    lastEffect := board effectAt: (board positionOf: self currentShip).
-    board applyEffectTo: self currentShip
+    lastSteps := modified
 ]
 
 { #category : 'accessing' }
