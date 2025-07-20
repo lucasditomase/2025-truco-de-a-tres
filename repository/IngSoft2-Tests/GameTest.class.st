@@ -1270,7 +1270,7 @@ GameTest >> testWhenGameCorrectlyCreatedThenNotNil [
     dice: dicesGame
     laps: 1.
 
-    self assert: game class = Game
+    self assert: game class equals: Game
 ]
 
 { #category : 'tests' }
