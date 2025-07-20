@@ -189,7 +189,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 
         lastSteps := 0.
         lastPreviousPosition := 0.
-        lastCardPlayed := nil.
+        lastCardPlayed := NullCard new.
         fuelHistory := Dictionary new.
         spaceShips do: [ :ship |
             fuelHistory at: ship put: (OrderedCollection with: ship fuel) ]
@@ -309,7 +309,7 @@ Game >> ranking [
 { #category : 'process actions' }
 Game >> redoLastCardOn: aShip [
 
-    lastCardPlayed ifNotNil: [ lastCardPlayed playOn: aShip inGame: self ]
+    lastCardPlayed playOn: aShip inGame: self
 ]
 
 { #category : 'testing' }

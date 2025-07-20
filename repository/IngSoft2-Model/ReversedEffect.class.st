@@ -25,23 +25,22 @@ ReversedEffect >> original [
 
 { #category : 'operations' }
 ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
-    | board ships steps parsecs |
-    board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
+    | ships steps parsecs |
     original class = BlackHoleEffect ifTrue: [
-        board moveShip: aShip forward: 4.
+        aBoard moveShip: aShip forward: 4.
         ^ self ].
     original class = HyperGravityEffect ifTrue: [
-        board moveShip: aShip forward: 1.
+        aBoard moveShip: aShip forward: 1.
         ^ self ].
     original class = HyperJumpEffect ifTrue: [
-        board moveShip: aShip to: aShip position.
+        aBoard moveShip: aShip to: aShip position.
         parsecs := original nextJumpValue.
-        steps := (parsecs / board totalLengthInParsecs * board cellCount) rounded.
-        board moveShip: aShip backward: steps.
+        steps := (parsecs / aBoard totalLengthInParsecs * aBoard cellCount) rounded.
+        aBoard moveShip: aShip backward: steps.
         ^ self ].
     original class = MoonWalkEffect ifTrue: [
-        ships := board ships.
-        ships do: [:ship | ship = aShip ifFalse: [ board moveShip: ship forward: 2 ]].
+        ships := aBoard ships.
+        ships do: [:ship | ship = aShip ifFalse: [ aBoard moveShip: ship forward: 2 ]].
         ^ self ].
     original class = CardEffect ifTrue: [
         (aShip cards isEmpty) ifFalse: [ aShip cards removeAt: (1 to: aShip cards size) atRandom ].
@@ -51,13 +50,11 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
 
 { #category : 'operations' }
 ReversedEffect >> applyTo: aShip [
-    self applyTo: aShip inBoard: nil
+    self applyTo: aShip inBoard: NullBoard new
 ]
 
 { #category : 'operations' }
 ReversedEffect >> applyTo: aShip inBoard: aBoard [
-    | board |
-    board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
-    self applyEffectTo: aShip inBoard: board.
+    self applyEffectTo: aShip inBoard: aBoard.
     ^ self
 ]

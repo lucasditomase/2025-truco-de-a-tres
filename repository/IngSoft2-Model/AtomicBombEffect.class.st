@@ -12,9 +12,7 @@ AtomicBombEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
 
 { #category : 'operations' }
 AtomicBombEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    | board |
-    board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
     allSpaceships do: [:ship |
-        board moveShip: ship to: 0
+        aBoard moveShip: ship to: 0
     ].
 ]

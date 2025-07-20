@@ -8,6 +8,17 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
+{ #category : 'initialization' }
+EffectDecorator class >> new [
+    ^ super new initialize
+]
+
+{ #category : 'initialization' }
+EffectDecorator >> initialize [
+    wrapped := NullEffect new.
+    ^ self
+]
+
 { #category : 'operations' }
 EffectDecorator >> applyEffectTo: aShip inBoard: aBoard [
 ]
@@ -17,15 +28,15 @@ EffectDecorator >> applyTo: aShip [
     | board |
     board := NullBoard new.
     self applyEffectTo: aShip inBoard: board.
-    wrapped ifNotNil: [ wrapped applyTo: aShip inBoard: board ].
+    wrapped applyTo: aShip inBoard: board.
 ]
 
 { #category : 'instance creation' }
 EffectDecorator >> applyTo: aShip inBoard: aBoard [
     | board |
-    board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
+    board := aBoard.
     self applyEffectTo: aShip inBoard: board.
-    wrapped ifNotNil: [ wrapped applyTo: aShip inBoard: board ].
+    wrapped applyTo: aShip inBoard: board.
 ]
 
 { #category : 'instance creation' }

@@ -106,14 +106,13 @@ Board >> applyEffectTo: aSpaceship [
     | effect |
 
     effect := self effectAt: (self positionOf: aSpaceship).
-    effect ifNotNil: [ effect applyTo: aSpaceship inBoard: self ].
+    effect applyTo: aSpaceship inBoard: self.
 ]
 
 { #category : 'initialize' }
 Board >> applyWormholeIfPresentAt: aPosition [
     | wormhole |
-    wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ nil ].
-    wormhole ifNil: [ ^ aPosition ].
+    wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ NullWormhole new ].
     ^ wormhole exitFrom: aPosition inBoard: self
 ]
 
@@ -174,6 +173,7 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     totalLengthInParsecs := aLengthInParsecs.
     wormholes := aCollection asOrderedCollection.
     cells := Dictionary new.
+    positionManager := NullPositionManager new.
 
         0 to: aCount - 1 do: [ :i |
                 cells at: i put: self randomEffect ].
@@ -189,32 +189,21 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    positionManager ifNil: [
-        self error: 'Board has no registered ships'.
-    ].
     positionManager moveShip: aShip backward: steps.
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    positionManager ifNil: [
-        self error: 'Board has no registered ships'.
-    ].
     positionManager moveShip: aShip forward: steps.
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    positionManager ifNil: [
-        self error: 'Board has no registered ships'.
-    ].
     positionManager moveShip: aShip to: aPosition.
 ]
 
 { #category : 'spaceships' }
 Board >> positionOf: aShip [
-
-    positionManager ifNil: [ self error: 'Board has no registered ships' ].
     ^ positionManager positionOf: aShip
 ]
 
@@ -238,27 +227,34 @@ Board >> registerShips: someShips [
 
 { #category : 'spaceships' }
 Board >> ships [
-    positionManager ifNil: [ ^ #() ].
     ^ positionManager ships
 ]
 
 { #category : 'effects' }
 Board >> reverseAt: aPosition [
-    | effect wormhole newW |
-    wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ nil ].
-    wormhole ifNotNil: [
-        wormholes remove: wormhole.
-        newW := (wormhole isKindOf: ReversedWormhole)
-            ifTrue: [ Wormhole from: wormhole entry to: wormhole exit ]
-            ifFalse: [ ReversedWormhole from: wormhole entry to: wormhole exit ].
-        wormholes add: newW.
-        ^ self
-    ].
+    | wormhole |
+    wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ NullWormhole new ].
+    wormhole reverseOnBoard: self at: aPosition
+]
+
+{ #category : 'effects' }
+Board >> reverseEffectAt: aPosition [
+    | effect |
     effect := self effectAt: aPosition.
     effect class = AtomicBombEffect ifTrue: [ ^ self ].
     (effect isKindOf: ReversedEffect)
         ifTrue: [ cells at: aPosition put: effect original ]
         ifFalse: [ cells at: aPosition put: (ReversedEffect of: effect) ]
+]
+
+{ #category : 'effects' }
+Board >> addWormhole: aWormhole [
+    wormholes add: aWormhole
+]
+
+{ #category : 'effects' }
+Board >> removeWormhole: aWormhole [
+    wormholes remove: aWormhole
 ]
 
 { #category : 'initialize' }

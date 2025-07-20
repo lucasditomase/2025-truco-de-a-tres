@@ -21,7 +21,7 @@ ReversedEffectTest >> testApplyEffectToReversesBlackHole [
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
     ship moveTo: 0.
-    reversed applyEffectTo: ship inBoard: nil.
+    reversed applyEffectTo: ship inBoard: NullBoard new.
     self assert: ship position equals: 4.
 ]
 
@@ -32,7 +32,7 @@ ReversedEffectTest >> testApplyEffectToReversesHyperGravity [
     effect := HyperGravityEffect new.
     reversed := ReversedEffect of: effect.
     ship moveTo: 2.
-    reversed applyEffectTo: ship inBoard: nil.
+    reversed applyEffectTo: ship inBoard: NullBoard new.
     self assert: ship position equals: 3.
 ]
 
@@ -74,7 +74,7 @@ ReversedEffectTest >> testApplyEffectToReversesCardEffect [
     ship addCard: card.
     effect := CardEffect new.
     reversed := ReversedEffect of: effect.
-    reversed applyEffectTo: ship inBoard: nil.
+    reversed applyEffectTo: ship inBoard: NullBoard new.
     self assert: ship cards isEmpty.
 ]
 
@@ -85,7 +85,7 @@ ReversedEffectTest >> testApplyEffectToOtherEffectDoesNothing [
     ship moveTo: 4.
     effect := NoEffect new.
     reversed := ReversedEffect of: effect.
-    reversed applyEffectTo: ship inBoard: nil.
+    reversed applyEffectTo: ship inBoard: NullBoard new.
     self assert: ship position equals: 4.
 ]
 

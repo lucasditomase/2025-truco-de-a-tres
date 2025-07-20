@@ -12,14 +12,12 @@ MoonWalkEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships [
-    self applyTo: aSpaceship inContextOf: allSpaceships inBoard: nil.
+    self applyTo: aSpaceship inContextOf: allSpaceships inBoard: NullBoard new.
 ]
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-        | board |
-        board := aBoard ifNil: [ NullBoard new ] ifNotNil: [ aBoard ].
         allSpaceships do: [:ship | ship = aSpaceship ifFalse: [
-            board moveShip: ship backward: 2
+            aBoard moveShip: ship backward: 2
         ]].
 ]

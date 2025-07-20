@@ -15,9 +15,7 @@ HyperGravityEffect >> allowsEntryWithRoll: aNumber [
 
 { #category : 'operations' }
 HyperGravityEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
-    aBoard
-        ifNil: [ aSpaceship moveBack: 1 ]
-        ifNotNil: [ aBoard moveShip: aSpaceship backward: 1 ].
+    aBoard moveShip: aSpaceship backward: 1.
     ^ aSpaceship.
 ]
 
