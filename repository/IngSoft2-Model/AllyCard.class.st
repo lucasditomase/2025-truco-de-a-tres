@@ -21,7 +21,7 @@ AllyCard >> activateFor: aShip inGame: aGame [
     allyShip addActiveCard: self
 ]
 
-{ #category : 'effects' }
+{ #category : 'ally' }
 AllyCard >> allyFor: aShip [
     aShip = ownerShip ifTrue: [ ^ allyShip ].
     aShip = allyShip ifTrue: [ ^ ownerShip ].
