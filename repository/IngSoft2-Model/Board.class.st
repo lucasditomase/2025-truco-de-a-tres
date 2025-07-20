@@ -132,7 +132,19 @@ Board >> cells: aCollection [
 
 { #category : 'moves' }
 Board >> determineNewPositionFrom: aPosition after: steps [
-    ^ self applyWormholeIfPresentAt: (aPosition + steps).
+    | current nextCell effect |
+    current := aPosition.
+    1 to: steps do: [ :i |
+        nextCell := self wrapPosition: current + 1.
+        effect := self effectAt: nextCell.
+        (effect isKindOf: HyperGravityEffect)
+            ifTrue: [
+                (effect allowsEntryWithRoll: steps)
+                    ifFalse: [ ^ self applyWormholeIfPresentAt: current ].
+            ].
+        current := nextCell.
+    ].
+    ^ self applyWormholeIfPresentAt: current
 ]
 
 { #category : 'deck' }
@@ -178,28 +190,33 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    | oldPos |
+    | oldPos newPos diff |
     oldPos := self positionOf: aShip.
-    positionManager moveShip: aShip to: ((oldPos - steps) max: 0).
-    lastMoves at: aShip put: steps negated.
-    ^ steps negated
+    newPos := self wrapPosition: oldPos - steps.
+    diff := 0 - steps.
+    positionManager moveShip: aShip to: newPos.
+    lastMoves at: aShip put: diff.
+    ^ diff
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    | oldPos |
+    | oldPos newPos diff |
     oldPos := self positionOf: aShip.
-    positionManager moveShip: aShip to: (oldPos + steps).
-    lastMoves at: aShip put: steps.
-    ^ steps
+    newPos := self wrapPosition: oldPos + steps.
+    diff := steps.
+    positionManager moveShip: aShip to: newPos.
+    lastMoves at: aShip put: diff.
+    ^ diff
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    | oldPos diff |
+    | oldPos newPos diff |
     oldPos := self positionOf: aShip.
-    positionManager moveShip: aShip to: aPosition.
-    diff := aPosition - oldPos.
+    newPos := self wrapPosition: aPosition.
+    positionManager moveShip: aShip to: newPos.
+    diff := newPos - oldPos.
     lastMoves at: aShip put: diff.
     ^ diff
 ]
@@ -282,6 +299,11 @@ Board >> stepsFromParsecs: someParsecs [
     | ratio |
     ratio := someParsecs / totalLengthInParsecs.
     ^ (ratio * cellCount) rounded
+]
+
+{ #category : 'spaceships' }
+Board >> wrapPosition: aNumber [
+    ^ aNumber \\ cellCount
 ]
 
 { #category : 'accessing' }

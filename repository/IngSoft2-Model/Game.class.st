@@ -316,13 +316,15 @@ Game >> reducePenaltyFor: aShip [
 
 { #category : 'testing' }
 Game >> registerLapFor: aShip from: oldPosition after: someSteps [
-    | cellCount status |
+    | cellCount status newPos |
     cellCount := board cellCount.
-
-    oldPosition + someSteps < cellCount ifTrue: [ ^ self ].
-
     status := self lapTrackerFor: aShip.
-    status addLap
+    newPos := oldPosition + someSteps.
+    someSteps > 0 ifTrue: [
+        newPos >= cellCount ifTrue: [ status addLap ]
+    ] ifFalse: [
+        newPos < 0 ifTrue: [ status removeLap ]
+    ]
 ]
 
 { #category : 'process actions' }
@@ -393,31 +395,35 @@ Game >> rewardForMaxRollTo: aShip [
 
 { #category : 'process actions' }
 Game >> rollAndMoveCurrentShip [
-    | steps newPosition modified |
+    | roll modified newPosition actual |
     lastPreviousPosition := self currentShip position.
-    steps := dice roll.
-    steps = dice maxRoll ifTrue: [
-        self rewardForMaxRollTo: self currentShip ].
-    modified := self modifyRoll: steps forShip: self currentShip.
+    roll := dice roll.
+    roll = dice maxRoll ifTrue: [ self rewardForMaxRollTo: self currentShip ].
+    modified := self modifyRoll: roll forShip: self currentShip.
     modified >= 0
         ifTrue: [
             newPosition := board
                 determineNewPositionFrom: lastPreviousPosition
                 after: modified.
             board moveShip: self currentShip to: newPosition ]
-        ifFalse: [ board moveShip: self currentShip backward: modified abs ].
-    lastSteps := modified.
-    self consumeFuel: modified abs forShip: self currentShip
+        ifFalse: [
+            board moveShip: self currentShip backward: modified abs
+        ].
+    actual := board lastMoveFor: self currentShip.
+    lastSteps := actual.
+    self consumeFuel: actual abs forShip: self currentShip
 ]
 
 { #category : 'process actions' }
 Game >> applyEffectOfCurrentCell [
-    | beforePositions |
+    | beforePositions effect |
     beforePositions := Dictionary new.
     board ships do: [ :ship | beforePositions at: ship put: (board positionOf: ship) ].
 
     board clearLastMoves.
+    effect := board effectAt: (board positionOf: self currentShip).
     board applyEffectTo: self currentShip.
+    effect class = AtomicBombEffect ifTrue: [ ^ self ].
 
     board ships do: [ :ship |
         | before diff |
