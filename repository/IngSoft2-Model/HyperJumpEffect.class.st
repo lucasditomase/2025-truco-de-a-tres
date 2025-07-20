@@ -56,9 +56,7 @@ HyperJumpEffect >> convertAndSortValues: aCollection [
     | convertedValues |
 
     convertedValues := aCollection collect: [ :each |
-        (each respondsTo: #asParsecs)
-            ifTrue: [ each asParsecs ]
-            ifFalse: [ each ]
+        Distance parsecValueOf: each
     ].
 
     ^ self sortDescendingPreservingOrder: convertedValues

@@ -100,3 +100,8 @@ Wormhole >> exitFrom: aPosition [
     ^ self exit
 ]
 
+{ #category : 'operations' }
+Wormhole >> exitFrom: aPosition inBoard: aBoard [
+    ^ self exitFrom: aPosition
+]
+

@@ -61,3 +61,10 @@ Distance >> unit [
 Distance >> value [
     ^ value
 ]
+
+{ #category : 'instance creation' }
+Distance class >> parsecValueOf: anObject [
+    ^ (anObject isKindOf: Distance)
+        ifTrue: [ anObject asParsecs ]
+        ifFalse: [ anObject ]
+]
