@@ -50,6 +50,9 @@ PositionManager >> moveShip: aShip forward: steps [
 { #category : 'updating' }
 PositionManager >> moveShip: aShip to: aPosition [
 
+    | current |
+    current := positions at: aShip ifAbsent: [ aShip position ].
+    aShip decreaseFuelBy: (aPosition - current) abs.
     positions at: aShip put: aPosition.
     aShip moveTo: aPosition
 ]
