@@ -7,5 +7,4 @@ Class {
 
 { #category : 'playing' }
 NullCard >> playOn: aShip inGame: aGame [
-    "Do nothing"
 ]

@@ -9,3 +9,8 @@ Class {
 NullEffect >> applyTo: aShip inBoard: aBoard [
 ]
 
+{ #category : 'operations' }
+NullEffect >> reversed [
+    ^ self
+]
+

@@ -64,7 +64,7 @@ Distance >> value [
 
 { #category : 'instance creation' }
 Distance class >> parsecValueOf: anObject [
-    ^ (anObject isKindOf: Distance)
-        ifTrue: [ anObject asParsecs ]
-        ifFalse: [ anObject ]
+    ^ [ anObject asParsecs ]
+        on: MessageNotUnderstood
+        do: [ anObject ]
 ]

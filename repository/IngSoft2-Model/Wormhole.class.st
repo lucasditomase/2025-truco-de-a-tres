@@ -106,12 +106,13 @@ Wormhole >> exitFrom: aPosition inBoard: aBoard [
 ]
 
 { #category : 'operations' }
+Wormhole >> reversed [
+    ^ ReversedWormhole from: self entry to: self exit
+]
+
+{ #category : 'operations' }
 Wormhole >> reverseOnBoard: aBoard at: aPosition [
-    | newW |
     aBoard removeWormhole: self.
-    newW := (self isKindOf: ReversedWormhole)
-        ifTrue: [ Wormhole from: self entry to: self exit ]
-        ifFalse: [ ReversedWormhole from: self entry to: self exit ].
-    aBoard addWormhole: newW.
+    aBoard addWormhole: self reversed.
 ]
 

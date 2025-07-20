@@ -27,7 +27,7 @@ AllyCard >> allyFor: aShip [
 
     aShip = ownerShip ifTrue: [ ^ allyShip ].
     aShip = allyShip ifTrue: [ ^ ownerShip ].
-    ^ nil
+    ^ NullSpaceship new
 ]
 
 { #category : 'initialization' }

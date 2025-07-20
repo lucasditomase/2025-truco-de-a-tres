@@ -198,9 +198,8 @@ Spaceship >> allies [
 
     | allies |
 
-    allies := activeCards select: [ :card | card isKindOf: AllyCard ].
-    allies := allies collect: [ :card | card allyFor: self ].
-    allies := allies reject: [ :each | each isNil ].
+    allies := activeCards collect: [ :card | card allyFor: self ].
+    allies := allies reject: #isNullShip.
 
     ^ allies
 ]
@@ -221,4 +220,14 @@ Spaceship >> state [
 Spaceship >> state: aState [
 
     state := aState
+]
+
+{ #category : 'testing' }
+Spaceship >> isNullShip [
+    ^ false
+]
+
+{ #category : 'validation' }
+Spaceship >> validateAsSpaceship [
+    ^ self
 ]

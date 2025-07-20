@@ -14,3 +14,8 @@ Card >> modifyRoll: aNumber forShip: aShip inGame: aGame [
 Card >> playOn: aShip inGame: aGame [
     self subclassResponsibility
 ]
+
+{ #category : 'ally' }
+Card >> allyFor: aShip [
+    ^ NullSpaceship new
+]

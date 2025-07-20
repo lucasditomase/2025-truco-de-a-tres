@@ -27,3 +27,8 @@ ReversedWormhole >> exitFrom: aPosition inBoard: aBoard [
     ].
     self error: 'Invalid entry'
 ]
+
+{ #category : 'operations' }
+ReversedWormhole >> reversed [
+    ^ Wormhole from: self entry to: self exit
+]

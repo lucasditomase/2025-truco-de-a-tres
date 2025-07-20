@@ -14,9 +14,9 @@ Class {
 
 { #category : 'initialize' }
 Board class >> convertToParsecs: aLength [
-    ^ (aLength isKindOf: Distance)
-        ifTrue: [ aLength asParsecs ]
-        ifFalse: [ aLength ].
+    ^ [ aLength asParsecs ]
+        on: MessageNotUnderstood
+        do: [ aLength ]
 ]
 
 { #category : 'initialize' }
@@ -106,7 +106,6 @@ Board >> applyEffectTo: aSpaceship [
     | effect |
 
     effect := self effectAt: (self positionOf: aSpaceship).
-    effect ifNil: [ ^ self ].
     effect applyTo: aSpaceship inBoard: self.
 ]
 
@@ -157,7 +156,9 @@ Board >> drawCard [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    ^ cells at: aPosition ifAbsent: [ NoEffect new ]
+    | effect |
+    effect := cells at: aPosition ifAbsent: [ NullEffect new ].
+    ^ effect ifNil: [ NullEffect new ] ifNotNil: [ effect ]
 ]
 
 { #category : 'initialize' }
@@ -243,9 +244,7 @@ Board >> reverseEffectAt: aPosition [
     | effect |
     effect := self effectAt: aPosition.
     effect class = AtomicBombEffect ifTrue: [ ^ self ].
-    (effect isKindOf: ReversedEffect)
-        ifTrue: [ cells at: aPosition put: effect original ]
-        ifFalse: [ cells at: aPosition put: (ReversedEffect of: effect) ]
+    cells at: aPosition put: effect reversed
 ]
 
 { #category : 'effects' }
@@ -282,4 +281,9 @@ Board >> stepsFromParsecs: someParsecs [
 { #category : 'accessing' }
 Board >> totalLengthInParsecs [
     ^ totalLengthInParsecs
+]
+
+{ #category : 'validation' }
+Board >> validateAsBoard [
+    ^ self
 ]
