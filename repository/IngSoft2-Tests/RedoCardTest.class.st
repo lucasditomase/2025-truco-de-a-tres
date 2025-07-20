@@ -33,6 +33,32 @@ RedoCardTest >> testPlayOnRepeatsLastCardEffect [
 ]
 
 { #category : 'tests' }
+RedoCardTest >> testPlayOnAfterRedoReplaysSameEffect [
+    | board dice ship1 ship2 game advanceCard redoCard |
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+    game := Game
+        startWithShips: { ship1. ship2 }
+        board: board
+        dice: dice
+        laps: 1.
+
+    advanceCard := AdvanceCard new.
+    redoCard := RedoCard new.
+    ship1 addCard: advanceCard.
+    ship1 addCard: redoCard.
+
+    ship1 playCard: advanceCard inGame: game.
+    ship1 playCard: redoCard inGame: game.
+    ship1 addCard: redoCard.
+    ship1 playCard: redoCard inGame: game.
+
+    self assert: ship1 position equals: 3.
+]
+
+{ #category : 'tests' }
 RedoCardTest >> testPlayOnReplaysAccelerationCard [
     | board dice ship1 ship2 game accelCard redoCard |
     board := Board of: 5 andWormholeAt: {}.

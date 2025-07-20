@@ -5,6 +5,14 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'asserting' }
+CancellationCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error | self assert: error messageText equals: errorMessage ]
+]
+
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAccelerationCard [
     | target card ship1 ship2 board dice game |
@@ -178,4 +186,23 @@ CancellationCardTest >> testInitializeCancellingSetsCardToCancel [
 
     self assert: returned equals: card.
     self assert: card cardToCancel equals: target.
+]
+
+{ #category : 'tests - instance' }
+CancellationCardTest >> testPlayOnRaisesErrorWhenNoActiveCards [
+    | card ship1 ship2 board dice game |
+
+    card := CancellationCard cancelling: (AccelerationCard new).
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+
+    ship1 addCard: card.
+    self
+        should: [ ship1 playCard: card inGame: game ]
+        raise: Error
+        withMessageText: 'No active cards to cancel'.
 ]

@@ -11,10 +11,11 @@ Class {
         'totalLaps',
         'state',
         'lastSteps',
-                'lastPreviousPosition',
-                'shipStatuses',
-                'lastCardPlayed',
-                'fuelHistory'
+        'lastPreviousPosition',
+        'shipStatuses',
+        'lastCardPlayed',
+        'lastEffectiveCard',
+        'fuelHistory'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -177,6 +178,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         lastSteps := 0.
         lastPreviousPosition := 0.
         lastCardPlayed := NullCard new.
+        lastEffectiveCard := NullCard new.
         fuelHistory := Dictionary new.
         spaceShips do: [ :ship |
             fuelHistory at: ship put: (OrderedCollection with: ship fuel) ]
@@ -199,7 +201,18 @@ Game >> lastCardPlayed [
 
 { #category : 'accessing' }
 Game >> lastCardPlayed: aCard [
-    lastCardPlayed := aCard
+    lastCardPlayed := aCard.
+    aCard class = RedoCard ifFalse: [ lastEffectiveCard := aCard ]
+]
+
+{ #category : 'accessing' }
+Game >> lastEffectiveCard [
+    ^ lastEffectiveCard
+]
+
+{ #category : 'accessing' }
+Game >> lastEffectiveCard: aCard [
+    lastEffectiveCard := aCard
 ]
 
 { #category : 'testing' }
@@ -283,7 +296,7 @@ Game >> ranking [
 
 { #category : 'process actions' }
 Game >> redoLastCardOn: aShip [
-    lastCardPlayed playOn: aShip inGame: self
+    lastEffectiveCard playOn: aShip inGame: self
 ]
 
 { #category : 'testing' }

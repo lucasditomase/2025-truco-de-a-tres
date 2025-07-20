@@ -18,6 +18,12 @@ CancellationCard >> applyEffectTo: aShip inGame: aGame [
     aGame removeActiveCard: cardToCancel
 ]
 
+{ #category : 'playing' }
+CancellationCard >> playOn: aShip inGame: aGame [
+    aGame activeCards isEmpty ifTrue: [ self error: 'No active cards to cancel' ].
+    super playOn: aShip inGame: aGame
+]
+
 { #category : 'initialization' }
 CancellationCard >> initializeCancelling: aCard [
     cardToCancel := aCard.
