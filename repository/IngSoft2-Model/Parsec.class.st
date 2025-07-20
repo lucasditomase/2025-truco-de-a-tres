@@ -12,7 +12,7 @@ Parsec class >> lightYearsPerParsec [
 
 { #category : 'conversions' }
 Parsec >> asLightYears: aNumber [
-    ^ aNumber * Parsec lightYearsPerParsec
+    ^ aNumber * self class lightYearsPerParsec
 ]
 
 { #category : 'conversions' }
