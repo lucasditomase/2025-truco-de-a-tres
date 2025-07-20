@@ -76,9 +76,9 @@ GameTest >> testAdvanceTurnRotatesToNextShip [
     dice: dice
     laps: 1.
 
-    self assert: (game currentShip equals: ship1).
+    self assert: game currentShip equals: ship1.
     game advanceTurn.
-    self assert: (game currentShip equals: ship2).
+    self assert: game currentShip equals: ship2.
 
 ]
 
@@ -503,7 +503,7 @@ GameTest >> testPenaltyShipReturnsPenalizedShipsCollection [
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
     game penalize: ship1 forTurns: 1.
     self assert: (game penaltyShip size) equals: 1.
-    self assert: (game penaltyShip first equals: ship1).
+    self assert: (game penaltyShip first) equals: ship1.
 ]
 
 { #category : 'tests' }
