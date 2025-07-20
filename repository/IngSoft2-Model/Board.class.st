@@ -195,10 +195,12 @@ Board >> positionOf: aShip [
 Board >> randomEffect [
     | randomNumber |
     randomNumber := (1 to: 100) atRandom.
-    randomNumber <= 10 ifTrue: [ ^ CardEffect new ].
-    randomNumber <= 48 ifTrue: [ ^ NoEffect new ].
-    randomNumber <= 74 ifTrue: [ ^ BlackHoleEffect new ].
-    ^ HyperGravityEffect new
+    randomNumber <= 40 ifTrue: [ ^ NoEffect new ].
+    randomNumber <= 60 ifTrue: [ ^ BlackHoleEffect new ].
+    randomNumber <= 80 ifTrue: [ ^ HyperGravityEffect new ].
+    randomNumber <= 90 ifTrue: [ ^ MoonWalkEffect new ].
+    randomNumber <= 98 ifTrue: [ ^ HyperJumpEffect withValues: #(1 2 3) ].
+    ^ AtomicBombEffect new
 ]
 
 { #category : 'spaceships' }

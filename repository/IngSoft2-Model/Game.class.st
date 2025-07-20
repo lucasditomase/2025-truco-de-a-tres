@@ -155,11 +155,17 @@ Game >> hasWonByLaps: aShip [
 
 { #category : 'initialization' }
 Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
+    | initialFuel |
     spaceShips := someShips.
     board := aBoard.
     board registerShips: someShips.
     dice := someDices.
     totalLaps := aNumberLaps.
+
+    initialFuel := dice maxRoll * 2.
+    spaceShips do: [ :ship |
+        ship maxFuel: initialFuel.
+        ship fuel: initialFuel ].
 
     turnManager := TurnManager withShips: someShips.
 
