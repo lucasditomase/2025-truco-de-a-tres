@@ -42,3 +42,26 @@ MoonWalkEffectTest >> testApplyToInContextMovesOthersBack [
     self assert: ship2 position equals: 3.
     self assert: ship3 position equals: 3.
 ]
+
+{ #category : 'tests' }
+MoonWalkEffectTest >> testApplyToInContextWithCustomSteps [
+
+    | effect ship1 ship2 board allShips |
+
+    effect := MoonWalkEffect withSteps: 1.
+    board := Board of: 5 andWormholeAt: {}.
+
+    ship1 := Spaceship withName: 'Target'.
+    ship2 := Spaceship withName: 'Other'.
+
+    ship1 moveTo: 2.
+    ship2 moveTo: 4.
+
+    allShips := { ship1. ship2 }.
+    board registerShips: allShips.
+
+    effect applyTo: ship1 inContextOf: allShips inBoard: board.
+
+    self assert: ship1 position equals: 2.
+    self assert: ship2 position equals: 3.
+]

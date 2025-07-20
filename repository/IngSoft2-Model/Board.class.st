@@ -211,6 +211,14 @@ Board >> moveShip: aShip to: aPosition [
 ]
 
 { #category : 'spaceships' }
+Board >> moveShipWithoutFuel: aShip to: aPosition [
+    positionManager ifNil: [
+        self error: 'Board has no registered ships'.
+    ].
+    positionManager moveShipWithoutFuel: aShip to: aPosition.
+]
+
+{ #category : 'spaceships' }
 Board >> positionOf: aShip [
 
     positionManager ifNil: [ self error: 'Board has no registered ships' ].
@@ -222,10 +230,13 @@ Board >> randomEffect [
 
     | randomNumber |
     randomNumber := (1 to: 100) atRandom.
-    randomNumber <= 10 ifTrue: [ ^ CardEffect new ].
-    randomNumber <= 48 ifTrue: [ ^ NoEffect new ].
-    randomNumber <= 74 ifTrue: [ ^ BlackHoleEffect new ].
-    ^ HyperGravityEffect new
+
+    randomNumber <= 40 ifTrue: [ ^ NoEffect new ].
+    randomNumber <= 60 ifTrue: [ ^ BlackHoleEffect new ].
+    randomNumber <= 80 ifTrue: [ ^ HyperGravityEffect new ].
+    randomNumber <= 90 ifTrue: [ ^ MoonWalkEffect new ].
+    randomNumber <= 98 ifTrue: [ ^ HyperJumpEffect withValues: #(3 5 2 4) ].
+    ^ AtomicBombEffect new
 
 ]
 
@@ -233,6 +244,12 @@ Board >> randomEffect [
 Board >> registerShips: someShips [
 
         positionManager := PositionManager forShips: someShips
+]
+
+{ #category : 'spaceships' }
+Board >> ships [
+    positionManager ifNil: [ ^ #() ].
+    ^ positionManager ships
 ]
 
 { #category : 'effects' }

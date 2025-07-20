@@ -7,7 +7,9 @@ Class {
 
 { #category : 'operations' }
 AtomicBombEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
-    ^ self
+    aBoard ifNil: [ ^ self ].
+    (aBoard respondsTo: #ships) ifFalse: [ ^ self ].
+    aBoard ships do: [:ship | aBoard moveShipWithoutFuel: ship to: 0 ].
 ]
 
 { #category : 'operations' }
