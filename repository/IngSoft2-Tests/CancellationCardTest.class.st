@@ -186,6 +186,6 @@ CancellationCardTest >> testInitializeCancellingSetsCardToCancel [
     card := CancellationCard new.
     returned := card initializeCancelling: target.
 
-    self assert: returned == card.
+    self assert: returned equals: card.
     self assert: card cardToCancel equals: target.
 ]

@@ -108,7 +108,7 @@ PenalizedShipStateTest >> testReducePenaltyReturnsSelfWhenStillPenalized [
     penalized := PenalizedShipState forTurns: 2.
     newState := penalized reducePenalty.
 
-    self assert: newState == penalized.
+    self assert: newState equals: penalized.
     self assert: penalized turnsRemaining equals: 1.
 ]
 

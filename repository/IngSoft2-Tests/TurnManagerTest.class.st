@@ -14,11 +14,11 @@ TurnManagerTest >> testAdvanceTurnCyclesAndIncrementsTurn [
     manager advanceTurn.
     self assert: manager currentTurnIndex equals: 2.
     self assert: manager turn equals: 2.
-    self assert: (manager currentShip == ship2).
+    self assert: (manager currentShip equals: ship2).
     manager advanceTurn.
     self assert: manager currentTurnIndex equals: 1.
     self assert: manager turn equals: 3.
-    self assert: (manager currentShip == ship1).
+    self assert: (manager currentShip equals: ship1).
 ]
 
 { #category : 'tests' }
@@ -28,10 +28,10 @@ TurnManagerTest >> testInitializeWithShipsReturnsSelf [
     ship2 := Spaceship withName: 'Y'.
     manager := TurnManager new.
     result := manager initializeWithShips: { ship1 . ship2 }.
-    self assert: (result == manager).
+    self assert: (result equals: manager).
     self assert: manager currentTurnIndex equals: 1.
     self assert: manager turn equals: 1.
-    self assert: (manager currentShip == ship1).
+    self assert: (manager currentShip equals: ship1).
 ]
 
 { #category : 'tests' }
@@ -42,5 +42,5 @@ TurnManagerTest >> testWithShipsInitializesCorrectly [
     manager := TurnManager withShips: { ship1 . ship2 }.
     self assert: manager turn equals: 1.
     self assert: manager currentTurnIndex equals: 1.
-    self assert: (manager currentShip == ship1).
+    self assert: (manager currentShip equals: ship1).
 ]
