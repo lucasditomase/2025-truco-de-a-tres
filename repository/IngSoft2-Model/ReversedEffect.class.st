@@ -48,12 +48,12 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
     ^ self
 ]
 
-{ #category : 'operations' }
+{ #category : 'instance creation' }
 ReversedEffect >> applyTo: aShip [
     self applyTo: aShip inBoard: NullBoard new
 ]
 
-{ #category : 'operations' }
+{ #category : 'instance creation' }
 ReversedEffect >> applyTo: aShip inBoard: aBoard [
     self applyEffectTo: aShip inBoard: aBoard.
     ^ self

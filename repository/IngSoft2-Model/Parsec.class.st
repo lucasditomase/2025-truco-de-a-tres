@@ -10,12 +10,12 @@ Parsec class >> lightYearsPerParsec [
     ^ 3
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 Parsec >> asLightYears: aNumber [
     ^ aNumber * self class lightYearsPerParsec
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 Parsec >> asParsecs: aNumber [
     ^ aNumber
 ]

@@ -18,7 +18,7 @@ GameFinished >> initializeWithWinner: aShip [
     winner := aShip.
 ]
 
-{ #category : 'initialization' }
+{ #category : 'enumerating' }
 GameFinished >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
     ^ finishedBlock value: winner.
 ]

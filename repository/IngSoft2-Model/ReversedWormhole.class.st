@@ -10,7 +10,7 @@ ReversedWormhole >> hasEntryAt: aPosition [
     ^ (super hasEntryAt: aPosition) or: [ self exit = aPosition ]
 ]
 
-{ #category : 'validation' }
+{ #category : 'operations' }
 ReversedWormhole >> exitFrom: aPosition [
     aPosition = self entry ifTrue: [ ^ self exit ].
     aPosition = self exit ifTrue: [ ^ self entry ].

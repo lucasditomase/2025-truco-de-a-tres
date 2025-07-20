@@ -11,7 +11,7 @@ BoardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMess
         should: anErrorBlock
         raise: anErrorClass
         withExceptionDo: [ :error |
-        self assert: error messageText equals: errorMessage ]
+            self assert: error messageText equals: errorMessage ]
 ]
 
 { #category : 'tests - instance' }
@@ -97,9 +97,9 @@ BoardTest >> testBlackHoleEffectMovesSpaceshipBackwards [
     ship := Spaceship withName: 'Lucas'.
     ship moveTo: 4.
 
-        board cells at: 4 put: BlackHoleEffect new.
-        board registerShips: { ship }.
-        board applyEffectTo: ship.
+    board cells at: 4 put: BlackHoleEffect new.
+    board registerShips: { ship }.
+    board applyEffectTo: ship.
 
     self assert: ship position equals: 0.
 ]
@@ -250,23 +250,23 @@ BoardTest >> testEffectAtReturnsCorrectEffect [
 BoardTest >> testHyperGravityAllowsEntryWhenRollIsSufficient [
     | board ship effect newPosition |
 
-        board := Board of: 5 andWormholeAt: #().
+    board := Board of: 5 andWormholeAt: #().
 
-        ship := Spaceship withName: 'Lucas'.
-        ship moveTo: 2.
+    ship := Spaceship withName: 'Lucas'.
+    ship moveTo: 2.
 
-        effect := HyperGravityEffect new.
-        effect requiredRoll: 4.
-        board cells: (Dictionary new).
-        board cells at: 4 put: effect.
-        board cells at: 3 put: NoEffect new.
-        board registerShips: { ship }.
+    effect := HyperGravityEffect new.
+    effect requiredRoll: 4.
+    board cells: (Dictionary new).
+    board cells at: 4 put: effect.
+    board cells at: 3 put: NoEffect new.
+    board registerShips: { ship }.
 
     newPosition := board determineNewPositionFrom: ship position after: 1.
     self assert: newPosition equals: 3.
 
-        ship moveTo: newPosition.
-        board applyEffectTo: ship.
+    ship moveTo: newPosition.
+    board applyEffectTo: ship.
 
     self assert: ship position equals: 3.
 ]
@@ -315,7 +315,7 @@ BoardTest >> testHyperJumpEffectJumpsShipForward [
 
     effect applyTo: ship1 inBoard: board.
 
-        self assert: ship1 position equals: 11.
+    self assert: ship1 position equals: 11.
 ]
 
 { #category : 'tests - instance' }

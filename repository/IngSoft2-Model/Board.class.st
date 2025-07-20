@@ -160,8 +160,8 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     cells := Dictionary new.
     positionManager := NullPositionManager new.
 
-        0 to: aCount - 1 do: [ :i |
-                cells at: i put: self randomEffect ].
+    0 to: aCount - 1 do: [ :i |
+        cells at: i put: self randomEffect ].
 
     ^ self
 ]

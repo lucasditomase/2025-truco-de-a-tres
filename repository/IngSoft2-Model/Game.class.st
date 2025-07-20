@@ -80,7 +80,7 @@ Game >> activeCards [
 
 { #category : 'process actions' }
 Game >> advanceTurn [
-        turnManager advanceTurn
+    turnManager advanceTurn
 ]
 
 { #category : 'process actions' }
@@ -220,9 +220,9 @@ Game >> modifyRoll: aNumber forShip: aShip [
 
 { #category : 'process actions' }
 Game >> passTurn [
-        self recordFuelStartFor: self currentShip.
-        self currentShip restoreFuel.
-        self advanceTurn
+    self recordFuelStartFor: self currentShip.
+    self currentShip restoreFuel.
+    self advanceTurn
 ]
 
 { #category : 'process actions' }
@@ -243,9 +243,9 @@ Game >> penaltyShip [
 
 { #category : 'process actions' }
 Game >> playTurn [
-        self recordFuelStartFor: self currentShip.
-        self ensureGameIsNotOver.
-        self handlePenaltyOrPassIfNeeded ifTrue: [ ^ self ].
+    self recordFuelStartFor: self currentShip.
+    self ensureGameIsNotOver.
+    self handlePenaltyOrPassIfNeeded ifTrue: [ ^ self ].
     self rollAndMoveCurrentShip.
 
     self
@@ -325,7 +325,7 @@ Game >> recordFuelStartFor: aShip [
 
 { #category : 'accessing' }
 Game >> fuelHistoryFor: aShip [
-        ^ fuelHistory at: aShip ifAbsent: [ OrderedCollection new ]
+    ^ fuelHistory at: aShip ifAbsent: [ OrderedCollection new ]
 ]
 
 { #category : 'accessing' }

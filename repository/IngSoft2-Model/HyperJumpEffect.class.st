@@ -38,12 +38,12 @@ HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     aBoard moveShip: aSpaceship forward: steps
 ]
 
-{ #category : 'operations' }
+{ #category : 'instance creation' }
 HyperJumpEffect >> applyTo: aSpaceship [
     self error: 'Use applyTo:inBoard: instead.'
 ]
 
-{ #category : 'operations' }
+{ #category : 'instance creation' }
 HyperJumpEffect >> applyTo: aSpaceship inBoard: aBoard [
     self applyEffectTo: aSpaceship inBoard: aBoard.
 ]

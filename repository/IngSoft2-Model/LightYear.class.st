@@ -5,12 +5,12 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 LightYear >> asLightYears: aNumber [
     ^ aNumber
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 LightYear >> asParsecs: aNumber [
     ^ aNumber / Parsec lightYearsPerParsec
 ]
