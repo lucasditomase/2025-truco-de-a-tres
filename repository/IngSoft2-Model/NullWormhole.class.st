@@ -23,5 +23,5 @@ NullWormhole >> exitFrom: aPosition inBoard: aBoard [
 { #category : 'operations' }
 NullWormhole >> reverseOnBoard: aBoard at: aPosition [
     aBoard reverseEffectAt: aPosition
-]\n
+]
 
