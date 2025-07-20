@@ -37,8 +37,7 @@ PositionManager >> initializeForShips: someShips [
 PositionManager >> moveShip: aShip backward: steps [
 
     | newPos |
-    newPos := (self positionOf: aShip) - steps.
-    newPos < 0 ifTrue: [ newPos := 0 ].
+    newPos := (self positionOf: aShip) - steps max: 0.
     self moveShip: aShip to: newPos
 ]
 

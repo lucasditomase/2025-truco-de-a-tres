@@ -9,3 +9,23 @@ Class {
 ShipState >> whenPenalizedDo: penalizedBlock whenNormalDo: normalBlock [
     self subclassResponsibility.
 ]
+
+{ #category : 'penalty' }
+ShipState >> isPenalized [
+    self subclassResponsibility.
+]
+
+{ #category : 'penalty' }
+ShipState >> penalizeFor: aNumber [
+    self subclassResponsibility.
+]
+
+{ #category : 'penalty' }
+ShipState >> reducePenalty [
+    self subclassResponsibility.
+]
+
+{ #category : 'penalty' }
+ShipState >> turnsRemaining [
+    self subclassResponsibility.
+]
