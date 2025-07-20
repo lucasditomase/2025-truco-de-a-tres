@@ -349,12 +349,7 @@ Game >> consumeFuel: aNumber forShip: aShip [
     aShip decreaseFuelBy: aNumber.
     ally := aShip allies ifEmpty: [ nil ] ifNotEmpty: [ aShip allies first ].
 
-    initialFuel >= aNumber ifTrue: [
-        aShip fuel = 0 ifTrue: [
-            board moveShip: aShip to: 0.
-            self penalize: aShip forTurns: 2
-        ].
-        ^ self ].
+    initialFuel >= aNumber ifTrue: [ ^ self ].
 
     deficit := aNumber - initialFuel.
     ally ifNil: [
@@ -393,9 +388,7 @@ Game >> fuelHistory: aDictionary [
 
 { #category : 'process actions' }
 Game >> rewardForMaxRollTo: aShip [
-    (Random new next <= 0.8)
-        ifTrue: [ aShip increaseMaxFuelBy: 1 ]
-        ifFalse: [ aShip decreaseFuelBy: 1 ].
+    aShip increaseMaxFuelBy: 1
 ]
 
 { #category : 'process actions' }
