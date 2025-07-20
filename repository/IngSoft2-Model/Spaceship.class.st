@@ -53,16 +53,6 @@ Spaceship >> decreaseFuelBy: anAmount [
     fuel := (fuel - anAmount) max: 0.
 ]
 
-{ #category : 'fuel' }
-Spaceship >> fuel [
-    ^ fuel
-]
-
-{ #category : 'fuel' }
-Spaceship >> fuel: anAmount [
-    fuel := anAmount
-]
-
 { #category : 'initialize' }
 Spaceship >> hasReachedGoalOn: aBoard [
 
@@ -73,16 +63,6 @@ Spaceship >> hasReachedGoalOn: aBoard [
 { #category : 'fuel' }
 Spaceship >> increaseMaxFuelBy: anAmount [
     maxFuel := maxFuel + anAmount.
-]
-
-{ #category : 'fuel' }
-Spaceship >> maxFuel [
-    ^ maxFuel
-]
-
-{ #category : 'fuel' }
-Spaceship >> maxFuel: anAmount [
-    maxFuel := anAmount
 ]
 
 { #category : 'initialize' }

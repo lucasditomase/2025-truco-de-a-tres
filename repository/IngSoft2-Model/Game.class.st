@@ -173,12 +173,6 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
     dice := someDices.
     totalLaps := aNumberLaps.
 
-    | initialFuel |
-    initialFuel := dice maxRoll * 2.
-    someShips do: [ :ship |
-        ship maxFuel: initialFuel.
-        ship restoreFuel ].
-
     turnManager := TurnManager withShips: someShips.
 
     wantsToPassTurn := Dictionary new.
@@ -373,26 +367,20 @@ Game >> rewardForMaxRollTo: aShip [
 
 { #category : 'process actions' }
 Game >> rollAndMoveCurrentShip [
-    | steps newPosition modified fuelNeeded |
+
+    | steps newPosition modified |
     lastPreviousPosition := self currentShip position.
     steps := dice roll.
     steps = dice maxRoll ifTrue: [
         self rewardForMaxRollTo: self currentShip ].
     modified := self modifyRoll: steps forShip: self currentShip.
-    fuelNeeded := modified abs.
-    self currentShip decreaseFuelBy: fuelNeeded.
-    self currentShip fuel = 0 ifTrue: [
-        board moveShip: self currentShip to: 0.
-        self penalize: self currentShip forTurns: 2.
-        lastSteps := 0.
-        ^ self ].
     modified >= 0
         ifTrue: [
             newPosition := board
                 determineNewPositionFrom: lastPreviousPosition
                 after: modified.
             board moveShip: self currentShip to: newPosition ]
-        ifFalse: [ board moveShip: self currentShip backward: fuelNeeded ].
+        ifFalse: [ board moveShip: self currentShip backward: modified abs ].
     lastSteps := modified
 ]
 
