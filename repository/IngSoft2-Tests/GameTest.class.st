@@ -425,6 +425,56 @@ GameTest >> testPlayTurnMovesShipAndAdvancesTurn [
 ]
 
 { #category : 'tests' }
+GameTest >> testPlayTurnAppliesBoardEffect [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'P1'.
+    ship2 := Spaceship withName: 'P2'.
+    board := Board of: 5 andWormholeAt: {}.
+    board cells at: 1 put: CardEffect new.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+
+    game playTurn.
+
+    self assert: ship1 cards size equals: 3.
+]
+
+{ #category : 'tests' }
+GameTest >> testFuelConsumptionIncludesEffectMovement [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'P1'.
+    ship2 := Spaceship withName: 'P2'.
+    board := Board of: 10 andWormholeAt: {}.
+    board cells at: 1 put: BlackHoleEffect new.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 maxFuel: 10.
+    ship1 fuel: 10.
+
+    game playTurn.
+
+    self assert: ship1 fuel equals: 5.
+]
+
+{ #category : 'tests' }
+GameTest >> testPenaltyWhenFuelRunsOutDueToEffect [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'P1'.
+    ship2 := Spaceship withName: 'P2'.
+    board := Board of: 10 andWormholeAt: {}.
+    board cells at: 1 put: BlackHoleEffect new.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 maxFuel: 5.
+    ship1 fuel: 3.
+
+    game playTurn.
+
+    self assert: (game isPenalized: ship1).
+    self assert: (board positionOf: ship1) equals: 0.
+]
+
+{ #category : 'tests' }
 GameTest >> testPlayTurnRaisesErrorWhenGameIsOver [
     | ship1 ship2 board dice game |
 

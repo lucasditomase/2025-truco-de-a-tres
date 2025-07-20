@@ -272,6 +272,8 @@ Game >> playTurn [
         from: lastPreviousPosition
         after: lastSteps.
 
+    self applyEffectOfCurrentCell.
+
     self checkWinCondition.
     self advanceTurn
 ]
@@ -345,17 +347,29 @@ Game >> consumeFuel: aNumber forShip: aShip [
     | initialFuel deficit ally |
     initialFuel := aShip fuel.
     aShip decreaseFuelBy: aNumber.
-    initialFuel > aNumber ifTrue: [ ^ self ].
     ally := aShip allies ifEmpty: [ nil ] ifNotEmpty: [ aShip allies first ].
-    ally ifNil: [ ^ self ].
+
+    initialFuel >= aNumber ifTrue: [
+        aShip fuel = 0 ifTrue: [
+            board moveShip: aShip to: 0.
+            self penalize: aShip forTurns: 2
+        ].
+        ^ self ].
+
     deficit := aNumber - initialFuel.
-    ally decreaseFuelBy: deficit.
-    (aShip fuel = 0 and: [ ally fuel = 0 ]) ifTrue: [
+    ally ifNil: [
         board moveShip: aShip to: 0.
-        board moveShip: ally to: 0.
         self penalize: aShip forTurns: 2.
-        self penalize: ally forTurns: 2
-    ]
+        ^ self ].
+
+    ally decreaseFuelBy: deficit.
+    (ally fuel = 0) ifTrue: [
+        board moveShip: ally to: 0.
+        self penalize: ally forTurns: 2 ].
+
+    aShip fuel = 0 ifTrue: [
+        board moveShip: aShip to: 0.
+        self penalize: aShip forTurns: 2 ].
 ]
 
 { #category : 'process actions' }
@@ -401,6 +415,26 @@ Game >> rollAndMoveCurrentShip [
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
     lastSteps := modified.
     self consumeFuel: modified abs forShip: self currentShip
+]
+
+{ #category : 'process actions' }
+Game >> applyEffectOfCurrentCell [
+    | beforePositions |
+    beforePositions := Dictionary new.
+    board ships do: [ :ship | beforePositions at: ship put: (board positionOf: ship) ].
+
+    board applyEffectTo: self currentShip.
+
+    board ships do: [ :ship |
+        | before after diff |
+        before := beforePositions at: ship.
+        after := board positionOf: ship.
+        diff := after - before.
+        diff ~= 0 ifTrue: [
+            self consumeFuel: diff abs forShip: ship.
+            self registerLapFor: ship from: before after: diff
+        ]
+    ]
 ]
 
 { #category : 'accessing' }

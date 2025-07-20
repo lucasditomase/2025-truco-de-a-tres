@@ -91,7 +91,9 @@ Board >> applyEffectTo: aSpaceship [
     | effect |
 
     effect := self effectAt: (self positionOf: aSpaceship).
-    effect applyTo: aSpaceship inBoard: self.
+    (effect respondsTo: #applyTo:inContextOf:inBoard:)
+        ifTrue: [ effect applyTo: aSpaceship inContextOf: self ships inBoard: self ]
+        ifFalse: [ effect applyTo: aSpaceship inBoard: self ].
 ]
 
 { #category : 'initialize' }
