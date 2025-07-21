@@ -219,5 +219,3 @@ GameInitializationTest >> testWhenGameCreatedWithoutTwoOrMoreShipsThenIsInvalid 
         raise: Error
         withMessageText: 'Need 2 space ships or more to initialize the game'
 ]
-
-

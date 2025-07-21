@@ -161,7 +161,7 @@ Spaceship >> reducePenalty [
 
 { #category : 'cards' }
 Spaceship >> removeCard: aCard [
-        cards remove: aCard ifAbsent: [  ]
+    cards remove: aCard ifAbsent: [  ]
 ]
 
 { #category : 'cards' }
@@ -176,7 +176,7 @@ Spaceship >> allies [
 
 { #category : 'methods' }
 Spaceship >> restoreFuel [
-        fuel := maxFuel.
+    fuel := maxFuel.
 ]
 
 { #category : 'state' }

@@ -152,6 +152,7 @@ Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
     steps = 0 ifTrue: [ ^ self applyWormholeIfPresentAt: aPosition ].
     pos := aPosition.
     direction := steps >= 0 ifTrue: [ 1 ] ifFalse: [ -1 ].
+
     1 to: steps abs do: [ :i |
         pos := (pos + direction) \\ cellCount.
         direction > 0 ifTrue: [
@@ -197,7 +198,6 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
 
     ^ self
 ]
-
 
 { #category : 'initialize' }
 Board >> isPositionReachedAt: aPosition [
@@ -254,6 +254,7 @@ Board >> lastMoveFor: aShip [
 Board >> randomEffect [
     | randomNumber |
     randomNumber := (1 to: 100) atRandom.
+
     randomNumber <= 40 ifTrue: [ ^ NoEffect new ].
     randomNumber <= 60 ifTrue: [ ^ BlackHoleEffect new ].
     randomNumber <= 80 ifTrue: [ ^ HyperGravityEffect new ].
@@ -320,6 +321,7 @@ Board >> stepsFromLightYears: someLightYears [
 Board >> stepsFromParsecs: someParsecs [
     | ratio |
     ratio := someParsecs / totalLengthInParsecs.
+
     ^ (ratio * cellCount) rounded
 ]
 

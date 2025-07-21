@@ -594,7 +594,6 @@ BoardTest >> testWormholeTransportsCorrectly [
     self assert: (board applyWormholeIfPresentAt: 10) equals: 2.
 ]
 
-
 { #category : 'tests - instance' }
 BoardTest >> testAddAndRemoveWormhole [
     | board wormhole |

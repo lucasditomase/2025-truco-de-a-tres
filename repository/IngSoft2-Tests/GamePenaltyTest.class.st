@@ -242,5 +242,3 @@ GamePenaltyTest >> testWhenShipIsPenalizedThenSkipsTurnAndReducesPenalty [
     game playTurn.
     game playUntilFinish
 ]
-
-

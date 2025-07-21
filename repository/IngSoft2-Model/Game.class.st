@@ -177,6 +177,7 @@ Game >> initializeBasicDataWithShips: someShips board: aBoard dice: someDices la
 Game >> initializeFuelForShips [
     | initialFuel |
     initialFuel := dice maxRoll * 2.
+
     spaceShips do: [ :ship |
         ship maxFuel: initialFuel.
         ship fuel: initialFuel ]
@@ -284,6 +285,7 @@ Game >> penalizedTurnsRemainingFor: aShip [
 { #category : 'process actions' }
 Game >> penalizeAndResetIfNoFuel: aShip [
     aShip fuel > 0 ifTrue: [ ^ self ].
+
     board moveShip: aShip to: 0.
     self penalize: aShip forTurns: 2
 ]
@@ -352,6 +354,7 @@ Game >> registerLapFor: aShip from: oldPosition after: someSteps [
     | cellCount status |
     cellCount := board cellCount.
     status := self lapTrackerFor: aShip.
+
     someSteps > 0
         ifTrue: [
             oldPosition + someSteps < cellCount ifTrue: [ ^ self ].
@@ -487,6 +490,7 @@ Game >> stateOf: aShip [
 Game >> statusFor: aShip [
     | status |
     status := self lapTrackerFor: aShip.
+
     status position: (board positionOf: aShip).
     status penalized: (self isPenalized: aShip).
     ^ status
