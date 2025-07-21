@@ -692,7 +692,7 @@ BoardTest >> testDrawCardReturnsACard [
     board := Board of: 5 andWormholeAt: {}.
     card := board drawCard.
 
-    self assert: (card isKindOf: Card).
+    self assert: (Card withAllSubclasses includes: card class).
 ]
 
 { #category : 'tests - instance' }
