@@ -198,17 +198,6 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     ^ self
 ]
 
-{ #category : 'initialize' }
-Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCollection randomizeEffects: aBoolean [
-    self
-        initializeWithCells: aCount
-        length: aLengthInParsecs
-        andWormholes: aCollection.
-
-    aBoolean ifTrue: [ self populateRandomEffects ].
-
-    ^ self
-]
 
 { #category : 'initialize' }
 Board >> isPositionReachedAt: aPosition [

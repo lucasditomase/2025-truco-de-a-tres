@@ -22,7 +22,7 @@ NullEffectTest >> testApplyToInContextReturnsSelf [
     effect := NullEffect new.
     ship := Spaceship withName: 'Context'.
     board := NullBoard new.
-    self assert: (effect applyTo: ship inContextOf: { ship } inBoard: board) == effect.
+    self assert: (effect applyTo: ship inContextOf: { ship } inBoard: board) equals: effect.
 ]
 
 { #category : 'tests - instance' }
@@ -34,5 +34,5 @@ NullEffectTest >> testAllowsEntryWithRollAlwaysTrue [
 NullEffectTest >> testReversedReturnsSelf [
     | effect |
     effect := NullEffect new.
-    self assert: effect reversed == effect.
+    self assert: effect reversed equals: effect.
 ]

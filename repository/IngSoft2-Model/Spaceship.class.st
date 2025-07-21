@@ -140,14 +140,6 @@ Spaceship >> penaltyTurnsRemaining [
 ]
 
 { #category : 'state' }
-Spaceship >> penalizeFor: aNumber [
-    state := state penalizeFor: aNumber.
-]
-
-{ #category : 'state' }
-Spaceship >> penaltyTurnsRemaining [
-    ^ state turnsRemaining.
-]
 
 { #category : 'cards' }
 Spaceship >> playCard: aCard inGame: aGame [

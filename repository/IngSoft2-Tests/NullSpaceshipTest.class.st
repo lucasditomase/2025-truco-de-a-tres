@@ -19,5 +19,5 @@ NullSpaceshipTest >> testIsNullShipReturnsTrue [
 NullSpaceshipTest >> testValidateAsSpaceshipReturnsSelf [
     | ship |
     ship := NullSpaceship new.
-    self assert: (ship validateAsSpaceship) == ship.
+    self assert: (ship validateAsSpaceship) equals: ship.
 ]
