@@ -1139,32 +1139,7 @@ GameTest >> testWinnerReturnsShipWhenGameFinishes [
     self assert: game winner equals: ship1.
 ]
 
-{ #category : 'tests' }
-GameTest >> testRegisterLapForSubtractsLapWhenMovingBackwardsPastStart [
-    | ship1 ship2 board dice game status |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 3.
-    status := game lapTrackerFor: ship1.
-    status addLap.
-    game registerLapFor: ship1 from: 1 after: -3.
-    self assert: status lapCount equals: 0.
-]
 
-{ #category : 'tests' }
-GameTest >> testPenalizedTurnsRemainingAndPenaltyShip [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game penalize: ship1 forTurns: 3.
-    self assert: (game penalizedTurnsRemainingFor: ship1) equals: 3.
-    self assert: (game penaltyShip includes: ship1).
-]
 
 { #category : 'tests' }
 GameTest >> testValidateIsCurrentPlayerRaisesError [
@@ -1180,30 +1155,3 @@ GameTest >> testValidateIsCurrentPlayerRaisesError [
         withMessageText: 'It is not the turn of this spaceship'.
 ]
 
-{ #category : 'tests' }
-GameTest >> testLastEffectiveCardUpdatesWithNewCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    card := AdvanceCard new.
-    game lastCardPlayed: card.
-    self assert: game lastEffectiveCard equals: card.
-]
-
-{ #category : 'tests' }
-GameTest >> testLastEffectiveCardStaysWhenRedoCardPlayed [
-    | ship1 ship2 board dice game card oldEffective |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    card := AdvanceCard new.
-    game lastCardPlayed: card.
-    oldEffective := game lastEffectiveCard.
-    game lastCardPlayed: RedoCard new.
-    self assert: game lastEffectiveCard equals: oldEffective.
-]

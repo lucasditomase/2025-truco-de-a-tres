@@ -242,3 +242,16 @@ GamePenaltyTest >> testWhenShipIsPenalizedThenSkipsTurnAndReducesPenalty [
     game playTurn.
     game playUntilFinish
 ]
+
+{ #category : 'tests' }
+GamePenaltyTest >> testPenalizedTurnsRemainingAndPenaltyShip [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    game penalize: ship1 forTurns: 3.
+    self assert: (game penalizedTurnsRemainingFor: ship1) equals: 3.
+    self assert: (game penaltyShip includes: ship1).
+]
