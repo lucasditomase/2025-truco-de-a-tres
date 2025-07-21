@@ -5,17 +5,12 @@ Class {
         'spaceShips',
         'board',
         'dice',
-        'winner',
         'turnManager',
         'wantsToPassTurn',
         'totalLaps',
         'state',
-        'lastSteps',
-        'lastPreviousPosition',
         'shipStatuses',
-        'lastCardPlayed',
-        'lastEffectiveCard',
-        'fuelHistory'
+        'turnData'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -97,8 +92,7 @@ Game >> board [
 { #category : 'validation' }
 Game >> checkWinCondition [
     (self hasWonByLaps: self currentShip) ifFalse: [ ^ self ].
-    winner := self currentShip.
-    state := GameFinished withWinner: winner
+    state := GameFinished withWinner: self currentShip
 ]
 
 { #category : 'accessing' }
@@ -159,8 +153,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         initializeFuelForShips;
         initializeTurnManager;
         initializeShipStatuses;
-        initializeTurnTracking;
-        initializeFuelHistory.
+        initializeTurnData.
     ^ self
 ]
 
@@ -202,19 +195,10 @@ Game >> initializeShipStatuses [
 ]
 
 { #category : 'initialization' }
-Game >> initializeTurnTracking [
+Game >> initializeTurnData [
     state := GameInProgress new.
-    lastSteps := 0.
-    lastPreviousPosition := 0.
-    lastCardPlayed := NullCard new.
-    lastEffectiveCard := NullCard new
-]
-
-{ #category : 'initialization' }
-Game >> initializeFuelHistory [
-    fuelHistory := Dictionary new.
-    spaceShips do: [ :ship |
-        fuelHistory at: ship put: (OrderedCollection with: ship fuel) ]
+    turnData := TurnData new.
+    turnData initializeFuelHistoryForShips: spaceShips
 ]
 
 { #category : 'testing' }
@@ -229,23 +213,22 @@ Game >> lapTrackerFor: aShip [
 
 { #category : 'accessing' }
 Game >> lastCardPlayed [
-    ^ lastCardPlayed
+    ^ turnData lastCardPlayed
 ]
 
 { #category : 'accessing' }
 Game >> lastCardPlayed: aCard [
-    lastCardPlayed := aCard.
-    aCard class = RedoCard ifFalse: [ lastEffectiveCard := aCard ]
+    turnData lastCardPlayed: aCard
 ]
 
 { #category : 'accessing' }
 Game >> lastEffectiveCard [
-    ^ lastEffectiveCard
+    ^ turnData lastEffectiveCard
 ]
 
 { #category : 'accessing' }
 Game >> lastEffectiveCard: aCard [
-    lastEffectiveCard := aCard
+    turnData lastEffectiveCard: aCard
 ]
 
 { #category : 'testing' }
@@ -304,8 +287,8 @@ Game >> playTurn [
 
     self
         registerLapFor: self currentShip
-        from: lastPreviousPosition
-        after: lastSteps.
+        from: turnData lastPreviousPosition
+        after: turnData lastSteps.
 
     self applyEffectOfCurrentCell.
 
@@ -339,7 +322,7 @@ Game >> ranking [
 
 { #category : 'process actions' }
 Game >> redoLastCardOn: aShip [
-    lastEffectiveCard playOn: aShip inGame: self
+    turnData lastEffectiveCard playOn: aShip inGame: self
 ]
 
 { #category : 'testing' }
@@ -373,10 +356,10 @@ Game >> removeActiveCard: aCard [
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
     | position effect |
-    (lastSteps = 0 and: [ lastPreviousPosition = 0 ]) ifTrue: [ ^ self ].
+    (turnData lastSteps = 0 and: [ turnData lastPreviousPosition = 0 ]) ifTrue: [ ^ self ].
     position := board
-        determineNewPositionFrom: lastPreviousPosition
-        after: lastSteps.
+        determineNewPositionFrom: turnData lastPreviousPosition
+        after: turnData lastSteps.
     effect := board effectAt: position.
     effect applyTo: aShip inBoard: board
 ]
@@ -406,21 +389,17 @@ Game >> consumeFuel: aNumber forShip: aShip [
 
 { #category : 'process actions' }
 Game >> recordFuelStartFor: aShip [
-    | history |
-    history := fuelHistory at: aShip ifAbsentPut: [ OrderedCollection new ].
-
-    history addLast: aShip fuel.
-    history size > 3 ifTrue: [ history removeFirst ]
+    turnData recordFuelFor: aShip
 ]
 
 { #category : 'accessing' }
 Game >> fuelHistoryFor: aShip [
-    ^ fuelHistory at: aShip ifAbsent: [ OrderedCollection new ]
+    ^ turnData fuelHistoryFor: aShip
 ]
 
 { #category : 'accessing' }
 Game >> fuelHistory: aDictionary [
-    fuelHistory := aDictionary
+    turnData fuelHistory: aDictionary
 ]
 
 { #category : 'process actions' }
@@ -431,7 +410,7 @@ Game >> rewardForMaxRollTo: aShip [
 { #category : 'process actions' }
 Game >> rollAndMoveCurrentShip [
     | steps newPosition modified |
-    lastPreviousPosition := self currentShip position.
+    turnData lastPreviousPosition: self currentShip position.
     steps := dice roll.
     steps = dice maxRoll ifTrue: [
         self rewardForMaxRollTo: self currentShip ].
@@ -439,11 +418,11 @@ Game >> rollAndMoveCurrentShip [
     modified >= 0
         ifTrue: [
             newPosition := board
-                determineNewPositionFrom: lastPreviousPosition
+                determineNewPositionFrom: turnData lastPreviousPosition
                 after: modified.
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
-    lastSteps := modified.
+    turnData lastSteps: modified.
     self consumeFuel: modified abs forShip: self currentShip
 ]
 
