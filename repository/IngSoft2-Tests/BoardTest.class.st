@@ -661,3 +661,31 @@ BoardTest >> testConvertToParsecsHandlesNumbersAndDistances [
     self assert: (Board convertToParsecs: 5) equals: 5.
     self assert: (Board convertToParsecs: (Distance parsecs: 3)) equals: 3.
 ]
+
+{ #category : 'tests - instance' }
+BoardTest >> testLastMoveForTracksMovementAndCanBeCleared [
+    | board ship |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Tracker'.
+    ship moveTo: 1.
+    board registerShips: { ship }.
+
+    board moveShip: ship forward: 2.
+    self assert: (board lastMoveFor: ship) equals: 2.
+
+    board moveShip: ship backward: 1.
+    self assert: (board lastMoveFor: ship) equals: -1.
+
+    board moveShip: ship to: 4.
+    self assert: (board lastMoveFor: ship) equals: 3.
+
+    board clearLastMoves.
+    self assert: (board lastMoveFor: ship) equals: 0.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testTotalLengthInParsecsAccessorReturnsLength [
+    | board |
+    board := Board of: 5 length: 8 andWormholeAt: {}.
+    self assert: board totalLengthInParsecs equals: 8.
+]

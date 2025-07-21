@@ -1336,3 +1336,75 @@ GameTest >> testValidateIsCurrentPlayerRaisesError [
         raise: Error
         withMessageText: 'It is not the turn of this spaceship'.
 ]
+
+{ #category : 'tests' }
+GameTest >> testLastEffectiveCardUpdatesWithNewCard [
+    | ship1 ship2 board dice game card |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    card := AdvanceCard new.
+    game lastCardPlayed: card.
+    self assert: game lastEffectiveCard equals: card.
+]
+
+{ #category : 'tests' }
+GameTest >> testLastEffectiveCardStaysWhenRedoCardPlayed [
+    | ship1 ship2 board dice game card oldEffective |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    card := AdvanceCard new.
+    game lastCardPlayed: card.
+    oldEffective := game lastEffectiveCard.
+    game lastCardPlayed: RedoCard new.
+    self assert: game lastEffectiveCard equals: oldEffective.
+]
+
+{ #category : 'tests' }
+GameTest >> testPenalizeAndResetIfNoFuelAppliesPenalty [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    ship1 moveTo: 3.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 fuel: 0.
+    game penalizeAndResetIfNoFuel: ship1.
+    self assert: (board positionOf: ship1) equals: 0.
+    self assert: (game isPenalized: ship1).
+]
+
+{ #category : 'tests' }
+GameTest >> testPenalizeAndResetIfNoFuelDoesNothingWhenHasFuel [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    ship1 moveTo: 2.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 fuel: 5.
+    game penalizeAndResetIfNoFuel: ship1.
+    self assert: (board positionOf: ship1) equals: 2.
+    self deny: (game isPenalized: ship1).
+]
+
+{ #category : 'tests' }
+GameTest >> testFuelHistorySetterReplacesHistory [
+    | ship1 ship2 board dice game history |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    history := Dictionary new.
+    history at: ship1 put: (OrderedCollection with: 5).
+    game fuelHistory: history.
+    self assert: (game fuelHistoryFor: ship1) equals: (OrderedCollection with: 5).
+]
