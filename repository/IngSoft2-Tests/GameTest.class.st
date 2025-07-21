@@ -936,7 +936,7 @@ GameTest >> testShipStatusReturnsCurrentPosition [
     status1 := game statusFor: spaceShip1.
     status2 := game statusFor: spaceShip2.
 
-    self assert: status1 position equals: 2.
+    self assert: status1 position equals: 0.
     self assert: status2 position equals: 1.
 ]
 

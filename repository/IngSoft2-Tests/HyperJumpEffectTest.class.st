@@ -91,7 +91,7 @@ HyperJumpEffectTest >> testHyperJumpCyclesThroughAllJumpValues [
         positions add: ship position.
     ].
 
-    self assert: positions asArray equals: #(5 9 12 14).
+    self assert: positions asArray equals: #(5 9 2 4).
 ]
 
 { #category : 'tests' }

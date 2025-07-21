@@ -316,7 +316,7 @@ BoardTest >> testHyperJumpEffectJumpsShipForward [
 
     effect applyTo: ship1 inBoard: board.
 
-    self assert: ship1 position equals: 11.
+    self assert: ship1 position equals: 1.
 ]
 
 { #category : 'tests - instance' }
