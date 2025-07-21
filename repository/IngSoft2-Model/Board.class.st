@@ -273,7 +273,7 @@ Board >> populateRandomEffects [
 
 { #category : 'spaceships' }
 Board >> registerShips: someShips [
-        positionManager := PositionManager forShips: someShips
+    positionManager := PositionManager forShips: someShips
 ]
 
 { #category : 'spaceships' }

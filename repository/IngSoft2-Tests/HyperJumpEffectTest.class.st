@@ -96,11 +96,11 @@ HyperJumpEffectTest >> testHyperJumpCyclesThroughAllJumpValues [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testHyperJumpEffectWithValuesInitializesCorrectly [
-        | values effect |
-        values := #(1 3 5).
-        effect := HyperJumpEffect withValues: values.
+    | values effect |
+    values := #(1 3 5).
+    effect := HyperJumpEffect withValues: values.
 
-        self assert: (effect perform: #values) equals: #(5 3 1).
+    self assert: (effect perform: #values) equals: #(5 3 1).
 ]
 
 { #category : 'tests' }
@@ -128,27 +128,27 @@ HyperJumpEffectTest >> testNextJumpValueCyclesCorrectly [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testNextJumpValueReturnsValuesCyclically [
-        | effect values |
-        values := #(3 5 7).
-        effect := HyperJumpEffect withValues: values.
+    | effect values |
+    values := #(3 5 7).
+    effect := HyperJumpEffect withValues: values.
 
-        self assert: effect nextJumpValue equals: 7.
-        self assert: effect nextJumpValue equals: 5.
-        self assert: effect nextJumpValue equals: 3.
-        self assert: effect nextJumpValue equals: 7.
-        self assert: effect nextJumpValue equals: 5.
+    self assert: effect nextJumpValue equals: 7.
+    self assert: effect nextJumpValue equals: 5.
+    self assert: effect nextJumpValue equals: 3.
+    self assert: effect nextJumpValue equals: 7.
+    self assert: effect nextJumpValue equals: 5.
 ]
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testPeekJumpValueReturnsCurrentValueWithoutAdvancing [
-        | effect values |
-        values := #(10 20 30).
-        effect := HyperJumpEffect withValues: values.
+    | effect values |
+    values := #(10 20 30).
+    effect := HyperJumpEffect withValues: values.
 
-        self assert: effect peekJumpValue equals: 30.
-        self assert: effect peekJumpValue equals: 30.
-        effect nextJumpValue.
-        self assert: effect peekJumpValue equals: 20.
+    self assert: effect peekJumpValue equals: 30.
+    self assert: effect peekJumpValue equals: 30.
+    effect nextJumpValue.
+    self assert: effect peekJumpValue equals: 20.
 ]
 
 { #category : 'tests' }
@@ -167,16 +167,16 @@ HyperJumpEffectTest >> testResetJumpIndexRestartsSequence [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testResetJumpIndexSetsIndexBackToOne [
-        | effect values |
-        values := #(3 6 9).
-        effect := HyperJumpEffect withValues: values.
+    | effect values |
+    values := #(3 6 9).
+    effect := HyperJumpEffect withValues: values.
 
-        effect nextJumpValue.
-        effect nextJumpValue.
+    effect nextJumpValue.
+    effect nextJumpValue.
 
-        effect resetJumpIndex.
+    effect resetJumpIndex.
 
-        self assert: effect peekJumpValue equals: 9.
+    self assert: effect peekJumpValue equals: 9.
 ]
 
 { #category : 'tests' }

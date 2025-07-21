@@ -250,7 +250,7 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
     dice: dicesGame
     laps: 1.
 
-[ game whenFinishedDo: [ :w | false ] whenInProgressDo: [ true ] ]
+    [ game whenFinishedDo: [ :w | false ] whenInProgressDo: [ true ] ]
     whileTrue: [ game playTurn ].
 
     positions := game spaceshipPositions.
@@ -1003,7 +1003,7 @@ GameTest >> testWhenShipDecidesToPassTurnThenSkipTurn [
 
 { #category : 'tests' }
 GameTest >> testWhenShipReachesGoalThenGameEnds [
-| spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game |
+    | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game |
 
     dice1 := Die withSides: 100.
     dicesGame := DiceCup with: (OrderedCollection with: dice1).
@@ -1053,7 +1053,7 @@ GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [
 
 { #category : 'tests' }
 GameTest >> testWhenSpaceShipEndsTurnThenRotatesPlayerTurn [
-| spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game expectedSequence actualSequence |
+    | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game expectedSequence actualSequence |
 
     dice1 := Die withSides: 1.
     dicesGame := DiceCup with: (OrderedCollection with: dice1).
@@ -1071,20 +1071,20 @@ GameTest >> testWhenSpaceShipEndsTurnThenRotatesPlayerTurn [
     laps: 1.
 
     expectedSequence := OrderedCollection withAll: {
-    spaceShip1.
-    spaceShip2.
-    spaceShip1.
-    spaceShip2.
-    spaceShip1 }.
+        spaceShip1.
+        spaceShip2.
+        spaceShip1.
+        spaceShip2.
+        spaceShip1 }.
 
     actualSequence := OrderedCollection new.
 
     [ actualSequence size < expectedSequence size and: (
-    game whenFinishedDo: [ :w | false ]
-    whenInProgressDo: [ true ]) ]
+        game whenFinishedDo: [ :w | false ]
+        whenInProgressDo: [ true ]) ]
     whileTrue: [
-    actualSequence add: game currentShip.
-    game playTurn
+        actualSequence add: game currentShip.
+        game playTurn
     ].
 
     self assert: actualSequence equals: expectedSequence.

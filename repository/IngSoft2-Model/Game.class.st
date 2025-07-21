@@ -18,7 +18,7 @@ Class {
 
 { #category : 'initialize' }
 Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
-        self validateMinimumShips: someShips.
+    self validateMinimumShips: someShips.
     self validateShips: someShips.
     self validateBoard: aBoard.
     self validateDice: someDices.
@@ -107,7 +107,7 @@ Game >> currentShip [
 
 { #category : 'accessing' }
 Game >> currentTurnIndex [
-        ^ turnManager currentTurnIndex
+    ^ turnManager currentTurnIndex
 ]
 
 { #category : 'accessing' }
