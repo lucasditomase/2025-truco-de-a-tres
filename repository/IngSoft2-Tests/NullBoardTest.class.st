@@ -1,8 +1,8 @@
 Class {
-	#name : 'NullBoardTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'NullBoardTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests - instance' }
@@ -31,4 +31,11 @@ NullBoardTest >> testMoveShipToSetsExactPosition [
     ship := Spaceship withName: 'Discovery'.
     board moveShip: ship to: 5.
     self assert: ship position equals: 5.
+]
+
+{ #category : 'tests - instance' }
+NullBoardTest >> testValidateAsBoardReturnsSelf [
+    | board |
+    board := NullBoard new.
+    self assert: (board validateAsBoard) equals: board.
 ]

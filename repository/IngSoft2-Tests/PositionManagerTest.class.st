@@ -1,8 +1,8 @@
 Class {
-	#name : 'PositionManagerTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'PositionManagerTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests - class' }
@@ -26,7 +26,7 @@ PositionManagerTest >> testInitializeForShipsReturnsSelf [
     ship2 moveTo: 8.
     manager := PositionManager new.
     result := manager initializeForShips: { ship1 . ship2 }.
-    self assert: (result == manager).
+    self assert: result equals: manager.
     self assert: (manager positionOf: ship1) equals: 3.
     self assert: (manager positionOf: ship2) equals: 8.
 ]

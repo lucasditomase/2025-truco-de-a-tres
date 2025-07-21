@@ -1,16 +1,16 @@
 Class {
-	#name : 'CardDeck',
-	#superclass : 'Object',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'CardDeck',
+    #superclass : 'Object',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'deck' }
 CardDeck class >> availableCards [
-	^ { AdvanceCard. ShieldCard. OverloadCard. AccelerationCard. CancellationCard. AllyCard. RedoCard. RepeatCard }
+    ^ { AdvanceCard. ShieldCard. OverloadCard. AccelerationCard. CancellationCard. AllyCard. RedoCard. RepeatCard. ReversalCard. TimeMachineCard }
 ]
 
 { #category : 'deck' }
 CardDeck class >> randomCard [
-	^ (self availableCards atRandom) new
+    ^ (self availableCards atRandom) new
 ]

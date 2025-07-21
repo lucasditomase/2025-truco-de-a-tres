@@ -1,13 +1,21 @@
 Class {
-	#name : 'HyperGravityEffectTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'HyperGravityEffectTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
+
+{ #category : 'asserting' }
+HyperGravityEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: errorMessage ]
+]
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testAllowsEntryWithRollFalseWhenLow [
-
     | effect |
 
     effect := HyperGravityEffect new.
@@ -18,7 +26,6 @@ HyperGravityEffectTest >> testAllowsEntryWithRollFalseWhenLow [
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testAllowsEntryWithRollTrueWhenEnough [
-
     | effect |
 
     effect := HyperGravityEffect new.
@@ -29,8 +36,7 @@ HyperGravityEffectTest >> testAllowsEntryWithRollTrueWhenEnough [
 ]
 
 { #category : 'tests' }
-HyperGravityEffectTest >> testApplyToMovesShipBackwardsOneStep [
-
+HyperGravityEffectTest >> testApplyEffectDoesNotMoveShip [
     | ship effect |
 
     ship := Spaceship withName: 'Heavy'.
@@ -39,5 +45,15 @@ HyperGravityEffectTest >> testApplyToMovesShipBackwardsOneStep [
     effect := HyperGravityEffect new.
     effect applyTo: ship.
 
-    self assert: ship position equals: 4.
+    self assert: ship position equals: 5.
+]
+
+{ #category : 'tests' }
+HyperGravityEffectTest >> testRequiredRollCannotExceedMaximum [
+    | effect |
+    effect := HyperGravityEffect new.
+    self
+        should: [ effect requiredRoll: 13 ]
+        raise: Error
+        withMessageText: 'Required roll cannot exceed dice maximum'.
 ]

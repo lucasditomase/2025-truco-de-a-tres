@@ -1,8 +1,8 @@
 Class {
-	#name : 'GameState',
-	#superclass : 'Object',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'GameState',
+    #superclass : 'Object',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'enumerating' }

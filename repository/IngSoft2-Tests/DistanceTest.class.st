@@ -1,8 +1,8 @@
 Class {
-	#name : 'DistanceTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'DistanceTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests - instance' }
@@ -51,10 +51,9 @@ DistanceTest >> testLightYearsClassMethodCreatesLightYearsDistance [
 
 { #category : 'tests - instance' }
 DistanceTest >> testLightYearsInitializationFailsForInvalidNumber [
-
-	self should: [ Distance lightYears: -5 ] raise: Error.
-	self should: [ Distance lightYears: 'foo' ] raise: Error.
-	self should: [ Distance lightYears: 0 ] raise: Error
+    self should: [ Distance lightYears: -5 ] raise: Error.
+    self should: [ Distance lightYears: 'foo' ] raise: Error.
+    self should: [ Distance lightYears: 0 ] raise: Error
 ]
 
 { #category : 'tests - instance' }
@@ -67,8 +66,7 @@ DistanceTest >> testParsecsClassMethodCreatesParsecsDistance [
 
 { #category : 'tests - instance' }
 DistanceTest >> testParsecsInitializationFailsForInvalidNumber [
-
-	self should: [ Distance parsecs: -1 ] raise: Error.
-	self should: [ Distance parsecs: 'bar' ] raise: Error.
-	self should: [ Distance parsecs: 0 ] raise: Error
+    self should: [ Distance parsecs: -1 ] raise: Error.
+    self should: [ Distance parsecs: 'bar' ] raise: Error.
+    self should: [ Distance parsecs: 0 ] raise: Error
 ]

@@ -1,8 +1,8 @@
 Class {
-	#name : 'NullBoard',
-	#superclass : 'Object',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'NullBoard',
+    #superclass : 'Object',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'spaceships' }
@@ -18,4 +18,9 @@ NullBoard >> moveShip: aShip forward: steps [
 { #category : 'spaceships' }
 NullBoard >> moveShip: aShip to: aPosition [
     aShip moveTo: aPosition.
+]
+
+{ #category : 'validation' }
+NullBoard >> validateAsBoard [
+    ^ self
 ]

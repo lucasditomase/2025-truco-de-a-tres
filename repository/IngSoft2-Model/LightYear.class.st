@@ -1,16 +1,16 @@
 Class {
-	#name : 'LightYear',
-	#superclass : 'DistanceUnit',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'LightYear',
+    #superclass : 'DistanceUnit',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 LightYear >> asLightYears: aNumber [
     ^ aNumber
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 LightYear >> asParsecs: aNumber [
-    ^ aNumber / Parsec lightYearsPerParsec
+    ^ aNumber / Parsec lightYearsInOne
 ]

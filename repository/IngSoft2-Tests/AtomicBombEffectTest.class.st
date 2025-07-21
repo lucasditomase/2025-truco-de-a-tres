@@ -1,13 +1,12 @@
 Class {
-	#name : 'AtomicBombEffectTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'AtomicBombEffectTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests' }
 AtomicBombEffectTest >> testApplyToDoesNothing [
-
     | ship effect |
 
     ship := Spaceship withName: 'Solo'.
@@ -21,7 +20,6 @@ AtomicBombEffectTest >> testApplyToDoesNothing [
 
 { #category : 'tests' }
 AtomicBombEffectTest >> testApplyToInContextResetsAllPositions [
-
     | ship1 ship2 effect board |
 
     ship1 := Spaceship withName: 'One'.

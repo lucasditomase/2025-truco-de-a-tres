@@ -1,13 +1,12 @@
 Class {
-	#name : 'ShipStatusTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'ShipStatusTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests' }
 ShipStatusTest >> testInitializationSetsValuesCorrectly [
-
     | ship status |
 
     ship := Spaceship withName: 'Voyager'.
@@ -21,7 +20,6 @@ ShipStatusTest >> testInitializationSetsValuesCorrectly [
 
 { #category : 'tests' }
 ShipStatusTest >> testIsPenalizedReturnsFalse [
-
     | ship status |
 
     ship := Spaceship withName: 'Enterprise'.

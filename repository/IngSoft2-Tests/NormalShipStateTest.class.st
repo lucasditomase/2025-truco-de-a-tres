@@ -1,8 +1,8 @@
 Class {
-	#name : 'NormalShipStateTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'NormalShipStateTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'tests' }
@@ -25,7 +25,7 @@ NormalShipStateTest >> testPenalizeForReturnsPenalizedState [
 NormalShipStateTest >> testReducePenaltyReturnsSelf [
     | state |
     state := NormalShipState new.
-    self assert: (state reducePenalty) == state.
+    self assert: (state reducePenalty) equals: state.
 ]
 
 { #category : 'tests' }

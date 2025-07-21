@@ -1,13 +1,12 @@
 Class {
-	#name : 'PenalizedShipStateTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'PenalizedShipStateTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
 
 { #category : 'asserting' }
 PenalizedShipStateTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-
     self
         should: anErrorBlock
         raise: anErrorClass
@@ -17,7 +16,6 @@ PenalizedShipStateTest >> should: anErrorBlock raise: anErrorClass withMessageTe
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testDecreaseTurn [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 2.
@@ -29,7 +27,6 @@ PenalizedShipStateTest >> testDecreaseTurn [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testForTurnsRaisesErrorWhenInvalid [
-
     self
         should: [ PenalizedShipState forTurns: -1 ]
         raise: Error
@@ -42,7 +39,6 @@ PenalizedShipStateTest >> testForTurnsRaisesErrorWhenInvalid [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testInitializationWithPenalty [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 3.
@@ -53,7 +49,6 @@ PenalizedShipStateTest >> testInitializationWithPenalty [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testInitializationWithoutPenalty [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 0.
@@ -64,7 +59,6 @@ PenalizedShipStateTest >> testInitializationWithoutPenalty [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testIsPenalizedReturnsTrue [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 1.
@@ -74,7 +68,6 @@ PenalizedShipStateTest >> testIsPenalizedReturnsTrue [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testPenalizeForRaisesErrorWhenInvalid [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 1.
@@ -91,7 +84,6 @@ PenalizedShipStateTest >> testPenalizeForRaisesErrorWhenInvalid [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testPenalizeForSetsTurns [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 1.
@@ -102,19 +94,17 @@ PenalizedShipStateTest >> testPenalizeForSetsTurns [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testReducePenaltyReturnsSelfWhenStillPenalized [
-
     | penalized newState |
 
     penalized := PenalizedShipState forTurns: 2.
     newState := penalized reducePenalty.
 
-    self assert: newState == penalized.
+    self assert: newState equals: penalized.
     self assert: penalized turnsRemaining equals: 1.
 ]
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testReducePenaltyTransitionsToNormalState [
-
     | penalized newState |
 
     penalized := PenalizedShipState forTurns: 1.
@@ -125,7 +115,6 @@ PenalizedShipStateTest >> testReducePenaltyTransitionsToNormalState [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testTurnsRemainingAccessor [
-
     | penalized |
 
     penalized := PenalizedShipState forTurns: 3.
@@ -145,7 +134,6 @@ PenalizedShipStateTest >> testTurnsRemainingSetter [
 
 { #category : 'tests' }
 PenalizedShipStateTest >> testWhenPenalizedDoEvaluatesPenalizedBlock [
-
     | penalized executed |
 
     executed := false.

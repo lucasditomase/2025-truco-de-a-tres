@@ -1,21 +1,21 @@
 Class {
-	#name : 'Parsec',
-	#superclass : 'DistanceUnit',
-	#category : 'IngSoft2-Model',
-	#package : 'IngSoft2-Model'
+    #name : 'Parsec',
+    #superclass : 'DistanceUnit',
+    #category : 'IngSoft2-Model',
+    #package : 'IngSoft2-Model'
 }
 
 { #category : 'constants' }
-Parsec class >> lightYearsPerParsec [
+Parsec class >> lightYearsInOne [
     ^ 3
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 Parsec >> asLightYears: aNumber [
-    ^ aNumber * Parsec lightYearsPerParsec
+    ^ aNumber * self class lightYearsInOne
 ]
 
-{ #category : 'conversions' }
+{ #category : 'converting' }
 Parsec >> asParsecs: aNumber [
     ^ aNumber
 ]

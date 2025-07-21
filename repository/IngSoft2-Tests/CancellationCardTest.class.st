@@ -1,13 +1,20 @@
 Class {
-	#name : 'CancellationCardTest',
-	#superclass : 'TestCase',
-	#category : 'IngSoft2-Tests',
-	#package : 'IngSoft2-Tests'
+    #name : 'CancellationCardTest',
+    #superclass : 'TestCase',
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
 }
+
+{ #category : 'asserting' }
+CancellationCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error | self assert: error messageText equals: errorMessage ]
+]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAccelerationCard [
-
     | target card ship1 ship2 board dice game |
 
     target := AccelerationCard new.
@@ -27,7 +34,6 @@ CancellationCardTest >> testApplyEffectToCancelsAccelerationCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAdvanceCard [
-
     | target card ship1 ship2 board dice game |
 
     target := AdvanceCard new.
@@ -47,7 +53,6 @@ CancellationCardTest >> testApplyEffectToCancelsAdvanceCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAllyCard [
-
     | target card ship1 ship2 board dice game |
 
     target := AllyCard withAlly: (Spaceship withName: 'Ally').
@@ -67,7 +72,6 @@ CancellationCardTest >> testApplyEffectToCancelsAllyCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsCancellationCard [
-
     | target card ship1 ship2 board dice game |
 
     target := CancellationCard cancelling: (AdvanceCard new).
@@ -87,7 +91,6 @@ CancellationCardTest >> testApplyEffectToCancelsCancellationCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsOverloadCard [
-
     | target card ship1 ship2 board dice game |
 
     ship1 := Spaceship withName: 'One'.
@@ -107,7 +110,6 @@ CancellationCardTest >> testApplyEffectToCancelsOverloadCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsRedoCard [
-
     | target card ship1 ship2 board dice game |
 
     target := RedoCard new.
@@ -127,7 +129,6 @@ CancellationCardTest >> testApplyEffectToCancelsRedoCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsShieldCard [
-
     | target card ship1 ship2 board dice game |
 
     target := ShieldCard new.
@@ -147,7 +148,6 @@ CancellationCardTest >> testApplyEffectToCancelsShieldCard [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToRemovesCardFromGame [
-
     | target card ship1 ship2 board dice game |
 
     target := RepeatCard new.
@@ -167,25 +167,42 @@ CancellationCardTest >> testApplyEffectToRemovesCardFromGame [
 
 { #category : 'tests - class' }
 CancellationCardTest >> testCancellingCreatesCardWithTarget [
-
     | target card |
 
     target := RepeatCard new.
     card := CancellationCard cancelling: target.
 
     self assert: card class equals: CancellationCard.
-    self assert: (card instVarNamed: 'cardToCancel') equals: target.
+    self assert: card cardToCancel equals: target.
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testInitializeCancellingSetsCardToCancel [
-
     | target card returned |
 
     target := RepeatCard new.
     card := CancellationCard new.
     returned := card initializeCancelling: target.
 
-    self assert: returned == card.
-    self assert: (card instVarNamed: 'cardToCancel') equals: target.
+    self assert: returned equals: card.
+    self assert: card cardToCancel equals: target.
+]
+
+{ #category : 'tests - instance' }
+CancellationCardTest >> testPlayOnRaisesErrorWhenNoActiveCards [
+    | card ship1 ship2 board dice game |
+
+    card := CancellationCard cancelling: (AccelerationCard new).
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+
+    ship1 addCard: card.
+    self
+        should: [ ship1 playCard: card inGame: game ]
+        raise: Error
+        withMessageText: 'No active cards to cancel'.
 ]
