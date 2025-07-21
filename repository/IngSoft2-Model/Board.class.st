@@ -242,7 +242,7 @@ Board >> moveShip: aShip forward: steps [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    | oldPos diff newPos |
+    | oldPos newPos diff |
     oldPos := self positionOf: aShip.
     newPos := aPosition \\ cellCount.
     positionManager moveShip: aShip to: newPos.

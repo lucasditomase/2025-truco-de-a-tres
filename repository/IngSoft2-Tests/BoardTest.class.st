@@ -468,6 +468,32 @@ BoardTest >> testMoveShipForwardWithoutManager [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testMoveShipForwardWrapsAround [
+    | board ship |
+    board := Board of: 5 andWormholeAt: #().
+    ship := Spaceship withName: 'Wrap'.
+    ship moveTo: 4.
+
+    board registerShips: { ship }.
+    board moveShip: ship forward: 3.
+
+    self assert: ship position equals: 2.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testMoveShipBackwardWrapsAround [
+    | board ship |
+    board := Board of: 5 andWormholeAt: #().
+    ship := Spaceship withName: 'BackWrap'.
+    ship moveTo: 1.
+
+    board registerShips: { ship }.
+    board moveShip: ship backward: 3.
+
+    self assert: ship position equals: 3.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testMoveShipToWithoutManager [
     | board ship |
     board := Board of: 5 andWormholeAt: #().
