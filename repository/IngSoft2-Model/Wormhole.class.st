@@ -36,7 +36,7 @@ Wormhole class >> from: entryPosition to: exitPosition [
     ^ self basicNew initializeFrom: entryPosition to: exitPosition.
 ]
 
-{ #category : 'initialize' }
+{ #category : 'instance creation' }
 Wormhole class >> new [
     self error: 'Use Wormhole from:to: instead.'.
 ]
