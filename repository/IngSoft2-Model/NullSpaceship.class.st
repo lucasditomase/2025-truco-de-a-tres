@@ -6,11 +6,6 @@ Class {
 }
 
 { #category : 'testing' }
-NullSpaceship >> isNil [
-    ^ true
-]
-
-{ #category : 'testing' }
 NullSpaceship >> isNullShip [
     ^ true
 ]

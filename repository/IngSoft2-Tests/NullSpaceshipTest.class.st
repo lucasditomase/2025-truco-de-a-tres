@@ -7,7 +7,7 @@ Class {
 
 { #category : 'tests - instance' }
 NullSpaceshipTest >> testIsNilReturnsTrue [
-    self assert: (NullSpaceship new isNil).
+    self assert: (NullSpaceship new isNullShip).
 ]
 
 { #category : 'tests - instance' }
