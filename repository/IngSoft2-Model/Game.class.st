@@ -154,22 +154,42 @@ Game >> hasWonByLaps: aShip [
 
 { #category : 'initialization' }
 Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
-    | initialFuel |
+    self
+        initializeBasicDataWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps;
+        initializeFuelForShips;
+        initializeTurnManager;
+        initializeShipStatuses;
+        initializeTurnTracking;
+        initializeFuelHistory.
+    ^ self
+]
+
+{ #category : 'initialization' }
+Game >> initializeBasicDataWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
     spaceShips := someShips.
     board := aBoard.
     board registerShips: someShips.
     dice := someDices.
-    totalLaps := aNumberLaps.
+    totalLaps := aNumberLaps
+]
 
+{ #category : 'initialization' }
+Game >> initializeFuelForShips [
+    | initialFuel |
     initialFuel := dice maxRoll * 2.
     spaceShips do: [ :ship |
         ship maxFuel: initialFuel.
-        ship fuel: initialFuel ].
+        ship fuel: initialFuel ]
+]
 
-    turnManager := TurnManager withShips: someShips.
+{ #category : 'initialization' }
+Game >> initializeTurnManager [
+    turnManager := TurnManager withShips: spaceShips.
+    wantsToPassTurn := Dictionary new
+]
 
-    wantsToPassTurn := Dictionary new.
-
+{ #category : 'initialization' }
+Game >> initializeShipStatuses [
     shipStatuses := Dictionary new.
     spaceShips do: [ :ship |
         shipStatuses at: ship put: (ShipStatus
@@ -177,16 +197,23 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
             position: 0
             laps: 0
             penalized: false).
-        2 timesRepeat: [ ship addCard: board drawCard ] ].
-    state := GameInProgress new.
+        2 timesRepeat: [ ship addCard: board drawCard ] ]
+]
 
-        lastSteps := 0.
-        lastPreviousPosition := 0.
-        lastCardPlayed := NullCard new.
-        lastEffectiveCard := NullCard new.
-        fuelHistory := Dictionary new.
-        spaceShips do: [ :ship |
-            fuelHistory at: ship put: (OrderedCollection with: ship fuel) ]
+{ #category : 'initialization' }
+Game >> initializeTurnTracking [
+    state := GameInProgress new.
+    lastSteps := 0.
+    lastPreviousPosition := 0.
+    lastCardPlayed := NullCard new.
+    lastEffectiveCard := NullCard new
+]
+
+{ #category : 'initialization' }
+Game >> initializeFuelHistory [
+    fuelHistory := Dictionary new.
+    spaceShips do: [ :ship |
+        fuelHistory at: ship put: (OrderedCollection with: ship fuel) ]
 ]
 
 { #category : 'testing' }
