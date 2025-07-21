@@ -23,6 +23,11 @@ EffectDecorator >> initialize [
 EffectDecorator >> applyEffectTo: aShip inBoard: aBoard [
 ]
 
+{ #category : 'operations' }
+EffectDecorator >> applyTo: aShip inContextOf: ships inBoard: aBoard [
+    self applyTo: aShip inBoard: aBoard
+]
+
 { #category : 'instance creation' }
 EffectDecorator >> applyTo: aShip [
     | board |
@@ -54,4 +59,9 @@ EffectDecorator >> wrapped [
 { #category : 'operations' }
 EffectDecorator >> reversed [
     ^ ReversedEffect of: self
+]
+
+{ #category : 'operations' }
+EffectDecorator >> allowsEntryWithRoll: aRoll [
+    ^ true
 ]

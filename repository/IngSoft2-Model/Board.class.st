@@ -102,9 +102,7 @@ Board >> applyEffectTo: aSpaceship [
     | effect |
 
     effect := self effectAt: (self positionOf: aSpaceship).
-    (effect respondsTo: #applyTo:inContextOf:inBoard:)
-        ifTrue: [ effect applyTo: aSpaceship inContextOf: self ships inBoard: self ]
-        ifFalse: [ effect applyTo: aSpaceship inBoard: self ].
+    effect applyTo: aSpaceship inContextOf: self ships inBoard: self
 ]
 
 { #category : 'initialize' }
@@ -158,11 +156,8 @@ Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
         pos := (pos + direction) \\ cellCount.
         direction > 0 ifTrue: [
             effect := self effectAt: pos.
-            (effect respondsTo: #allowsEntryWithRoll:)
-                ifTrue: [
-                    (effect allowsEntryWithRoll: aRoll)
-                        ifFalse: [ ^ self applyWormholeIfPresentAt: pos ]
-                ].
+            (effect allowsEntryWithRoll: aRoll)
+                ifFalse: [ ^ self applyWormholeIfPresentAt: pos ].
         ].
     ].
     ^ self applyWormholeIfPresentAt: pos
@@ -175,9 +170,7 @@ Board >> drawCard [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    | effect |
-    effect := cells at: aPosition ifAbsent: [ NullEffect new ].
-    ^ effect ifNil: [ NullEffect new ]
+    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
 ]
 
 { #category : 'initialize' }

@@ -346,19 +346,20 @@ Game >> repeatLastEffectOn: aShip [
 
 { #category : 'process actions' }
 Game >> consumeFuel: aNumber forShip: aShip [
-    | initialFuel deficit ally |
+    | initialFuel deficit allies ally |
     initialFuel := aShip fuel.
     aShip decreaseFuelBy: aNumber.
-    ally := aShip allies ifEmpty: [ nil ] ifNotEmpty: [ aShip allies first ].
+    allies := aShip allies.
 
     initialFuel >= aNumber ifTrue: [ ^ self ].
 
     deficit := aNumber - initialFuel.
-    ally ifNil: [
+    allies isEmpty ifTrue: [
         board moveShip: aShip to: 0.
         self penalize: aShip forTurns: 2.
         ^ self ].
 
+    ally := allies first.
     ally decreaseFuelBy: deficit.
     (ally fuel = 0) ifTrue: [
         board moveShip: ally to: 0.
