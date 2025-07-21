@@ -170,7 +170,9 @@ Board >> drawCard [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
+    | effect |
+    effect := cells at: aPosition ifAbsent: [ NullEffect new ].
+    ^ effect ifNil: [ NullEffect new ] ifNotNil: [ effect ]
 ]
 
 { #category : 'initialize' }
