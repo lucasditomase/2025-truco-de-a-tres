@@ -17,3 +17,11 @@ CardTest >> testModifyRollReturnsSameNumber [
 CardTest >> testPlayOnRaisesSubclassResponsibilityError [
     self should: [ Card new playOn: nil inGame: nil ] raise: Error.
 ]
+
+{ #category : 'tests' }
+CardTest >> testAllyForReturnsNullSpaceship [
+    | card ally |
+    card := Card new.
+    ally := card allyFor: nil.
+    self assert: ally class equals: NullSpaceship.
+]
