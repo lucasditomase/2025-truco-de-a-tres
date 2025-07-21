@@ -139,8 +139,6 @@ Spaceship >> penaltyTurnsRemaining [
     ^ state turnsRemaining
 ]
 
-{ #category : 'state' }
-
 { #category : 'cards' }
 Spaceship >> playCard: aCard inGame: aGame [
     aGame ensureGameIsNotOver.
