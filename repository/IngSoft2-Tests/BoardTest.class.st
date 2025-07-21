@@ -615,3 +615,49 @@ BoardTest >> testMoveShipBackwardWrapsAround [
     board moveShip: ship backward: 3.
     self assert: ship position equals: 3.
 ]
+
+{ #category : 'tests - instance' }
+BoardTest >> testAddAndRemoveWormhole [
+    | board wormhole |
+    board := Board of: 5 andWormholeAt: {}.
+    wormhole := Wormhole from: 1 to: 3.
+    board addWormhole: wormhole.
+    self assert: (board applyWormholeIfPresentAt: 1) equals: 3.
+    board removeWormhole: wormhole.
+    self assert: (board applyWormholeIfPresentAt: 1) equals: 1.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testReverseAtReversesWormhole [
+    | board |
+    board := Board of: 5 andWormholeAt: { Wormhole from: 1 to: 4 }.
+    board reverseAt: 1.
+    self assert: (board applyWormholeIfPresentAt: 1) equals: -1.
+    self assert: (board applyWormholeIfPresentAt: 4) equals: 6.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testReverseEffectAtReplacesEffect [
+    | board effect |
+    board := Board of: 5 andWormholeAt: {}.
+    effect := BlackHoleEffect new.
+    board cells at: 2 put: effect.
+    board reverseEffectAt: 2.
+    self assert: (board effectAt: 2) class equals: ReversedEffect.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testReverseEffectAtSkipsAtomicBomb [
+    | board effect |
+    board := Board of: 5 andWormholeAt: {}.
+    effect := AtomicBombEffect new.
+    board cells at: 3 put: effect.
+    board reverseEffectAt: 3.
+    self assert: (board effectAt: 3) class equals: AtomicBombEffect.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testConvertToParsecsHandlesNumbersAndDistances [
+    self assert: (Board convertToParsecs: 5) equals: 5.
+    self assert: (Board convertToParsecs: (Distance parsecs: 3)) equals: 3.
+]

@@ -60,3 +60,25 @@ MoonWalkEffectTest >> testApplyToInContextWithCustomSteps [
     self assert: ship1 position equals: 6.
     self assert: ship2 position equals: 2.
 ]
+
+{ #category : 'tests' }
+MoonWalkEffectTest >> testApplyEffectToReturnsSelf [
+    | effect board ship result |
+    effect := MoonWalkEffect new.
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'S'.
+    board registerShips: { ship }.
+    ship moveTo: 1.
+    result := effect applyEffectTo: ship inBoard: board.
+    self assert: result equals: effect.
+    self assert: ship position equals: 1.
+]
+
+{ #category : 'tests' }
+MoonWalkEffectTest >> testStepsAccessorWorks [
+    | effect |
+    effect := MoonWalkEffect withSteps: 5.
+    self assert: effect steps equals: 5.
+    effect steps: 3.
+    self assert: effect steps equals: 3.
+]

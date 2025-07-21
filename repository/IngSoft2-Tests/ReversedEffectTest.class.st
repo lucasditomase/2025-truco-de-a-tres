@@ -98,3 +98,24 @@ ReversedEffectTest >> testApplyToUsesNullBoard [
     reversed applyTo: ship.
     self assert: ship position equals: 4.
 ]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testReversedReturnsOriginal [
+    | effect reversed |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    self assert: reversed reversed equals: effect.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyToInBoardAppliesEffect [
+    | board ship effect reversed |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Ship'.
+    board registerShips: { ship }.
+    ship moveTo: 0.
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    reversed applyTo: ship inBoard: board.
+    self assert: ship position equals: 4.
+]

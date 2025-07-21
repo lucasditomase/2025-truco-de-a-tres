@@ -254,6 +254,13 @@ Game >> penalizedTurnsRemainingFor: aShip [
     ^ aShip penaltyTurnsRemaining
 ]
 
+{ #category : 'process actions' }
+Game >> penalizeAndResetIfNoFuel: aShip [
+    aShip fuel > 0 ifTrue: [ ^ self ].
+    board moveShip: aShip to: 0.
+    self penalize: aShip forTurns: 2
+]
+
 { #category : 'accessing' }
 Game >> penaltyShip [
     ^ spaceShips select: [ :ship | ship isPenalized ]
@@ -362,15 +369,9 @@ Game >> consumeFuel: aNumber forShip: aShip [
 
     ally := allies first.
     ally decreaseFuelBy: deficit.
-    ally fuel > 0 ifFalse: [
-        board moveShip: ally to: 0.
-        self penalize: ally forTurns: 2
-    ].
+    self penalizeAndResetIfNoFuel: ally.
 
-    aShip fuel > 0 ifFalse: [
-        board moveShip: aShip to: 0.
-        self penalize: aShip forTurns: 2
-    ].
+    self penalizeAndResetIfNoFuel: aShip.
 ]
 
 { #category : 'process actions' }

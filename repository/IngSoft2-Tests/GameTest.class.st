@@ -1276,3 +1276,63 @@ GameTest >> testRegisterLapForSubtractsLapWhenMovingBackwardsPastStart [
     game registerLapFor: ship1 from: 1 after: -3.
     self assert: status lapCount equals: 0.
 ]
+
+{ #category : 'tests' }
+GameTest >> testRecordFuelStartForMaintainsHistory [
+    | ship1 ship2 board dice game history |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 fuel: 5.
+    game recordFuelStartFor: ship1.
+    ship1 fuel: 4.
+    game recordFuelStartFor: ship1.
+    ship1 fuel: 3.
+    game recordFuelStartFor: ship1.
+    ship1 fuel: 2.
+    game recordFuelStartFor: ship1.
+    history := game fuelHistoryFor: ship1.
+    self assert: history equals: { 4. 3. 2 } asOrderedCollection.
+]
+
+{ #category : 'tests' }
+GameTest >> testRewardForMaxRollIncreasesMaxFuel [
+    | ship1 ship2 board dice game initial |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    initial := ship1 maxFuel.
+    game rewardForMaxRollTo: ship1.
+    self assert: ship1 maxFuel equals: initial + 1.
+]
+
+{ #category : 'tests' }
+GameTest >> testPenalizedTurnsRemainingAndPenaltyShip [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    game penalize: ship1 forTurns: 3.
+    self assert: (game penalizedTurnsRemainingFor: ship1) equals: 3.
+    self assert: (game penaltyShip includes: ship1).
+]
+
+{ #category : 'tests' }
+GameTest >> testValidateIsCurrentPlayerRaisesError [
+    | ship1 ship2 board dice game |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self
+        should: [ game validateIsCurrentPlayer: ship2 ]
+        raise: Error
+        withMessageText: 'It is not the turn of this spaceship'.
+]
