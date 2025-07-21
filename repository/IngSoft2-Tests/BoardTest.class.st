@@ -743,3 +743,32 @@ BoardTest >> testInvalidBoardLengthMismatchRaisesError [
         raise: Error
         withMessageText: 'Length mismatch between parsecs and light years'.
 ]
+{ #category : 'tests - instance' }
+BoardTest >> testShipsReturnsRegisteredShips [
+    | board ship1 ship2 |
+    board := Board of: 3 andWormholeAt: {}.
+    ship1 := Spaceship withName: 'S1'.
+    ship2 := Spaceship withName: 'S2'.
+    board registerShips: { ship1. ship2 }.
+    self assert: (board ships includes: ship1).
+    self assert: (board ships includes: ship2).
+    self assert: board ships size equals: 2.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testValidateAsBoardReturnsSelf [
+    | board |
+    board := Board of: 3 andWormholeAt: {}.
+    self assert: (board validateAsBoard) == board.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testCellsSetterUpdatesCells [
+    | board newCells |
+    board := Board of: 3 andWormholeAt: {}.
+    newCells := Dictionary new.
+    newCells at: 0 put: NoEffect new.
+    board cells: newCells.
+    self assert: board cells equals: newCells.
+    self assert: board cellCount equals: 1.
+]
