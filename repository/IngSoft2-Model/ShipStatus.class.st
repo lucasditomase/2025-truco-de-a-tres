@@ -20,12 +20,12 @@ ShipStatus class >> for: aShip position: aPosition laps: aLapCount penalized: is
         penalized: isPenalized.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'updating' }
 ShipStatus >> addLap [
     lapCount := lapCount + 1
 ]
 
-{ #category : 'accessing' }
+{ #category : 'methods' }
 ShipStatus >> removeLap [
     lapCount := (lapCount - 1) max: 0
 ]

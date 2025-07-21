@@ -8,7 +8,7 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'initialization' }
+{ #category : 'operations' }
 HyperGravityEffect >> allowsEntryWithRoll: aNumber [
     ^ aNumber >= requiredRoll
 ]

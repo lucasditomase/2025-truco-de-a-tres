@@ -25,11 +25,6 @@ HyperJumpEffect class >> withValues: aCollection [
 ]
 
 { #category : 'operations' }
-HyperJumpEffect >> allowsEntryWithRoll: aRoll [
-    ^ true.
-]
-
-{ #category : 'operations' }
 HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     | parsecs steps |
     parsecs := self nextJumpValue.

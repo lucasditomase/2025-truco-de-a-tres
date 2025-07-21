@@ -96,9 +96,9 @@ Game >> board [
 
 { #category : 'validation' }
 Game >> checkWinCondition [
-    (self hasWonByLaps: self currentShip) ifTrue: [
-        winner := self currentShip.
-        state := GameFinished withWinner: winner ]
+    (self hasWonByLaps: self currentShip) ifFalse: [ ^ self ].
+    winner := self currentShip.
+    state := GameFinished withWinner: winner
 ]
 
 { #category : 'accessing' }
@@ -351,23 +351,26 @@ Game >> consumeFuel: aNumber forShip: aShip [
     aShip decreaseFuelBy: aNumber.
     allies := aShip allies.
 
-    initialFuel >= aNumber ifTrue: [ ^ self ].
+    initialFuel < aNumber ifFalse: [ ^ self ].
 
     deficit := aNumber - initialFuel.
     allies isEmpty ifTrue: [
         board moveShip: aShip to: 0.
         self penalize: aShip forTurns: 2.
-        ^ self ].
+        ^ self
+    ].
 
     ally := allies first.
     ally decreaseFuelBy: deficit.
-    (ally fuel = 0) ifTrue: [
+    ally fuel > 0 ifFalse: [
         board moveShip: ally to: 0.
-        self penalize: ally forTurns: 2 ].
+        self penalize: ally forTurns: 2
+    ].
 
-    aShip fuel = 0 ifTrue: [
+    aShip fuel > 0 ifFalse: [
         board moveShip: aShip to: 0.
-        self penalize: aShip forTurns: 2 ].
+        self penalize: aShip forTurns: 2
+    ].
 ]
 
 { #category : 'process actions' }

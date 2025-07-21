@@ -15,7 +15,7 @@ TurnManager class >> withShips: someShips [
     ^ self new initializeWithShips: someShips.
 ]
 
-{ #category : 'accessing' }
+{ #category : 'process actions' }
 TurnManager >> advanceTurn [
     currentIndex := currentIndex + 1.
     currentIndex > ships size ifTrue: [ currentIndex := 1 ].
