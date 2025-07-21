@@ -155,7 +155,7 @@ Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
     pos := aPosition.
     direction := steps >= 0 ifTrue: [ 1 ] ifFalse: [ -1 ].
     1 to: steps abs do: [ :i |
-        pos := pos + direction.
+        pos := (pos + direction) \\ cellCount.
         direction > 0 ifTrue: [
             effect := self effectAt: pos.
             (effect respondsTo: #allowsEntryWithRoll:)
@@ -222,28 +222,31 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    | oldPos |
+    | oldPos newPos |
     oldPos := self positionOf: aShip.
-    positionManager moveShip: aShip to: ((oldPos - steps) max: 0).
+    newPos := (oldPos - steps) \\ cellCount.
+    positionManager moveShip: aShip to: newPos.
     lastMoves at: aShip put: steps negated.
     ^ steps negated
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    | oldPos |
+    | oldPos newPos |
     oldPos := self positionOf: aShip.
-    positionManager moveShip: aShip to: (oldPos + steps).
+    newPos := (oldPos + steps) \\ cellCount.
+    positionManager moveShip: aShip to: newPos.
     lastMoves at: aShip put: steps.
     ^ steps
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    | oldPos diff |
+    | oldPos diff newPos |
     oldPos := self positionOf: aShip.
-    positionManager moveShip: aShip to: aPosition.
-    diff := aPosition - oldPos.
+    newPos := aPosition \\ cellCount.
+    positionManager moveShip: aShip to: newPos.
+    diff := newPos - oldPos.
     lastMoves at: aShip put: diff.
     ^ diff
 ]

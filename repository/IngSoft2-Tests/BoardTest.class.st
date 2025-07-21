@@ -567,3 +567,25 @@ BoardTest >> testWormholeTransportsCorrectly [
     self assert: (board applyWormholeIfPresentAt: 2) equals: 10.
     self assert: (board applyWormholeIfPresentAt: 10) equals: 2.
 ]
+
+{ #category : 'tests - instance' }
+BoardTest >> testMoveShipForwardWrapsAround [
+    | board ship |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Runner'.
+    ship moveTo: 4.
+    board registerShips: { ship }.
+    board moveShip: ship forward: 3.
+    self assert: ship position equals: 2.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testMoveShipBackwardWrapsAround [
+    | board ship |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Back'.
+    ship moveTo: 1.
+    board registerShips: { ship }.
+    board moveShip: ship backward: 3.
+    self assert: ship position equals: 3.
+]

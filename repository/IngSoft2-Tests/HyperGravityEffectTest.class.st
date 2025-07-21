@@ -38,3 +38,13 @@ HyperGravityEffectTest >> testApplyEffectDoesNotMoveShip [
 
     self assert: ship position equals: 5.
 ]
+
+{ #category : 'tests' }
+HyperGravityEffectTest >> testRequiredRollCannotExceedMaximum [
+    | effect |
+    effect := HyperGravityEffect new.
+    self
+        should: [ effect requiredRoll: 13 ]
+        raise: Error
+        withMessageText: 'Required roll cannot exceed dice maximum'.
+]

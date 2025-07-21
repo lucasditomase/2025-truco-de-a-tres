@@ -96,10 +96,9 @@ Game >> board [
 
 { #category : 'validation' }
 Game >> checkWinCondition [
-    (self currentShip hasReachedGoalOn: board) ifTrue: [
-        (self hasWonByLaps: self currentShip) ifTrue: [
-            winner := self currentShip.
-            state := GameFinished withWinner: winner ] ]
+    (self hasWonByLaps: self currentShip) ifTrue: [
+        winner := self currentShip.
+        state := GameFinished withWinner: winner ]
 ]
 
 { #category : 'accessing' }
@@ -318,11 +317,14 @@ Game >> reducePenaltyFor: aShip [
 Game >> registerLapFor: aShip from: oldPosition after: someSteps [
     | cellCount status |
     cellCount := board cellCount.
-
-    oldPosition + someSteps < cellCount ifTrue: [ ^ self ].
-
     status := self lapTrackerFor: aShip.
-    status addLap
+    someSteps > 0
+        ifTrue: [
+            oldPosition + someSteps < cellCount ifTrue: [ ^ self ].
+            status addLap ]
+        ifFalse: [
+            oldPosition + someSteps >= 0 ifTrue: [ ^ self ].
+            status removeLap ]
 ]
 
 { #category : 'process actions' }
@@ -412,9 +414,12 @@ Game >> rollAndMoveCurrentShip [
 
 { #category : 'process actions' }
 Game >> applyEffectOfCurrentCell [
-    | beforePositions |
+    | beforePositions effect skipFuel |
     beforePositions := Dictionary new.
     board ships do: [ :ship | beforePositions at: ship put: (board positionOf: ship) ].
+
+    effect := board effectAt: (board positionOf: self currentShip).
+    skipFuel := effect class = AtomicBombEffect.
 
     board clearLastMoves.
     board applyEffectTo: self currentShip.
@@ -425,7 +430,7 @@ Game >> applyEffectOfCurrentCell [
         diff := board lastMoveFor: ship.
         diff = 0 ifTrue: [ diff := (board positionOf: ship) - before ].
         diff ~= 0 ifTrue: [
-            self consumeFuel: diff abs forShip: ship.
+            skipFuel ifFalse: [ self consumeFuel: diff abs forShip: ship ].
             self registerLapFor: ship from: before after: diff
         ]
     ]

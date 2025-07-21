@@ -1248,3 +1248,31 @@ GameTest >> testWinnerReturnsShipWhenGameFinishes [
     game playTurn.
     self assert: game winner equals: ship1.
 ]
+
+{ #category : 'tests' }
+GameTest >> testAtomicBombDoesNotConsumeFuel [
+    | ship1 ship2 board dice game initial |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 3 andWormholeAt: {}.
+    board cells at: 1 put: AtomicBombEffect new.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    initial := ship1 fuel.
+    game playTurn.
+    self assert: ship1 fuel equals: initial - 1.
+]
+
+{ #category : 'tests' }
+GameTest >> testRegisterLapForSubtractsLapWhenMovingBackwardsPastStart [
+    | ship1 ship2 board dice game status |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 3.
+    status := game lapTrackerFor: ship1.
+    status addLap.
+    game registerLapFor: ship1 from: 1 after: -3.
+    self assert: status lapCount equals: 0.
+]

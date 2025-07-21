@@ -26,6 +26,11 @@ ShipStatus >> addLap [
 ]
 
 { #category : 'accessing' }
+ShipStatus >> removeLap [
+    lapCount := (lapCount - 1) max: 0
+]
+
+{ #category : 'accessing' }
 ShipStatus >> hasWonWithTotalLaps: aNumber [
     ^ lapCount >= aNumber
 ]
