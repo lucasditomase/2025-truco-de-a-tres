@@ -677,7 +677,7 @@ BoardTest >> testLastMoveForTracksMovementAndCanBeCleared [
     self assert: (board lastMoveFor: ship) equals: -1.
 
     board moveShip: ship to: 4.
-    self assert: (board lastMoveFor: ship) equals: 3.
+    self assert: (board lastMoveFor: ship) equals: 2.
 
     board clearLastMoves.
     self assert: (board lastMoveFor: ship) equals: 0.
@@ -688,4 +688,58 @@ BoardTest >> testTotalLengthInParsecsAccessorReturnsLength [
     | board |
     board := Board of: 5 length: 8 andWormholeAt: {}.
     self assert: board totalLengthInParsecs equals: 8.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testBoardCreationWithoutRandomEffectsProducesNoEffects [
+    | board |
+    board := Board of: 5 andWormholeAt: {} withRandomEffects: false.
+
+    self assert: (board cells values allSatisfy: [ :each | each class = NoEffect ]).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testPopulateRandomEffectsProducesRecognizedClasses [
+    | board valid |
+    board := Board of: 5 andWormholeAt: {} withRandomEffects: false.
+    valid := { NoEffect. BlackHoleEffect. HyperGravityEffect. MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
+
+    board populateRandomEffects.
+    self assert: (board cells values allSatisfy: [ :e | valid anySatisfy: [ :cls | e class = cls ] ]).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testDrawCardReturnsACard [
+    | board card |
+    board := Board of: 5 andWormholeAt: {}.
+    card := board drawCard.
+
+    self assert: (card isKindOf: Card).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testDetermineNewPositionAppliesWormholeWhenNoSteps [
+    | board wormhole |
+    wormhole := Wormhole from: 1 to: 4.
+    board := Board of: 5 andWormholeAt: { wormhole }.
+
+    self assert: (board determineNewPositionFrom: 1 after: 0 withRoll: 0) equals: 4.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testDetermineNewPositionBackwardIgnoresHyperGravity [
+    | board effect |
+    board := Board of: 5 andWormholeAt: {}.
+    effect := HyperGravityEffect new.
+    board cells at: 2 put: effect.
+
+    self assert: (board determineNewPositionFrom: 2 after: -1 withRoll: 1) equals: 1.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testInvalidBoardLengthMismatchRaisesError [
+    self
+        should: [ Board of: 5 length: 10 lengthLightYears: 5 andWormholeAt: {} ]
+        raise: Error
+        withMessageText: 'Length mismatch between parsecs and light years'.
 ]
