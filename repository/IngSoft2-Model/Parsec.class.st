@@ -6,13 +6,13 @@ Class {
 }
 
 { #category : 'constants' }
-Parsec class >> lightYearsPerParsec [
+Parsec class >> lightYearsInOne [
     ^ 3
 ]
 
 { #category : 'converting' }
 Parsec >> asLightYears: aNumber [
-    ^ aNumber * self class lightYearsPerParsec
+    ^ aNumber * self class lightYearsInOne
 ]
 
 { #category : 'converting' }

@@ -27,13 +27,13 @@ Wormhole class >> assertValidStateFrom: entry to: exit [
 { #category : 'initialize' }
 Wormhole class >> connecting: aPosition and: anotherPosition [
     self validatePositionIsNotTheSame: aPosition and: anotherPosition.
-    ^ super new initializeConnecting: aPosition and: anotherPosition.
+    ^ self basicNew initializeConnecting: aPosition and: anotherPosition.
 ]
 
 { #category : 'initialize' }
 Wormhole class >> from: entryPosition to: exitPosition [
     self assertValidStateFrom: entryPosition to: exitPosition.
-    ^ super new initializeFrom: entryPosition to: exitPosition.
+    ^ self basicNew initializeFrom: entryPosition to: exitPosition.
 ]
 
 { #category : 'initialize' }

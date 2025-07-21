@@ -8,9 +8,9 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'initialization' }
+{ #category : 'instance creation' }
 EffectDecorator class >> new [
-    ^ super new initialize
+    ^ self basicNew initialize
 ]
 
 { #category : 'initialization' }
