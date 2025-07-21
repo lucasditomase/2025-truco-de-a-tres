@@ -68,6 +68,16 @@ Board class >> of: anAmountOfCells lengthLightYears: lightYears andWormholeAt: p
 ]
 
 { #category : 'initialize' }
+Board class >> of: anAmountOfCells andWormholeAt: positions withRandomEffects: aBoolean [
+    | board |
+    board := self
+        of: anAmountOfCells
+        andWormholeAt: positions.
+    aBoolean ifTrue: [ board populateRandomEffects ].
+    ^ board
+]
+
+{ #category : 'initialize' }
 Board class >> validateCellCount: aCount [
     (aCount isInteger and: [ aCount > 0 ]) ifFalse: [
         self error: 'Board must have a positive number of cells' ]
@@ -132,7 +142,30 @@ Board >> cells: aCollection [
 
 { #category : 'moves' }
 Board >> determineNewPositionFrom: aPosition after: steps [
-    ^ self applyWormholeIfPresentAt: (aPosition + steps).
+    ^ self
+        determineNewPositionFrom: aPosition
+        after: steps
+        withRoll: steps abs
+]
+
+{ #category : 'moves' }
+Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
+    | pos direction effect |
+    steps = 0 ifTrue: [ ^ self applyWormholeIfPresentAt: aPosition ].
+    pos := aPosition.
+    direction := steps >= 0 ifTrue: [ 1 ] ifFalse: [ -1 ].
+    1 to: steps abs do: [ :i |
+        pos := pos + direction.
+        direction > 0 ifTrue: [
+            effect := self effectAt: pos.
+            (effect respondsTo: #allowsEntryWithRoll:)
+                ifTrue: [
+                    (effect allowsEntryWithRoll: aRoll)
+                        ifFalse: [ ^ self applyWormholeIfPresentAt: pos ]
+                ].
+        ].
+    ].
+    ^ self applyWormholeIfPresentAt: pos
 ]
 
 { #category : 'deck' }
@@ -165,8 +198,19 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     lastMoves := Dictionary new.
 
     0 to: aCount - 1 do: [ :i |
-        "Use deterministic effects for faster and predictable tests"
         cells at: i put: NoEffect new ].
+
+    ^ self
+]
+
+{ #category : 'initialize' }
+Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCollection randomizeEffects: aBoolean [
+    self
+        initializeWithCells: aCount
+        length: aLengthInParsecs
+        andWormholes: aCollection.
+
+    aBoolean ifTrue: [ self populateRandomEffects ].
 
     ^ self
 ]
@@ -229,6 +273,14 @@ Board >> randomEffect [
     randomNumber <= 90 ifTrue: [ ^ MoonWalkEffect new ].
     randomNumber <= 98 ifTrue: [ ^ HyperJumpEffect withValues: #(1 2 3) ].
     ^ AtomicBombEffect new
+]
+
+{ #category : 'initialize' }
+Board >> populateRandomEffects [
+    0 to: cellCount - 1 do: [ :i |
+        cells at: i put: self randomEffect ].
+
+    ^ self
 ]
 
 { #category : 'spaceships' }
