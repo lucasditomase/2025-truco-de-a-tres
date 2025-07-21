@@ -30,8 +30,6 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
         aBoard moveShip: aShip forward: 4.
         ^ self ].
     original class = HyperGravityEffect ifTrue: [
-        "Reversing HyperGravity has no positional effect once the ship is on the
-        cell, therefore nothing happens."
         ^ self ].
     original class = HyperJumpEffect ifTrue: [
         aBoard moveShip: aShip to: aShip position.

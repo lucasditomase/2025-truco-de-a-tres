@@ -15,8 +15,6 @@ HyperGravityEffect >> allowsEntryWithRoll: aNumber [
 
 { #category : 'operations' }
 HyperGravityEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
-    "HyperGravity only restricts movement based on the dice roll. Once the ship
-    has reached this cell the effect does not alter its position."
     ^ aSpaceship.
 ]
 
