@@ -21,4 +21,5 @@ SqueakDebug.log
 /github-cache
 github-*.zip
 
+# macOS Finder metadata file, not needed in source control
 .DS_Store
