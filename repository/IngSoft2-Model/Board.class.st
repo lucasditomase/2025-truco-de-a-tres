@@ -332,7 +332,9 @@ Board >> randomEffect [
 
 { #category : 'effects' }
 Board >> randomEffectDistribution [
-    ^ OrderedCollection withAll: self class effectDistributionWeights
+    ^ OrderedCollection new
+        addAll: self class effectDistributionWeights;
+        yourself
 ]
 
 { #category : 'effects' }
