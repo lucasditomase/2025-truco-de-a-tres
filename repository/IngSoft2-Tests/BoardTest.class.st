@@ -693,7 +693,7 @@ BoardTest >> testConfigureHyperGravityRequirementsUsesMaxRoll [
     effect := HyperGravityEffect new.
     board cells at: 2 put: effect.
     board configureHyperGravityRequirementsWithMaxRoll: 3.
-    self assert: (1 to: 3) includes: effect requiredRoll.
+    self assert: ((1 to: 3) includes: effect requiredRoll).
 ]
 
 { #category : 'tests - instance' }
