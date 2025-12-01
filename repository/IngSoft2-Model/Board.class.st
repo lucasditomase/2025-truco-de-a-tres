@@ -221,7 +221,11 @@ Board >> moveShip: aShip backward: steps [
     | start target |
     start := self positionOf: aShip.
     target := self determineNewPositionFrom: start after: steps negated.
-    ^ movementService moveShip: aShip to: target
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: target
+        delta: [ :new :previous | steps negated ]
 ]
 
 { #category : 'spaceships' }
@@ -229,7 +233,11 @@ Board >> moveShip: aShip forward: steps [
     | start target |
     start := self positionOf: aShip.
     target := self determineNewPositionFrom: start after: steps.
-    ^ movementService moveShip: aShip to: target
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: target
+        delta: [ :new :previous | steps ]
 ]
 
 { #category : 'spaceships' }
