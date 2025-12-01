@@ -10,7 +10,9 @@ Class {
         'totalLaps',
         'state',
         'shipStatuses',
-        'turnData'
+        'turnData',
+        'fuelManager',
+        'lapTracker'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -147,8 +149,19 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         initializeHyperGravityRequirements;
         initializeTurnManager;
         initializeShipStatuses;
+        initializeManagers;
         initializeTurnData.
     ^ self
+]
+
+{ #category : 'initialization' }
+Game >> initializeManagers [
+    fuelManager := FuelManager
+        forBoard: board
+        penalizeWith: [ :ship :turns | self penalize: ship forTurns: turns ].
+    lapTracker := LapTracker
+        forBoard: board
+        statuses: shipStatuses
 ]
 
 { #category : 'initialization' }
@@ -264,14 +277,6 @@ Game >> penalizedTurnsRemainingFor: aShip [
     ^ aShip penaltyTurnsRemaining
 ]
 
-{ #category : 'process actions' }
-Game >> penalizeAndResetIfNoFuel: aShip [
-    aShip fuel > 0 ifTrue: [ ^ self ].
-
-    board moveShip: aShip to: 0.
-    self penalize: aShip forTurns: 2
-]
-
 { #category : 'accessing' }
 Game >> penaltyShip [
     ^ spaceShips select: [ :ship | ship isPenalized ]
@@ -333,17 +338,7 @@ Game >> reducePenaltyFor: aShip [
 
 { #category : 'testing' }
 Game >> registerLapFor: aShip from: oldPosition after: someSteps [
-    | cellCount status |
-    cellCount := board cellCount.
-    status := self lapTrackerFor: aShip.
-
-    someSteps > 0
-        ifTrue: [
-            oldPosition + someSteps < cellCount ifTrue: [ ^ self ].
-            status addLap ]
-        ifFalse: [
-            oldPosition + someSteps >= 0 ifTrue: [ ^ self ].
-            status removeLap ]
+    lapTracker registerLapFor: aShip from: oldPosition after: someSteps
 ]
 
 { #category : 'process actions' }
@@ -371,25 +366,7 @@ Game >> repeatLastEffectOn: aShip [
 
 { #category : 'process actions' }
 Game >> consumeFuel: aNumber forShip: aShip [
-    | initialFuel deficit allies ally |
-    initialFuel := aShip fuel.
-    aShip decreaseFuelBy: aNumber.
-    allies := aShip allies.
-
-    initialFuel < aNumber ifFalse: [ ^ self ].
-
-    deficit := aNumber - initialFuel.
-    allies isEmpty ifTrue: [
-        board moveShip: aShip to: 0.
-        self penalize: aShip forTurns: 2.
-        ^ self
-    ].
-
-    ally := allies first.
-    ally decreaseFuelBy: deficit.
-    self penalizeAndResetIfNoFuel: ally.
-
-    self penalizeAndResetIfNoFuel: aShip.
+    fuelManager consumeFuel: aNumber forShip: aShip
 ]
 
 { #category : 'process actions' }
@@ -435,7 +412,7 @@ Game >> rollAndMoveCurrentShip [
             board moveShip: self currentShip to: newPosition ]
         ifFalse: [ board moveShip: self currentShip backward: modified abs ].
     turnData lastSteps: modified.
-    self consumeFuel: modified abs forShip: self currentShip
+    fuelManager consumeMovement: modified forShip: self currentShip
 ]
 
 { #category : 'process actions' }
@@ -457,8 +434,8 @@ Game >> applyEffectOfCurrentCell [
         diff := board lastMoveFor: ship.
         diff = 0 ifTrue: [ diff := (board positionOf: ship) - before ].
         diff ~= 0 ifTrue: [
-            skipFuel ifFalse: [ self consumeFuel: diff abs forShip: ship ].
-            self registerLapFor: ship from: before after: diff
+            skipFuel ifFalse: [ fuelManager consumeMovement: diff forShip: ship ].
+            lapTracker registerLapFor: ship from: before after: diff
         ]
     ]
 ]
