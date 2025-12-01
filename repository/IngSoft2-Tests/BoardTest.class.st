@@ -614,8 +614,8 @@ BoardTest >> testRecordMovesDuringCapturesStartAndAggregatedDelta [
     ].
     data := report at: ship ifAbsent: [ self fail: 'Expected move data' ].
 
-    self assert: data first equals: 1.
-    self assert: data second equals: 5.
+    self assert: data startPosition equals: 1.
+    self assert: data delta equals: 5.
 ]
 
 { #category : 'tests - instance' }
