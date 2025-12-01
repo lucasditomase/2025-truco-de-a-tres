@@ -533,7 +533,7 @@ BoardTest >> testRandomEffectProducesRecognizedClass [
     | board effect valid |
     board := Board of: 5 andWormholeAt: #().
     effect := board randomEffect.
-    valid := { NoEffect. BlackHoleEffect. HyperGravityEffect.
+    valid := { NoEffect. CardEffect. BlackHoleEffect. HyperGravityEffect.
         MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
 
     self assert: (valid anySatisfy: [ :cls | effect class = cls ]).
@@ -680,10 +680,24 @@ BoardTest >> testBoardCreationWithoutRandomEffectsProducesNoEffects [
 BoardTest >> testPopulateRandomEffectsProducesRecognizedClasses [
     | board valid |
     board := Board of: 5 andWormholeAt: {} withRandomEffects: false.
-    valid := { NoEffect. BlackHoleEffect. HyperGravityEffect. MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
+    valid := { NoEffect. CardEffect. BlackHoleEffect. HyperGravityEffect. MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
 
     board populateRandomEffects.
     self assert: (board cells values allSatisfy: [ :e | valid anySatisfy: [ :cls | e class = cls ] ]).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testRandomEffectForRollDistributesAccordingToSpecification [
+    | board |
+    board := Board of: 5 andWormholeAt: {}.
+
+    self assert: (board randomEffectForRoll: 1) class equals: NoEffect.
+    self assert: (board randomEffectForRoll: 45) class equals: CardEffect.
+    self assert: (board randomEffectForRoll: 60) class equals: BlackHoleEffect.
+    self assert: (board randomEffectForRoll: 70) class equals: HyperGravityEffect.
+    self assert: (board randomEffectForRoll: 95) class equals: MoonWalkEffect.
+    self assert: (board randomEffectForRoll: 100) class equals: HyperJumpEffect.
+    self assert: (board randomEffectForRoll: 108) class equals: AtomicBombEffect.
 ]
 
 { #category : 'tests - instance' }

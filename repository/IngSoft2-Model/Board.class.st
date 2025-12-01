@@ -262,19 +262,6 @@ Board >> lastMoveFor: aShip [
 ]
 
 { #category : 'initialize' }
-Board >> randomEffect [
-    | randomNumber |
-    randomNumber := (1 to: 100) atRandom.
-
-    randomNumber <= 40 ifTrue: [ ^ NoEffect new ].
-    randomNumber <= 60 ifTrue: [ ^ BlackHoleEffect new ].
-    randomNumber <= 80 ifTrue: [ ^ HyperGravityEffect new ].
-    randomNumber <= 90 ifTrue: [ ^ MoonWalkEffect new ].
-    randomNumber <= 98 ifTrue: [ ^ HyperJumpEffect withValues: #(1 2 3) ].
-    ^ AtomicBombEffect new
-]
-
-{ #category : 'initialize' }
 Board >> populateRandomEffects [
     0 to: cellCount - 1 do: [ :i |
         cells at: i put: self randomEffect ].
@@ -313,6 +300,40 @@ Board >> addWormhole: aWormhole [
 { #category : 'effects' }
 Board >> removeWormhole: aWormhole [
     wormholes remove: aWormhole
+]
+
+{ #category : 'effects' }
+Board >> randomEffect [
+    ^ self randomEffectForRoll: (1 to: self totalEffectWeight) atRandom
+]
+
+{ #category : 'effects' }
+Board >> randomEffectDistribution [
+    ^ OrderedCollection new
+        add: [ NoEffect new ] -> 38;
+        add: [ CardEffect new ] -> 10;
+        add: [ BlackHoleEffect new ] -> 20;
+        add: [ HyperGravityEffect new ] -> 20;
+        add: [ MoonWalkEffect new ] -> 10;
+        add: [ HyperJumpEffect withValues: #(1 2 3) ] -> 8;
+        add: [ AtomicBombEffect new ] -> 2;
+        yourself
+]
+
+{ #category : 'effects' }
+Board >> randomEffectForRoll: aNumber [
+    | cumulative |
+    cumulative := 0.
+    self randomEffectDistribution do: [ :entry |
+        cumulative := cumulative + entry value.
+        aNumber <= cumulative ifTrue: [ ^ entry key value ].
+    ].
+    ^ AtomicBombEffect new
+]
+
+{ #category : 'effects' }
+Board >> totalEffectWeight [
+    ^ self randomEffectDistribution sum: [ :entry | entry value ]
 ]
 
 { #category : 'initialize' }
