@@ -355,7 +355,13 @@ Game >> removeActiveCard: aCard [
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
-    | position effect |
+    | position effect card |
+    turnData lastEffectWasCard ifTrue: [
+        card := turnData lastEffectiveCard.
+        card class = NullCard ifTrue: [ ^ self ].
+        card playOn: aShip inGame: self.
+        ^ self
+    ].
     (turnData lastSteps = 0 and: [ turnData lastPreviousPosition = 0 ]) ifTrue: [ ^ self ].
     position := board
         determineNewPositionFrom: turnData lastPreviousPosition
@@ -441,6 +447,7 @@ Game >> applyEffectOfCurrentCell [
 
     effect := board effectAt: (board positionOf: self currentShip).
     skipFuel := effect class = AtomicBombEffect.
+    turnData lastEffectWasCard: false.
 
     board clearLastMoves.
     board applyEffectTo: self currentShip.

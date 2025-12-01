@@ -423,6 +423,28 @@ GameTest >> testPlayTurnAppliesBoardEffect [
 ]
 
 { #category : 'tests' }
+GameTest >> testRepeatCardCanApplyLastCardEffectToChosenShip [
+    | ship1 ship2 board dice game advance repeat |
+    ship1 := Spaceship withName: 'Alpha'.
+    ship2 := Spaceship withName: 'Beta'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { MockDie value: 1 sides: 6 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 cards removeAll.
+    advance := AdvanceCard new.
+    repeat := RepeatCard targeting: ship2.
+    ship1 addCard: advance.
+    ship1 addCard: repeat.
+
+    ship1 playCard: advance inGame: game.
+    self assert: ship1 position equals: 1.
+
+    ship1 playCard: repeat inGame: game.
+
+    self assert: ship2 position equals: 1.
+]
+
+{ #category : 'tests' }
 GameTest >> testPlayTurnRaisesErrorWhenGameIsOver [
     | ship1 ship2 board dice game |
 

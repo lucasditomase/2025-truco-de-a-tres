@@ -6,7 +6,8 @@ Class {
         'lastPreviousPosition',
         'lastCardPlayed',
         'lastEffectiveCard',
-        'fuelHistory'
+        'fuelHistory',
+        'lastEffectWasCard'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -19,6 +20,7 @@ TurnData >> initialize [
     lastCardPlayed := NullCard new.
     lastEffectiveCard := NullCard new.
     fuelHistory := Dictionary new.
+    lastEffectWasCard := false.
     ^ self
 ]
 
@@ -74,7 +76,19 @@ TurnData >> lastCardPlayed [
 { #category : 'accessing' }
 TurnData >> lastCardPlayed: aCard [
     lastCardPlayed := aCard.
-    aCard class = RedoCard ifFalse: [ lastEffectiveCard := aCard ]
+    (aCard class = RedoCard or: [ aCard class = RepeatCard ]) ifTrue: [ ^ self ].
+    lastEffectWasCard := true.
+    lastEffectiveCard := aCard
+]
+
+{ #category : 'accessing' }
+TurnData >> lastEffectWasCard [
+    ^ lastEffectWasCard
+]
+
+{ #category : 'accessing' }
+TurnData >> lastEffectWasCard: aBoolean [
+    lastEffectWasCard := aBoolean
 ]
 
 { #category : 'accessing' }
