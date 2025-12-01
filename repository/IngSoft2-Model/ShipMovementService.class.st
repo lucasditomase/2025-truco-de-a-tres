@@ -78,7 +78,7 @@ ShipMovementService >> moveShip: aShip to: aPosition [
 ShipMovementService >> moveShip: aShip from: oldPos toPosition: target delta: deltaBlock [
     | newPos delta |
     cellCount = 0 ifTrue: [ ^ 0 ].
-    newPos := target \ cellCount.
+    newPos := target \\ cellCount.
     positionManager moveShip: aShip to: newPos.
     delta := deltaBlock value: newPos value: oldPos.
     lastMoves at: aShip put: delta.
