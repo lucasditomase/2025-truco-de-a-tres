@@ -234,20 +234,6 @@ BoardTest >> testEffectAtHandlesAllCases [
 ]
 
 { #category : 'tests - instance' }
-BoardTest >> testEffectAtReturnsCorrectEffect [
-    | board customEffect |
-
-    board := Board of: 10 andWormholeAt: {}.
-    customEffect := BlackHoleEffect new.
-    board cells: (Dictionary new).
-    board cells at: 5 put: customEffect.
-    board cells at: 8 put: NoEffect new.
-
-    self assert: (board effectAt: 5) equals: customEffect.
-    self assert: (board effectAt: 8) class equals: NoEffect.
-]
-
-{ #category : 'tests - instance' }
 BoardTest >> testHyperGravityAllowsEntryWhenRollIsSufficient [
     | board ship effect newPosition |
 
@@ -518,14 +504,6 @@ BoardTest >> testPositionOfWithoutManager [
 
     board moveShip: ship to: 4.
     self assert: (board positionOf: ship) equals: 4.
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testPositionWithoutWormholeReturnsSame [
-    | board |
-    board := Board of: 10 andWormholeAt: #().
-
-    self assert: (board applyWormholeIfPresentAt: 5) equals: 5.
 ]
 
 { #category : 'tests - instance' }

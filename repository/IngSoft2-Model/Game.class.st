@@ -57,11 +57,7 @@ Game class >> validateMinimumShips: someShips [
 
 { #category : 'initialize' }
 Game class >> validateShips: someShips [
-    (someShips isCollection) ifFalse: [
-        ^ self error: 'Ships must be a collection of Spaceship instances' ].
-    someShips do: [ :each |
-        (each isKindOf: Spaceship) ifFalse: [
-            ^ self error: 'Ships must be a collection of Spaceship instances' ] ]
+    Spaceship ensureCollectionOfSpaceships: someShips
 ]
 
 { #category : 'process actions' }

@@ -5,25 +5,19 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'initialization' }
-NullPositionManager >> initialize [
-    positions := Dictionary new.
-    ^ self
-]
-
 { #category : 'updating' }
 NullPositionManager >> moveShip: aShip backward: steps [
-    aShip moveBack: steps.
+    ShipMover move: aShip backward: steps.
 ]
 
 { #category : 'updating' }
 NullPositionManager >> moveShip: aShip forward: steps [
-    aShip moveForward: steps.
+    ShipMover move: aShip forward: steps.
 ]
 
 { #category : 'updating' }
 NullPositionManager >> moveShip: aShip to: aPosition [
-    aShip moveTo: aPosition.
+    ShipMover move: aShip to: aPosition.
 ]
 
 { #category : 'accessing' }

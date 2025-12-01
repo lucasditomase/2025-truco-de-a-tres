@@ -26,6 +26,15 @@ Spaceship class >> withName: aName [
     ^ self new initializeWith: aName
 ]
 
+{ #category : 'validation' }
+Spaceship class >> ensureCollectionOfSpaceships: someShips [
+    (someShips isCollection) ifFalse: [
+        ^ self error: 'Ships must be a collection of Spaceship instances' ].
+    someShips do: [ :each |
+        (each isKindOf: Spaceship) ifFalse: [
+            ^ self error: 'Ships must be a collection of Spaceship instances' ] ]
+]
+
 { #category : 'methods' }
 Spaceship >> activeCards [
     ^ activeCards
