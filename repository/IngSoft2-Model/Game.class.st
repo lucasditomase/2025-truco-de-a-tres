@@ -272,6 +272,11 @@ Game >> penalize: aShip forTurns: turns [
     (self lapTrackerFor: aShip) penalized: true
 ]
 
+{ #category : 'process actions' }
+Game >> penalizeAndResetIfNoFuel: aShip [
+    fuelManager penalizeIfDepleted: aShip
+]
+
 { #category : 'testing' }
 Game >> penalizedTurnsRemainingFor: aShip [
     ^ aShip penaltyTurnsRemaining
