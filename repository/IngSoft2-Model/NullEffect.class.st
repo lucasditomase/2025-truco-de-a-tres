@@ -31,3 +31,8 @@ NullEffect >> reversed [
     ^ NullBehavior passThrough: self
 ]
 
+{ #category : 'querying' }
+NullEffect >> consumesFuel [
+    ^ true
+]
+

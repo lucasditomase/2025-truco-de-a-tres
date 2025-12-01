@@ -67,3 +67,8 @@ EffectDecorator >> reversedVersion [
 EffectDecorator >> allowsEntryWithRoll: aRoll [
     ^ true
 ]
+
+{ #category : 'querying' }
+EffectDecorator >> consumesFuel [
+    ^ true
+]

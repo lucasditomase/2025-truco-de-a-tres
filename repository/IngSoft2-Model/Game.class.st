@@ -366,7 +366,7 @@ Game >> repeatLastEffectOn: aShip [
         determineNewPositionFrom: turnData lastPreviousPosition
         after: turnData lastSteps.
     effect := board effectAt: position.
-    skipFuel := effect class = AtomicBombEffect.
+    skipFuel := effect consumesFuel not.
     self
         applyEffectSkippingFuel: skipFuel
         during: [ effect applyTo: aShip inBoard: board ]
@@ -424,7 +424,7 @@ Game >> rollAndMoveCurrentShip [
 Game >> applyEffectOfCurrentCell [
     | effect skipFuel |
     effect := board effectAt: (board positionOf: self currentShip).
-    skipFuel := effect class = AtomicBombEffect.
+    skipFuel := effect consumesFuel not.
     self
         applyEffectSkippingFuel: skipFuel
         during: [ board applyEffectTo: self currentShip ]

@@ -47,12 +47,16 @@ FuelManager >> consumeFuel: amount forShip: aShip [
 { #category : 'actions' }
 FuelManager >> penalizeIfDepleted: aShip [
     aShip fuel > 0 ifTrue: [ ^ self ].
-    board moveShip: aShip to: 0.
-    penaltyAction value: aShip value: 2
+    self applyPenaltyTo: aShip
 ]
 
 { #category : 'actions' }
 FuelManager >> penalizeForNoFuel: aShip [
+    self applyPenaltyTo: aShip
+]
+
+{ #category : 'private' }
+FuelManager >> applyPenaltyTo: aShip [
     board moveShip: aShip to: 0.
     penaltyAction value: aShip value: 2
 ]
