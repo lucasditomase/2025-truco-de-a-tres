@@ -6,11 +6,6 @@ Class {
 }
 
 { #category : 'tests - instance' }
-NullSpaceshipTest >> testIsNilReturnsTrue [
-    self assert: (NullSpaceship new isNullShip).
-]
-
-{ #category : 'tests - instance' }
 NullSpaceshipTest >> testIsNullShipReturnsTrue [
     self assert: (NullSpaceship new isNullShip).
 ]
