@@ -59,6 +59,11 @@ EffectDecorator >> reversed [
 ]
 
 { #category : 'operations' }
+EffectDecorator >> reversedVersion [
+    ^ NullEffect new
+]
+
+{ #category : 'operations' }
 EffectDecorator >> allowsEntryWithRoll: aRoll [
     ^ true
 ]

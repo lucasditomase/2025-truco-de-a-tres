@@ -33,6 +33,17 @@ HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     aBoard moveShip: aSpaceship forward: steps
 ]
 
+{ #category : 'operations' }
+HyperJumpEffect >> reversedVersion [
+    ^ BlockEffect on: [ :ship :board |
+        | parsecs steps |
+        board moveShip: ship to: ship position.
+        parsecs := self nextJumpValue.
+        steps := (parsecs / board totalLengthInParsecs * board cellCount) rounded.
+        board moveShip: ship backward: steps
+    ]
+]
+
 { #category : 'instance creation' }
 HyperJumpEffect >> applyTo: aSpaceship [
     self error: 'Use applyTo:inBoard: instead.'
