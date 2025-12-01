@@ -36,8 +36,3 @@ DiceCup >> maxRoll [
 DiceCup >> roll [
     ^ diceCollection sum: [ :die | die roll ]
 ]
-
-{ #category : 'validation' }
-DiceCup >> validateAsDiceCup [
-    ^ self
-]

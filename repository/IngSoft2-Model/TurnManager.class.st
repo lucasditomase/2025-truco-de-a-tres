@@ -6,6 +6,8 @@ Class {
         'currentIndex',
         'turn'
     ],
+    #traits : 'CurrentIndexTracking',
+    #classTraits : '',
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
 }
@@ -29,7 +31,7 @@ TurnManager >> currentShip [
 
 { #category : 'accessing' }
 TurnManager >> currentTurnIndex [
-    ^ currentIndex
+    ^ self currentIndex
 ]
 
 { #category : 'initialize' }

@@ -329,8 +329,3 @@ Board >> stepsFromParsecs: someParsecs [
 Board >> totalLengthInParsecs [
     ^ totalLengthInParsecs
 ]
-
-{ #category : 'validation' }
-Board >> validateAsBoard [
-    ^ self
-]

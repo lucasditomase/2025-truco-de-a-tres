@@ -7,6 +7,8 @@ Class {
         'lapCount',
         'penalized'
     ],
+    #traits : 'ShipWithPosition',
+    #classTraits : '',
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
 }
@@ -59,16 +61,6 @@ ShipStatus >> penalized: aBoolean [
 ]
 
 { #category : 'accessing' }
-ShipStatus >> position [
-    ^ position
-]
-
-{ #category : 'accessing' }
 ShipStatus >> position: aPosition [
     position := aPosition
-]
-
-{ #category : 'accessing' }
-ShipStatus >> ship [
-    ^ ship
 ]

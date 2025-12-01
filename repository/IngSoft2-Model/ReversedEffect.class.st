@@ -78,5 +78,5 @@ ReversedEffect >> applyTo: aShip inBoard: aBoard [
 
 { #category : 'operations' }
 ReversedEffect >> reversed [
-    ^ original
+    ^ self original
 ]

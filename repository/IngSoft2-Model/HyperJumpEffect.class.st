@@ -5,6 +5,8 @@ Class {
         'jumpValues',
         'currentIndex'
     ],
+    #traits : 'CurrentIndexTracking',
+    #classTraits : '',
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
 }
@@ -91,9 +93,4 @@ HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
 { #category : 'operations' }
 HyperJumpEffect >> values [
     ^ jumpValues
-]
-
-{ #category : 'operations' }
-HyperJumpEffect >> currentIndex [
-    ^ currentIndex
 ]
