@@ -949,7 +949,7 @@ GameTest >> testStatusForReturnsCorrectShipStatus [
 GameTest >> testWhenPlayTurnThenAdvancesShip [
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dice2 dicesGame boardGame game originalPosition newPosition |
 
-    dice1 := Die withSides: 1.
+    dice1 := MockDie value: 1 sides: 6.
     dice2 := Die withSides: 6.
     dicesGame := DiceCup with: (OrderedCollection with: dice1 with: dice2).
 
