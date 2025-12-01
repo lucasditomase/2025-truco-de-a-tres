@@ -113,6 +113,11 @@ ShipMovementService >> recentMovesDuring: aBlock [
 ]
 
 { #category : 'movement' }
+ShipMovementService >> isRecordingMoves [
+    ^ recentMoves notNil
+]
+
+{ #category : 'movement' }
 ShipMovementService >> recordRecentMoveFor: aShip startingAt: startPosition delta: delta [
     | record start total |
     recentMoves ifNil: [ ^ self ].

@@ -218,12 +218,18 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    ^ movementService moveShip: aShip backward: steps
+    | start target |
+    start := self positionOf: aShip.
+    target := self determineNewPositionFrom: start after: steps negated.
+    ^ movementService moveShip: aShip to: target
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    ^ movementService moveShip: aShip forward: steps
+    | start target |
+    start := self positionOf: aShip.
+    target := self determineNewPositionFrom: start after: steps.
+    ^ movementService moveShip: aShip to: target
 ]
 
 { #category : 'spaceships' }
@@ -244,6 +250,17 @@ Board >> clearLastMoves [
 { #category : 'spaceships' }
 Board >> lastMoveFor: aShip [
     ^ movementService lastMoveFor: aShip
+]
+
+{ #category : 'spaceships' }
+Board >> isRecordingMoves [
+    ^ movementService isRecordingMoves
+]
+
+{ #category : 'spaceships' }
+Board >> withMovementTrackingDuring: aBlock [
+    self isRecordingMoves ifTrue: [ ^ aBlock value ].
+    ^ self recordMovesDuring: aBlock
 ]
 
 { #category : 'spaceships' }

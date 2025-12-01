@@ -27,20 +27,24 @@ HyperJumpEffect class >> withValues: aCollection [
 { #category : 'operations' }
 HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     | parsecs steps |
-    parsecs := self nextJumpValue.
-    steps := (parsecs / aBoard totalLengthInParsecs * aBoard cellCount)
-        rounded.
-    aBoard moveShip: aSpaceship forward: steps
+    aBoard withMovementTrackingDuring: [
+        parsecs := self nextJumpValue.
+        steps := (parsecs / aBoard totalLengthInParsecs * aBoard cellCount)
+            rounded.
+        aBoard moveShip: aSpaceship forward: steps
+    ]
 ]
 
 { #category : 'operations' }
 HyperJumpEffect >> reversedVersion [
     ^ BlockEffect on: [ :ship :board |
         | parsecs steps |
-        board moveShip: ship to: ship position.
-        parsecs := self nextJumpValue.
-        steps := (parsecs / board totalLengthInParsecs * board cellCount) rounded.
-        board moveShip: ship backward: steps
+        board withMovementTrackingDuring: [
+            board moveShip: ship to: ship position.
+            parsecs := self nextJumpValue.
+            steps := (parsecs / board totalLengthInParsecs * board cellCount) rounded.
+            board moveShip: ship backward: steps
+        ]
     ]
 ]
 
