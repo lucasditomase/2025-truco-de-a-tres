@@ -7,5 +7,5 @@ Class {
 
 { #category : 'testing' }
 NullSpaceship >> isNullShip [
-    ^ true
+    ^ NullBehavior alwaysTrue
 ]

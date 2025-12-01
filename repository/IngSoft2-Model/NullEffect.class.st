@@ -7,20 +7,22 @@ Class {
 
 { #category : 'operations' }
 NullEffect >> applyTo: aShip inBoard: aBoard [
+    NullBehavior doNothing
 ]
 
 { #category : 'operations' }
 NullEffect >> applyTo: aShip inContextOf: ships inBoard: aBoard [
+    self applyTo: aShip inBoard: aBoard.
     ^ self
 ]
 
 { #category : 'operations' }
 NullEffect >> allowsEntryWithRoll: aRoll [
-    ^ true
+    ^ NullBehavior alwaysTrue
 ]
 
 { #category : 'operations' }
 NullEffect >> reversed [
-    ^ self
+    ^ NullBehavior passThrough: self
 ]
 
