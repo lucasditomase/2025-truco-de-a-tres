@@ -206,6 +206,60 @@ RedoCardTest >> testPlayOnReplaysShieldCard [
 ]
 
 { #category : 'tests' }
+RedoCardTest >> testPlayOnReplaysTimeMachineCard [
+    | board dice ship1 ship2 game timeMachine redoCard initialFuel |
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+    game := Game
+        startWithShips: { ship1. ship2 }
+        board: board
+        dice: dice
+        laps: 1.
+
+    timeMachine := TimeMachineCard new.
+    redoCard := RedoCard new.
+    ship1 addCard: redoCard.
+
+    initialFuel := ship1 fuel.
+    ship1 fuel: initialFuel + 2.
+    game recordFuelStartFor: ship1.
+    ship1 fuel: 0.
+
+    game lastCardPlayed: timeMachine.
+    ship1 playCard: redoCard inGame: game.
+
+    self assert: ship1 fuel equals: initialFuel.
+]
+
+{ #category : 'tests' }
+RedoCardTest >> testPlayOnReplaysReversalCard [
+    | board dice ship1 ship2 game wormhole reversalCard redoCard |
+    wormhole := Wormhole from: 1 to: 3.
+    board := Board of: 5 andWormholeAt: { wormhole }.
+    dice := DiceCup with: { Die withSides: 1 }.
+    ship1 := Spaceship withName: 'One'.
+    ship2 := Spaceship withName: 'Two'.
+    game := Game
+        startWithShips: { ship1. ship2 }
+        board: board
+        dice: dice
+        laps: 1.
+
+    board moveShip: ship1 to: 1.
+
+    reversalCard := ReversalCard new.
+    redoCard := RedoCard new.
+    ship1 addCard: redoCard.
+
+    game lastCardPlayed: reversalCard.
+    ship1 playCard: redoCard inGame: game.
+
+    self assert: (board wormholeEnteringAt: 1) class equals: ReversedWormhole.
+]
+
+{ #category : 'tests' }
 RedoCardTest >> testPlayOnWithNoLastCardDoesNothing [
     | board dice ship1 ship2 game redoCard |
     board := Board of: 5 andWormholeAt: {}.

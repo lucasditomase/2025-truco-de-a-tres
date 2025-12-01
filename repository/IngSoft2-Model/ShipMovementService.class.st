@@ -5,7 +5,8 @@ Class {
         'positionManager',
         'cellCount',
         'lastMoves',
-        'recentMoves'
+        'recentMoves',
+        'recordingMoves'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -24,7 +25,8 @@ ShipMovementService >> initializeWithPositionManager: aManager cellCount: aCount
     positionManager := aManager.
     cellCount := aCount.
     lastMoves := aDictionary.
-    recentMoves := nil.
+    recentMoves := Dictionary new.
+    recordingMoves := false.
     ^ self
 ]
 
@@ -91,7 +93,7 @@ ShipMovementService >> moveShip: aShip from: oldPos toPosition: target delta: de
 { #category : 'movement' }
 ShipMovementService >> clearLastMoves [
     lastMoves removeAll.
-    recentMoves ifNotNil: [ recentMoves removeAll ]
+    recentMoves removeAll
 ]
 
 { #category : 'movement' }
@@ -101,12 +103,15 @@ ShipMovementService >> lastMoveFor: aShip [
 
 { #category : 'movement' }
 ShipMovementService >> recentMovesDuring: aBlock [
-    | previous captured |
-    previous := recentMoves.
+    | previousMoves previousRecording captured |
+    previousMoves := recentMoves.
+    previousRecording := recordingMoves.
     captured := Dictionary new.
     recentMoves := Dictionary new.
+    recordingMoves := true.
     [ aBlock value. captured := recentMoves copy ] ensure: [
-        recentMoves := previous.
+        recordingMoves := previousRecording.
+        recentMoves := previousMoves.
         captured ifNil: [ captured := Dictionary new ]
     ].
     ^ captured
@@ -114,13 +119,13 @@ ShipMovementService >> recentMovesDuring: aBlock [
 
 { #category : 'movement' }
 ShipMovementService >> isRecordingMoves [
-    ^ recentMoves notNil
+    ^ recordingMoves
 ]
 
 { #category : 'movement' }
 ShipMovementService >> recordRecentMoveFor: aShip startingAt: startPosition delta: delta [
     | record start total |
-    recentMoves ifNil: [ ^ self ].
+    recordingMoves ifFalse: [ ^ self ].
     record := recentMoves at: aShip ifAbsent: [ Array with: startPosition with: 0 ].
     start := record first.
     total := record second + delta.
