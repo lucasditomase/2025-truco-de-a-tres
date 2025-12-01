@@ -34,3 +34,28 @@ RepeatCardTest >> testPlayOnDoesNothing [
 
     self assert: ship position equals: 0.
 ]
+
+{ #category : 'tests' }
+RepeatCardTest >> testResolveTargetDefaultsToActingShip [
+    | card ship |
+    card := RepeatCard new.
+    ship := Spaceship withName: 'Default'.
+
+    self assert: (card resolveTargetFor: ship) equals: ship.
+]
+
+{ #category : 'tests' }
+RepeatCardTest >> testResolveTargetUsesExplicitTarget [
+    | target card ship |
+    target := Spaceship withName: 'Target'.
+    card := RepeatCard targeting: target.
+    ship := Spaceship withName: 'Caller'.
+
+    self assert: (card resolveTargetFor: ship) equals: target.
+    self assert: card targetShip equals: target.
+]
+
+{ #category : 'tests' }
+RepeatCardTest >> testRecordsLastEffectReturnsFalse [
+    self deny: RepeatCard new recordsLastEffect.
+]
