@@ -412,13 +412,10 @@ Game >> rollAndMoveCurrentShip [
     steps = dice maxRoll ifTrue: [
         self rewardForMaxRollTo: self currentShip ].
     modified := self modifyRoll: steps forShip: self currentShip.
-    modified >= 0
-        ifTrue: [
-            newPosition := board
-                determineNewPositionFrom: turnData lastPreviousPosition
-                after: modified.
-            board moveShip: self currentShip to: newPosition ]
-        ifFalse: [ board moveShip: self currentShip backward: modified abs ].
+    newPosition := board
+        determineNewPositionFrom: turnData lastPreviousPosition
+        after: modified.
+    board moveShip: self currentShip to: newPosition.
     turnData lastSteps: modified.
     fuelManager consumeMovement: modified forShip: self currentShip
 ]
