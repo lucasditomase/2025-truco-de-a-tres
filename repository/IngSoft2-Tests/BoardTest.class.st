@@ -325,45 +325,6 @@ BoardTest >> testInvalidBoardWithInvalidWormholeRaisesError [
 ]
 
 { #category : 'tests - instance' }
-BoardTest >> testIsGoalReached [
-    | board |
-
-    board := Board of: 10 andWormholeAt: #().
-
-    self assert: (board isPositionReachedAt: 10).
-    self assert: (board isPositionReachedAt: 11).
-
-    self deny: (board isPositionReachedAt: 9).
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReachedAtReturnsFalseIfPositionLower [
-    | board |
-
-    board := Board of: 5 andWormholeAt: {}.
-
-    self deny: (board isPositionReachedAt: 4).
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionEqual [
-    | board |
-
-    board := Board of: 5 andWormholeAt: {}.
-
-    self assert: (board isPositionReachedAt: 5).
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionGreater [
-    | board |
-
-    board := Board of: 5 andWormholeAt: {}.
-
-    self assert: (board isPositionReachedAt: 7).
-]
-
-{ #category : 'tests - instance' }
 BoardTest >> testLapDoesNotIncrementWhenStayingWithinBounds [
     | board ship newPosition |
 

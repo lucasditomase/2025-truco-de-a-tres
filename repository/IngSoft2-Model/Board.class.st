@@ -211,11 +211,6 @@ Board >> initializeMovementService [
         lastMoves: lastMoves
 ]
 
-{ #category : 'initialize' }
-Board >> isPositionReachedAt: aPosition [
-    ^ aPosition >= cellCount.
-]
-
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
     | start target |

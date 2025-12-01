@@ -61,31 +61,6 @@ SpaceshipTest >> testDecreaseFuelByDoesNotGoBelowZero [
 ]
 
 { #category : 'tests - instance' }
-SpaceshipTest >> testHasNotReachedGoalWhenBehind [
-    | board spaceship |
-
-    board := Board of: 10 andWormholeAt: #().
-
-    spaceship := Spaceship withName: 'Endeavour'.
-    spaceship moveTo: 9.
-
-    self deny: (spaceship hasReachedGoalOn: board).
-]
-
-{ #category : 'tests - instance' }
-SpaceshipTest >> testHasReachedGoalWhenAtGoal [
-    | board spaceship |
-
-    board := Board of: 10 andWormholeAt: #().
-
-    spaceship := Spaceship withName: 'Orion'.
-
-    spaceship moveTo: 10.
-
-    self assert: (spaceship hasReachedGoalOn: board).
-]
-
-{ #category : 'tests - instance' }
 SpaceshipTest >> testIncreaseMaxFuelByAddsAmount [
     | ship |
 

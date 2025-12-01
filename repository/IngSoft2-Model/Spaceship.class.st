@@ -76,11 +76,6 @@ Spaceship >> fuel: anAmount [
     fuel := anAmount
 ]
 
-{ #category : 'initialize' }
-Spaceship >> hasReachedGoalOn: aBoard [
-    ^ aBoard isPositionReachedAt: position.
-]
-
 { #category : 'fuel' }
 Spaceship >> increaseMaxFuelBy: anAmount [
     maxFuel := maxFuel + anAmount.
