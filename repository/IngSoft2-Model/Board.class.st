@@ -107,9 +107,7 @@ Board >> applyEffectTo: aSpaceship [
 
 { #category : 'initialize' }
 Board >> applyWormholeIfPresentAt: aPosition [
-    | wormhole |
-    wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ NullWormhole new ].
-    ^ wormhole exitFrom: aPosition inBoard: self
+    ^ (self wormholeEnteringAt: aPosition) exitFrom: aPosition inBoard: self
 ]
 
 { #category : 'initialize' }
@@ -125,7 +123,7 @@ Board >> calculateNewPositionFrom: current after: steps moves: aShipStatus [
 
 { #category : 'initialize' }
 Board >> cellCount [
-    ^ cells size.
+    ^ cellCount
 ]
 
 { #category : 'initialize' }
@@ -171,9 +169,7 @@ Board >> drawCard [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    | effect |
-    effect := cells at: aPosition ifAbsent: [ NullEffect new ].
-    ^ effect ifNil: [ NullEffect new ] ifNotNil: [ effect ]
+    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
 ]
 
 { #category : 'initialize' }
@@ -206,29 +202,27 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    | oldPos newPos |
+    | oldPos |
     oldPos := self positionOf: aShip.
-    newPos := (oldPos - steps) \\ cellCount.
-    positionManager moveShip: aShip to: newPos.
-    lastMoves at: aShip put: steps negated.
-    ^ steps negated
+    ^ self moveShip: aShip from: oldPos toPosition: oldPos - steps
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    | oldPos newPos |
+    | oldPos |
     oldPos := self positionOf: aShip.
-    newPos := (oldPos + steps) \\ cellCount.
-    positionManager moveShip: aShip to: newPos.
-    lastMoves at: aShip put: steps.
-    ^ steps
+    ^ self moveShip: aShip from: oldPos toPosition: oldPos + steps
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    | oldPos newPos diff |
-    oldPos := self positionOf: aShip.
-    newPos := aPosition \\ cellCount.
+    ^ self moveShip: aShip from: self positionOf: aShip toPosition: aPosition
+]
+
+{ #category : 'spaceships' }
+Board >> moveShip: aShip from: oldPos toPosition: targetPosition [
+    | newPos diff |
+    newPos := targetPosition \\ cellCount.
     positionManager moveShip: aShip to: newPos.
     diff := newPos - oldPos.
     lastMoves at: aShip put: diff.
@@ -283,9 +277,7 @@ Board >> ships [
 
 { #category : 'effects' }
 Board >> reverseAt: aPosition [
-    | wormhole |
-    wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ NullWormhole new ].
-    wormhole reverseOnBoard: self at: aPosition
+    (self wormholeTouching: aPosition) reverseOnBoard: self at: aPosition
 ]
 
 { #category : 'effects' }
@@ -333,4 +325,14 @@ Board >> totalLengthInParsecs [
 { #category : 'validation' }
 Board >> validateAsBoard [
     ^ self
+]
+
+{ #category : 'effects' }
+Board >> wormholeEnteringAt: aPosition [
+    ^ wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ NullWormhole new ]
+]
+
+{ #category : 'effects' }
+Board >> wormholeTouching: aPosition [
+    ^ wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ NullWormhole new ]
 ]
