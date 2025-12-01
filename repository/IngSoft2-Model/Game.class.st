@@ -422,25 +422,22 @@ Game >> rollAndMoveCurrentShip [
 
 { #category : 'process actions' }
 Game >> applyEffectOfCurrentCell [
-    | beforePositions effect skipFuel |
-    beforePositions := Dictionary new.
-    board ships do: [ :ship | beforePositions at: ship put: (board positionOf: ship) ].
-
+    | effect skipFuel movementReport |
     effect := board effectAt: (board positionOf: self currentShip).
     skipFuel := effect class = AtomicBombEffect.
     turnData lastEffectWasCard: false.
 
-    board clearLastMoves.
-    board applyEffectTo: self currentShip.
+    movementReport := board recordMovesDuring: [
+        board applyEffectTo: self currentShip
+    ].
 
-    board ships do: [ :ship |
-        | before diff |
-        before := beforePositions at: ship.
-        diff := board lastMoveFor: ship.
-        diff = 0 ifTrue: [ diff := (board positionOf: ship) - before ].
-        diff ~= 0 ifTrue: [
-            skipFuel ifFalse: [ fuelManager consumeMovement: diff forShip: ship ].
-            lapTracker registerLapFor: ship from: before after: diff
+    movementReport keysAndValuesDo: [ :ship :data |
+        | start delta |
+        start := data first.
+        delta := data second.
+        delta ~= 0 ifTrue: [
+            skipFuel ifFalse: [ fuelManager consumeMovement: delta forShip: ship ].
+            lapTracker registerLapFor: ship from: start after: delta
         ]
     ]
 ]

@@ -246,6 +246,11 @@ Board >> lastMoveFor: aShip [
     ^ movementService lastMoveFor: aShip
 ]
 
+{ #category : 'spaceships' }
+Board >> recordMovesDuring: aBlock [
+    ^ movementService recentMovesDuring: aBlock
+]
+
 { #category : 'initialize' }
 Board >> populateRandomEffects [
     0 to: cellCount - 1 do: [ :i |

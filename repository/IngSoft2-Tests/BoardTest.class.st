@@ -640,6 +640,24 @@ BoardTest >> testLastMoveForTracksMovementAndCanBeCleared [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testRecordMovesDuringCapturesStartAndAggregatedDelta [
+    | board ship report data |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Tracker'.
+    ship moveTo: 1.
+    board registerShips: { ship }.
+
+    report := board recordMovesDuring: [
+        board moveShip: ship forward: 7.
+        board moveShip: ship backward: 2
+    ].
+    data := report at: ship ifAbsent: [ self fail: 'Expected move data' ].
+
+    self assert: data first equals: 1.
+    self assert: data second equals: 5.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testTotalLengthInParsecsAccessorReturnsLength [
     | board |
     board := Board of: 5 length: 8 andWormholeAt: {}.

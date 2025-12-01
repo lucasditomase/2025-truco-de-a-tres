@@ -4,7 +4,8 @@ Class {
     #instVars : [
         'positionManager',
         'cellCount',
-        'lastMoves'
+        'lastMoves',
+        'recentMoves'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -23,6 +24,7 @@ ShipMovementService >> initializeWithPositionManager: aManager cellCount: aCount
     positionManager := aManager.
     cellCount := aCount.
     lastMoves := aDictionary.
+    recentMoves := nil.
     ^ self
 ]
 
@@ -82,15 +84,40 @@ ShipMovementService >> moveShip: aShip from: oldPos toPosition: target delta: de
     positionManager moveShip: aShip to: newPos.
     delta := deltaBlock value: newPos value: oldPos.
     lastMoves at: aShip put: delta.
+    self recordRecentMoveFor: aShip startingAt: oldPos delta: delta.
     ^ delta
 ]
 
 { #category : 'movement' }
 ShipMovementService >> clearLastMoves [
-    lastMoves removeAll
+    lastMoves removeAll.
+    recentMoves ifNotNil: [ recentMoves removeAll ]
 ]
 
 { #category : 'movement' }
 ShipMovementService >> lastMoveFor: aShip [
     ^ lastMoves at: aShip ifAbsent: [ 0 ]
+]
+
+{ #category : 'movement' }
+ShipMovementService >> recentMovesDuring: aBlock [
+    | previous captured |
+    previous := recentMoves.
+    captured := Dictionary new.
+    recentMoves := Dictionary new.
+    [ aBlock value. captured := recentMoves copy ] ensure: [
+        recentMoves := previous.
+        captured ifNil: [ captured := Dictionary new ]
+    ].
+    ^ captured
+]
+
+{ #category : 'movement' }
+ShipMovementService >> recordRecentMoveFor: aShip startingAt: startPosition delta: delta [
+    recentMoves ifNil: [ ^ self ].
+    | record start total |
+    record := recentMoves at: aShip ifAbsent: [ Array with: startPosition with: 0 ].
+    start := record first.
+    total := record second + delta.
+    recentMoves at: aShip put: (Array with: start with: total)
 ]
