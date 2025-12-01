@@ -105,3 +105,39 @@ ShipMovementServiceTest >> testIsRecordingMovesOnlyDuringCapture [
     self assert: flag.
     self deny: service isRecordingMoves.
 ]
+
+{ #category : 'tests' }
+ShipMovementServiceTest >> testMoveShipWithZeroCellsDoesNothing [
+    | tuple service ship manager result |
+    tuple := self buildServiceStartingAt: 2 cellCount: 0.
+    service := tuple first.
+    ship := tuple second.
+    manager := tuple third.
+
+    result := service moveShip: ship forward: 5.
+
+    self assert: result equals: 0.
+    self assert: (manager positionOf: ship) equals: 2.
+    self assert: (service lastMoveFor: ship) equals: 0.
+]
+
+{ #category : 'tests' }
+ShipMovementServiceTest >> testConfigurationSettersRewireService [
+    | tuple service ship newManager newLastMoves |
+    tuple := self buildServiceStartingAt: 0 cellCount: 4.
+    service := tuple first.
+    ship := tuple second.
+    ship moveTo: 5.
+    newManager := PositionManager forShips: { ship }.
+    newLastMoves := Dictionary new.
+
+    service positionManager: newManager.
+    service cellCount: 6.
+    service lastMoves: newLastMoves.
+
+    service moveShip: ship backward: 2.
+
+    self assert: (newManager positionOf: ship) equals: 3.
+    self assert: (service lastMoveFor: ship) equals: -2.
+    self assert: (newLastMoves at: ship) equals: -2.
+]
