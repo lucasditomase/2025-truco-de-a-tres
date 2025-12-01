@@ -35,6 +35,12 @@ Spaceship class >> ensureCollectionOfSpaceships: someShips [
             ^ self error: 'Ships must be a collection of Spaceship instances' ] ]
 ]
 
+{ #category : 'validation' }
+Spaceship class >> ensureMinimumCountIn: someShips [
+    someShips size < 2 ifTrue: [
+        self error: 'Need 2 space ships or more to initialize the game' ]
+]
+
 { #category : 'methods' }
 Spaceship >> activeCards [
     ^ activeCards

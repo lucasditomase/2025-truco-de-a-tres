@@ -51,8 +51,7 @@ Game class >> validateLaps: aNumberLaps [
 
 { #category : 'initialize' }
 Game class >> validateMinimumShips: someShips [
-    someShips size < 2 ifTrue: [
-        self error: 'Need 2 space ships or more to initialize the game' ]
+    Spaceship ensureMinimumCountIn: someShips
 ]
 
 { #category : 'initialize' }
