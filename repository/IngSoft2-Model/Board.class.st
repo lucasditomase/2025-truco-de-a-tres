@@ -234,6 +234,7 @@ Board >> moveShip: aShip backward: steps [
         from: start
         toPosition: target
         delta: [ :new :previous | steps negated ]
+]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
