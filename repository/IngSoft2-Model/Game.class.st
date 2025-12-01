@@ -477,7 +477,7 @@ Game >> spaceShips [
 
 { #category : 'process actions' }
 Game >> spaceshipPositions [
-    ^ spaceShips collect: [ :ship | ShipPosition for: ship ]
+    ^ self allStatuses
 ]
 
 { #category : 'testing' }
