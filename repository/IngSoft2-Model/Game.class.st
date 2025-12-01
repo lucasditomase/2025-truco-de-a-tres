@@ -477,7 +477,14 @@ Game >> spaceShips [
 
 { #category : 'process actions' }
 Game >> spaceshipPositions [
-    ^ self allStatuses
+    ^ spaceShips collect: [ :ship |
+        | tracker |
+        tracker := self lapTrackerFor: ship.
+        ShipStatus
+            for: ship
+            position: ship position
+            laps: tracker lapCount
+            penalized: tracker isPenalized ]
 ]
 
 { #category : 'testing' }
