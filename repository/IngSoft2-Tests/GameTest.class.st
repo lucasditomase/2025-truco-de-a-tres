@@ -487,7 +487,7 @@ GameTest >> testPlayUntilFinishEndsWhenWinnerIsFound [
 GameTest >> testRankingReturnsShipsOrderedByLapsAndPosition [
     | spaceShip1 spaceShip2 spaceShip3 spaceShipsGame  dice1  dicesGame boardGame game ranking |
 
-    dice1 := Die withSides: 1.
+    dice1 := MockDie value: 1 sides: 6.
     dicesGame := DiceCup with: (OrderedCollection with: dice1).
 
     spaceShip1 := Spaceship withName: 'Ship Num1'.
