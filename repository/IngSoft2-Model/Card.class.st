@@ -19,3 +19,8 @@ Card >> playOn: aShip inGame: aGame [
 Card >> allyFor: aShip [
     ^ NullSpaceship new
 ]
+
+{ #category : 'querying' }
+Card >> recordsLastEffect [
+    ^ true
+]

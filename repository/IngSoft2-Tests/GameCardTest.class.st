@@ -41,3 +41,19 @@ GameCardTest >> testLastEffectiveCardStaysWhenRedoCardPlayed [
     game lastCardPlayed: RedoCard new.
     self assert: game lastEffectiveCard equals: oldEffective.
 ]
+
+{ #category : 'tests' }
+GameCardTest >> testLastEffectiveCardStaysWhenRepeatCardPlayed [
+    | ship1 ship2 board dice game card oldEffective repeat |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    card := AdvanceCard new.
+    game lastCardPlayed: card.
+    oldEffective := game lastEffectiveCard.
+    repeat := RepeatCard targeting: ship1.
+    game lastCardPlayed: repeat.
+    self assert: game lastEffectiveCard equals: oldEffective.
+]

@@ -27,3 +27,8 @@ RepeatCard >> targetShip [
 RepeatCard >> targetShip: aShip [
     targetShip := aShip
 ]
+
+{ #category : 'querying' }
+RepeatCard >> recordsLastEffect [
+    ^ false
+]

@@ -76,7 +76,7 @@ TurnData >> lastCardPlayed [
 { #category : 'accessing' }
 TurnData >> lastCardPlayed: aCard [
     lastCardPlayed := aCard.
-    (aCard class = RedoCard or: [ aCard class = RepeatCard ]) ifTrue: [ ^ self ].
+    aCard recordsLastEffect ifFalse: [ ^ self ].
     lastEffectWasCard := true.
     lastEffectiveCard := aCard
 ]
