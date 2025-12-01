@@ -1029,7 +1029,7 @@ GameTest >> testWhenShipReachesGoalThenGameEnds [
 { #category : 'tests' }
 GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [
     | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame totalLaps game |
-    dice1 := Die withSides: 1.
+    dice1 := MockDie value: 1 sides: 6.
     dicesGame := DiceCup with: (OrderedCollection with: dice1).
 
     spaceShip1 := Spaceship withName: 'Ship Num1'.
