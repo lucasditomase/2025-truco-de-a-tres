@@ -133,7 +133,8 @@ Board >> cells [
 
 { #category : 'initialize' }
 Board >> cells: aCollection [
-    cells := aCollection
+    cells := aCollection.
+    cellCount := cells size
 ]
 
 { #category : 'moves' }
@@ -169,7 +170,9 @@ Board >> drawCard [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
+    | effect |
+    effect := cells at: aPosition ifAbsent: [ ^ NullEffect new ].
+    ^ effect ifNil: [ NullEffect new ]
 ]
 
 { #category : 'initialize' }
