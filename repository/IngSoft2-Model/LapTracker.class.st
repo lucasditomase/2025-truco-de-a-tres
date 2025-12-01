@@ -34,26 +34,22 @@ LapTracker >> registerLapFor: aShip from: start after: delta [
 
 { #category : 'private' }
 LapTracker >> registerForwardLapFor: status from: start after: delta [
-    start + delta < board cellCount ifTrue: [ ^ self ].
-    status addLap
-        | length normalizedStart total laps |
-        length := (board cellCount max: 1).
-        normalizedStart := start \\ length.
-        total := normalizedStart + delta.
-        laps := total // length.
-        laps <= 0 ifTrue: [ ^ self ].
-        laps timesRepeat: [ status addLap ].
-    ]
+    | length normalizedStart total laps |
+    length := board cellCount max: 1.
+    normalizedStart := start \\ length.
+    total := normalizedStart + delta.
+    laps := total // length.
+    laps <= 0 ifTrue: [ ^ self ].
+    laps timesRepeat: [ status addLap ]
+]
 
 { #category : 'private' }
 LapTracker >> registerBackwardLapFor: status from: start after: delta [
-    start + delta >= 0 ifTrue: [ ^ self ].
-    status removeLap
-        | length normalizedStart steps laps |
-        length := (board cellCount max: 1).
-        normalizedStart := start \\ length.
-        steps := delta abs.
-        laps := ((steps - normalizedStart) + (length - 1)) // length.
-        laps <= 0 ifTrue: [ ^ self ].
-        laps timesRepeat: [ status removeLap ].
-    ]
+    | length normalizedStart steps laps |
+    length := board cellCount max: 1.
+    normalizedStart := start \\ length.
+    steps := delta abs.
+    laps := ((steps - normalizedStart) + (length - 1)) // length.
+    laps <= 0 ifTrue: [ ^ self ].
+    laps timesRepeat: [ status removeLap ]
+]
