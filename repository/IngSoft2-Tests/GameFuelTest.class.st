@@ -38,7 +38,7 @@ GameFuelTest >> testFuelConsumptionIncludesEffectMovement [
     ship2 := Spaceship withName: 'P2'.
     board := Board of: 10 andWormholeAt: {}.
     board cells at: 1 put: BlackHoleEffect new.
-    dice := DiceCup with: { Die withSides: 1 }.
+    dice := DiceCup with: { MockDie value: 1 sides: 6 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
     ship1 maxFuel: 10.
     ship1 fuel: 10.
@@ -131,7 +131,7 @@ GameFuelTest >> testAtomicBombDoesNotConsumeFuel [
     ship2 := Spaceship withName: 'B'.
     board := Board of: 3 andWormholeAt: {}.
     board cells at: 1 put: AtomicBombEffect new.
-    dice := DiceCup with: { Die withSides: 1 }.
+    dice := DiceCup with: { MockDie value: 1 sides: 6 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
     initial := ship1 fuel.
     game playTurn.
