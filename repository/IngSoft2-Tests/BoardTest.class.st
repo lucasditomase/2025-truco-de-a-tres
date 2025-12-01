@@ -687,6 +687,16 @@ BoardTest >> testPopulateRandomEffectsProducesRecognizedClasses [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testConfigureHyperGravityRequirementsUsesMaxRoll [
+    | board effect |
+    board := Board of: 5 andWormholeAt: {}.
+    effect := HyperGravityEffect new.
+    board cells at: 2 put: effect.
+    board configureHyperGravityRequirementsWithMaxRoll: 3.
+    self assert: (1 to: 3) includes: effect requiredRoll.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testRandomEffectForRollDistributesAccordingToSpecification [
     | board |
     board := Board of: 5 andWormholeAt: {}.

@@ -151,10 +151,16 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
     self
         initializeBasicDataWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps;
         initializeFuelForShips;
+        initializeHyperGravityRequirements;
         initializeTurnManager;
         initializeShipStatuses;
         initializeTurnData.
     ^ self
+]
+
+{ #category : 'initialization' }
+Game >> initializeHyperGravityRequirements [
+    board configureHyperGravityRequirementsWithMaxRoll: dice maxRoll
 ]
 
 { #category : 'initialization' }

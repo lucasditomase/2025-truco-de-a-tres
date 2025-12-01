@@ -49,11 +49,17 @@ HyperGravityEffectTest >> testApplyEffectDoesNotMoveShip [
 ]
 
 { #category : 'tests' }
-HyperGravityEffectTest >> testRequiredRollCannotExceedMaximum [
+HyperGravityEffectTest >> testRequiredRollMustBePositiveInteger [
     | effect |
     effect := HyperGravityEffect new.
     self
-        should: [ effect requiredRoll: 13 ]
+        should: [ effect requiredRoll: 0 ]
         raise: Error
-        withMessageText: 'Required roll cannot exceed dice maximum'.
+        withMessageText: 'Required roll must be a positive integer'.
+    self
+        should: [ effect requiredRoll: -1 ]
+        raise: Error
+        withMessageText: 'Required roll must be a positive integer'.
+    effect requiredRoll: 7.
+    self assert: effect requiredRoll equals: 7.
 ]

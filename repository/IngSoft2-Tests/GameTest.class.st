@@ -349,6 +349,21 @@ GameTest >> testModifyRollAppliesActiveCardEffect [
 ]
 
 { #category : 'tests' }
+GameTest >> testHyperGravityRequirementsConfiguredWithDiceMaxRoll [
+    | ship1 ship2 board dice game effect |
+    ship1 := Spaceship withName: 'H1'.
+    ship2 := Spaceship withName: 'H2'.
+    board := Board of: 5 andWormholeAt: {}.
+    effect := HyperGravityEffect new.
+    effect requiredRoll: 4.
+    board cells at: 1 put: effect.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self assert: effect requiredRoll equals: 1.
+    game yourself.
+]
+
+{ #category : 'tests' }
 GameTest >> testPassTurnAdvancesIndex [
     | ship1 ship2 game board dice |
 

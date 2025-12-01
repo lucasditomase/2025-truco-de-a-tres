@@ -332,6 +332,18 @@ Board >> randomEffectForRoll: aNumber [
 ]
 
 { #category : 'effects' }
+Board >> configureHyperGravityRequirementsWithMaxRoll: maxRoll [
+    (maxRoll isInteger and: [ maxRoll > 0 ]) ifFalse: [
+        self error: 'Max roll must be a positive integer'.
+    ].
+    cells values do: [ :effect |
+        effect class = HyperGravityEffect ifTrue: [
+            effect requiredRoll: (1 to: maxRoll) atRandom
+        ]
+    ]
+]
+
+{ #category : 'effects' }
 Board >> totalEffectWeight [
     ^ self randomEffectDistribution sum: [ :entry | entry value ]
 ]
