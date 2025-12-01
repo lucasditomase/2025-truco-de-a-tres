@@ -32,8 +32,14 @@ Spaceship >> activeCards [
 ]
 
 { #category : 'methods' }
+Spaceship >> addActiveCard: aCard [
+    activeCards add: aCard.
+]
 
 { #category : 'methods' }
+Spaceship >> addCard: aCard [
+    cards add: aCard.
+]
 
 { #category : 'methods' }
 Spaceship >> cards [
@@ -181,4 +187,14 @@ Spaceship >> state [
 { #category : 'state' }
 Spaceship >> state: aState [
     state := aState
+]
+
+{ #category : 'testing' }
+Spaceship >> isNullShip [
+    ^ false
+]
+
+{ #category : 'validation' }
+Spaceship >> validateAsSpaceship [
+    ^ self
 ]

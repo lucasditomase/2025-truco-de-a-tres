@@ -5,8 +5,6 @@ Class {
         'ship',
         'position'
     ],
-    #traits : 'ShipWithPosition',
-    #classTraits : '',
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
 }
@@ -36,5 +34,15 @@ ShipPosition >> isGreaterThan: anotherShipPosition [
 { #category : 'testing' }
 ShipPosition >> isLessThan: anotherShipPosition [
     ^ position < anotherShipPosition position
+]
+
+{ #category : 'accessing' }
+ShipPosition >> position [
+    ^ position
+]
+
+{ #category : 'accessing' }
+ShipPosition >> ship [
+    ^ ship
 ]
 

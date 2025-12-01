@@ -19,3 +19,8 @@ NullBoard >> moveShip: aShip forward: steps [
 NullBoard >> moveShip: aShip to: aPosition [
     aShip moveTo: aPosition.
 ]
+
+{ #category : 'validation' }
+NullBoard >> validateAsBoard [
+    ^ self
+]

@@ -12,7 +12,7 @@ ShipState >> whenPenalizedDo: penalizedBlock whenNormalDo: normalBlock [
 
 { #category : 'penalty' }
 ShipState >> isPenalized [
-    ^ self turnsRemaining > 0
+    self subclassResponsibility.
 ]
 
 { #category : 'penalty' }
@@ -22,14 +22,10 @@ ShipState >> penalizeFor: aNumber [
 
 { #category : 'penalty' }
 ShipState >> reducePenalty [
-    ^ self
-        whenPenalizedDo: [
-            self error: 'Penalized states must override #reducePenalty'
-        ]
-        whenNormalDo: [ self ]
+    self subclassResponsibility.
 ]
 
 { #category : 'penalty' }
 ShipState >> turnsRemaining [
-    ^ 0
+    self subclassResponsibility.
 ]

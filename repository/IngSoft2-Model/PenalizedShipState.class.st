@@ -37,6 +37,11 @@ PenalizedShipState >> initializeForTurns: aNumber [
 ]
 
 { #category : 'penalty' }
+PenalizedShipState >> isPenalized [
+    ^ true
+]
+
+{ #category : 'penalty' }
 PenalizedShipState >> penalizeFor: aNumber [
     self class validateTurns: aNumber.
     turnsRemaining := aNumber.
