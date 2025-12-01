@@ -227,7 +227,13 @@ Board >> initializeMovementService [
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
     | start target |
-    ^ OrderedCollection withAll: self effectDistributionWeights
+    start := self positionOf: aShip.
+    target := self determineNewPositionFrom: start after: steps negated.
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: target
+        delta: [ :new :previous | steps negated ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
