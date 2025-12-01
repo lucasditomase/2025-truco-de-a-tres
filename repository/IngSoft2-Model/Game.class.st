@@ -432,18 +432,20 @@ Game >> applyEffectOfCurrentCell [
 
 { #category : 'process actions' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
-    | movementReport |
-    turnData lastEffectWasCard: false.
+    | movementReport movementOccurred |
     movementReport := board recordMovesDuring: effectBlock.
+    movementOccurred := false.
     movementReport keysAndValuesDo: [ :ship :data |
         | start delta |
         start := data first.
         delta := data second.
         delta ~= 0 ifTrue: [
+            movementOccurred := true.
             skipFuel ifFalse: [ fuelManager consumeMovement: delta forShip: ship ].
             lapTracker registerLapFor: ship from: start after: delta
         ]
-    ]
+    ].
+    movementOccurred ifTrue: [ turnData lastEffectWasCard: false ]
 ]
 
 { #category : 'accessing' }

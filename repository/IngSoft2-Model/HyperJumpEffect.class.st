@@ -37,12 +37,13 @@ HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
 
 { #category : 'operations' }
 HyperJumpEffect >> reversedVersion [
+    | jumpValue |
+    jumpValue := self nextJumpValue.
     ^ BlockEffect on: [ :ship :board |
-        | parsecs steps |
+        | steps |
         board withMovementTrackingDuring: [
             board moveShip: ship to: ship position.
-            parsecs := self nextJumpValue.
-            steps := (parsecs / board totalLengthInParsecs * board cellCount) rounded.
+            steps := (jumpValue / board totalLengthInParsecs * board cellCount) rounded.
             board moveShip: ship backward: steps
         ]
     ]

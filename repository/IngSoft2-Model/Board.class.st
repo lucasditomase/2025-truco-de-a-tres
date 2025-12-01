@@ -242,7 +242,13 @@ Board >> moveShip: aShip forward: steps [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    ^ movementService moveShip: aShip to: aPosition
+    | start |
+    start := self positionOf: aShip.
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: aPosition
+        delta: [ :new :previous | new - previous ]
 ]
 
 { #category : 'spaceships' }
