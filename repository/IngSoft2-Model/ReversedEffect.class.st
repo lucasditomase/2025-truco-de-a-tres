@@ -67,7 +67,7 @@ ReversedEffect >> reverseCardEffectOn: aShip [
 
 { #category : 'instance creation' }
 ReversedEffect >> applyTo: aShip [
-    self applyTo: aShip inBoard: NullBoard new
+    self applyTo: aShip inBoard: NullBehavior temporaryBoard
 ]
 
 { #category : 'instance creation' }

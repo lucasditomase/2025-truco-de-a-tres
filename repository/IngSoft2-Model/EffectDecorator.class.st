@@ -30,7 +30,7 @@ EffectDecorator >> applyTo: aShip inContextOf: ships inBoard: aBoard [
 
 { #category : 'instance creation' }
 EffectDecorator >> applyTo: aShip [
-    self applyTo: aShip inBoard: NullBoard new
+    self applyTo: aShip inBoard: NullBehavior temporaryBoard
 ]
 
 { #category : 'instance creation' }

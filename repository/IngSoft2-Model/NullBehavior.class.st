@@ -18,3 +18,8 @@ NullBehavior class >> doNothing [
 NullBehavior class >> passThrough: anObject [
     ^ anObject
 ]
+
+{ #category : 'helpers' }
+NullBehavior class >> temporaryBoard [
+    ^ NullBoard new
+]
