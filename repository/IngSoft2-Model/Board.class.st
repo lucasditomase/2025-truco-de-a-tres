@@ -7,7 +7,8 @@ Class {
         'cells',
         'totalLengthInParsecs',
         'positionManager',
-        'lastMoves'
+        'lastMoves',
+        'movementService'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -134,7 +135,10 @@ Board >> cells [
 { #category : 'initialize' }
 Board >> cells: aCollection [
     cells := aCollection.
-    cells size > 0 ifTrue: [ cellCount := cells size ]
+    cells size > 0 ifTrue: [
+        cellCount := cells size.
+        movementService ifNotNil: [ movementService cellCount: cellCount ]
+    ]
 ]
 
 { #category : 'moves' }
@@ -191,11 +195,20 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     cells := Dictionary new.
     positionManager := NullPositionManager new.
     lastMoves := Dictionary new.
+    self initializeMovementService.
 
     0 to: aCount - 1 do: [ :i |
         cells at: i put: NoEffect new ].
 
     ^ self
+]
+
+{ #category : 'initialize' }
+Board >> initializeMovementService [
+    movementService := ShipMovementService
+        withPositionManager: positionManager
+        cellCount: (cellCount max: 1)
+        lastMoves: lastMoves
 ]
 
 { #category : 'initialize' }
@@ -205,45 +218,17 @@ Board >> isPositionReachedAt: aPosition [
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    | oldPos |
-    oldPos := self positionOf: aShip.
-    ^ self
-        moveShip: aShip
-        from: oldPos
-        toPosition: oldPos - steps
-        delta: [ :new :previous | steps negated ]
+    ^ movementService moveShip: aShip backward: steps
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    | oldPos |
-    oldPos := self positionOf: aShip.
-    ^ self
-        moveShip: aShip
-        from: oldPos
-        toPosition: oldPos + steps
-        delta: [ :new :previous | steps ]
+    ^ movementService moveShip: aShip forward: steps
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    | oldPos |
-    oldPos := self positionOf: aShip.
-    ^ self
-        moveShip: aShip
-        from: oldPos
-        toPosition: aPosition
-        delta: [ :new :previous | new - previous ]
-]
-
-{ #category : 'spaceships' }
-Board >> moveShip: aShip from: oldPos toPosition: targetPosition delta: deltaBlock [
-    | newPos delta |
-    newPos := targetPosition \\ cellCount.
-    positionManager moveShip: aShip to: newPos.
-    delta := deltaBlock value: newPos value: oldPos.
-    lastMoves at: aShip put: delta.
-    ^ delta
+    ^ movementService moveShip: aShip to: aPosition
 ]
 
 { #category : 'spaceships' }
@@ -253,12 +238,12 @@ Board >> positionOf: aShip [
 
 { #category : 'spaceships' }
 Board >> clearLastMoves [
-    lastMoves := Dictionary new
+    movementService clearLastMoves
 ]
 
 { #category : 'spaceships' }
 Board >> lastMoveFor: aShip [
-    ^ lastMoves at: aShip ifAbsent: [ 0 ]
+    ^ movementService lastMoveFor: aShip
 ]
 
 { #category : 'initialize' }
@@ -272,6 +257,7 @@ Board >> populateRandomEffects [
 { #category : 'spaceships' }
 Board >> registerShips: someShips [
     positionManager := PositionManager forShips: someShips
+    movementService positionManager: positionManager
 ]
 
 { #category : 'spaceships' }
