@@ -11,6 +11,11 @@ NullEffect >> applyTo: aShip inBoard: aBoard [
 ]
 
 { #category : 'operations' }
+NullEffect >> applyEffectTo: aShip inBoard: aBoard [
+    self applyTo: aShip inBoard: aBoard
+]
+
+{ #category : 'operations' }
 NullEffect >> applyTo: aShip inContextOf: ships inBoard: aBoard [
     self applyTo: aShip inBoard: aBoard.
     ^ self
