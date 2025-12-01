@@ -404,7 +404,14 @@ Game >> fuelHistory: aDictionary [
 
 { #category : 'process actions' }
 Game >> rewardForMaxRollTo: aShip [
-    aShip increaseMaxFuelBy: 1
+    self rewardForMaxRollTo: aShip withRoll: (1 to: 100) atRandom
+]
+
+{ #category : 'process actions' }
+Game >> rewardForMaxRollTo: aShip withRoll: aNumber [
+    aNumber <= 80
+        ifTrue: [ aShip increaseMaxFuelBy: 1 ]
+        ifFalse: [ aShip decreaseFuelBy: 1 ]
 ]
 
 { #category : 'process actions' }

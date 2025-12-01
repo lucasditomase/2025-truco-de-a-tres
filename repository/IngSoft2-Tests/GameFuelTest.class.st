@@ -167,8 +167,22 @@ GameFuelTest >> testRewardForMaxRollIncreasesMaxFuel [
     dice := DiceCup with: { Die withSides: 1 }.
     game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
     initial := ship1 maxFuel.
-    game rewardForMaxRollTo: ship1.
+    game rewardForMaxRollTo: ship1 withRoll: 1.
     self assert: ship1 maxFuel equals: initial + 1.
+]
+
+{ #category : 'tests' }
+GameFuelTest >> testRewardForMaxRollCanReduceFuel [
+    | ship1 ship2 board dice game initial |
+    ship1 := Spaceship withName: 'A'.
+    ship2 := Spaceship withName: 'B'.
+    board := Board of: 5 andWormholeAt: {}.
+    dice := DiceCup with: { Die withSides: 1 }.
+    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ship1 fuel: 5.
+    initial := ship1 fuel.
+    game rewardForMaxRollTo: ship1 withRoll: 100.
+    self assert: ship1 fuel equals: initial - 1.
 ]
 
 { #category : 'tests' }
