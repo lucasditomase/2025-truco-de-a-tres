@@ -114,8 +114,8 @@ ShipMovementService >> recentMovesDuring: aBlock [
 
 { #category : 'movement' }
 ShipMovementService >> recordRecentMoveFor: aShip startingAt: startPosition delta: delta [
-    recentMoves ifNil: [ ^ self ].
     | record start total |
+    recentMoves ifNil: [ ^ self ].
     record := recentMoves at: aShip ifAbsent: [ Array with: startPosition with: 0 ].
     start := record first.
     total := record second + delta.
