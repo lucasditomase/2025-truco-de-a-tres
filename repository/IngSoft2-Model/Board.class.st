@@ -204,29 +204,43 @@ Board >> isPositionReachedAt: aPosition [
 Board >> moveShip: aShip backward: steps [
     | oldPos |
     oldPos := self positionOf: aShip.
-    ^ self moveShip: aShip from: oldPos toPosition: oldPos - steps
+    ^ self
+        moveShip: aShip
+        from: oldPos
+        toPosition: oldPos - steps
+        delta: [ :new :previous | steps negated ]
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
     | oldPos |
     oldPos := self positionOf: aShip.
-    ^ self moveShip: aShip from: oldPos toPosition: oldPos + steps
+    ^ self
+        moveShip: aShip
+        from: oldPos
+        toPosition: oldPos + steps
+        delta: [ :new :previous | steps ]
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    ^ self moveShip: aShip from: self positionOf: aShip toPosition: aPosition
+    | oldPos |
+    oldPos := self positionOf: aShip.
+    ^ self
+        moveShip: aShip
+        from: oldPos
+        toPosition: aPosition
+        delta: [ :new :previous | new - previous ]
 ]
 
 { #category : 'spaceships' }
-Board >> moveShip: aShip from: oldPos toPosition: targetPosition [
-    | newPos diff |
+Board >> moveShip: aShip from: oldPos toPosition: targetPosition delta: deltaBlock [
+    | newPos delta |
     newPos := targetPosition \\ cellCount.
     positionManager moveShip: aShip to: newPos.
-    diff := newPos - oldPos.
-    lastMoves at: aShip put: diff.
-    ^ diff
+    delta := deltaBlock value: newPos value: oldPos.
+    lastMoves at: aShip put: delta.
+    ^ delta
 ]
 
 { #category : 'spaceships' }
