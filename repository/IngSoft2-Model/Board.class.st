@@ -134,7 +134,7 @@ Board >> cells [
 { #category : 'initialize' }
 Board >> cells: aCollection [
     cells := aCollection.
-    cellCount := cells size
+    cells size > 0 ifTrue: [ cellCount := cells size ]
 ]
 
 { #category : 'moves' }
