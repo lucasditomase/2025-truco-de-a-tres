@@ -109,10 +109,13 @@ ShipMovementService >> recentMovesDuring: aBlock [
     captured := Dictionary new.
     recentMoves := Dictionary new.
     recordingMoves := true.
-    [ aBlock value. captured := recentMoves copy ] ensure: [
+    [
+        aBlock value.
+        recentMoves keysAndValuesDo: [ :ship :report |
+            captured at: ship put: report copy ]
+    ] ensure: [
         recordingMoves := previousRecording.
-        recentMoves := previousMoves.
-        captured ifNil: [ captured := Dictionary new ]
+        recentMoves := previousMoves
     ].
     ^ captured
 ]
@@ -124,10 +127,10 @@ ShipMovementService >> isRecordingMoves [
 
 { #category : 'movement' }
 ShipMovementService >> recordRecentMoveFor: aShip startingAt: startPosition delta: delta [
-    | record start total |
+    | report |
     recordingMoves ifFalse: [ ^ self ].
-    record := recentMoves at: aShip ifAbsent: [ Array with: startPosition with: 0 ].
-    start := record first.
-    total := record second + delta.
-    recentMoves at: aShip put: (Array with: start with: total)
+    report := recentMoves
+        at: aShip
+        ifAbsentPut: [ MovementReport startingAt: startPosition delta: 0 ].
+    report addDelta: delta
 ]

@@ -12,7 +12,9 @@ Class {
         'shipStatuses',
         'turnData',
         'fuelManager',
-        'lapTracker'
+        'lapTracker',
+        'penaltyPolicy',
+        'rankingService'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -123,7 +125,7 @@ Game >> handlePenaltyOrPassIfNeeded [
     ship := self currentShip.
 
     (self isPenalized: ship) ifTrue: [
-        self reducePenaltyFor: ship.
+        penaltyPolicy reducePenaltyFor: ship.
         self advanceTurn.
         ^ true ].
 
@@ -156,12 +158,16 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 
 { #category : 'initialization' }
 Game >> initializeManagers [
-    fuelManager := FuelManager
-        forBoard: board
-        penalizeWith: [ :ship :turns | self penalize: ship forTurns: turns ].
     lapTracker := LapTracker
         forBoard: board
-        statuses: shipStatuses
+        statuses: shipStatuses.
+    penaltyPolicy := PenaltyPolicy
+        withStatuses: shipStatuses
+        restoreFuelWith: [ :ship | ship restoreFuel ].
+    fuelManager := FuelManager
+        forBoard: board
+        penalizeWith: [ :ship :turns | penaltyPolicy penalize: ship forTurns: turns ].
+    rankingService := RankingService new
 ]
 
 { #category : 'initialization' }
@@ -268,8 +274,7 @@ Game >> passTurn [
 
 { #category : 'process actions' }
 Game >> penalize: aShip forTurns: turns [
-    aShip penalizeFor: turns.
-    (self lapTrackerFor: aShip) penalized: true
+    penaltyPolicy penalize: aShip forTurns: turns
 ]
 
 { #category : 'process actions' }
@@ -316,17 +321,7 @@ Game >> playUntilFinish [
 
 { #category : 'process actions' }
 Game >> ranking [
-    ^ self allStatuses sort: [ :a :b |
-        | sameLaps samePosition |
-        sameLaps := a lapCount = b lapCount.
-        samePosition := a position = b position.
-
-        sameLaps
-            ifTrue: [
-                samePosition
-                    ifTrue: [ a ship name < b ship name ]
-                    ifFalse: [ a position > b position ] ]
-            ifFalse: [ a lapCount > b lapCount ] ]
+    ^ rankingService rankingFor: self allStatuses
 ]
 
 { #category : 'process actions' }
@@ -336,9 +331,7 @@ Game >> redoLastCardOn: aShip [
 
 { #category : 'testing' }
 Game >> reducePenaltyFor: aShip [
-    aShip reducePenalty.
-    (self lapTrackerFor: aShip) penalized: aShip isPenalized.
-    aShip restoreFuel
+    penaltyPolicy reducePenaltyFor: aShip
 ]
 
 { #category : 'testing' }
@@ -432,13 +425,13 @@ Game >> applyEffectOfCurrentCell [
 
 { #category : 'process actions' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
-    | movementReport movementOccurred |
-    movementReport := board recordMovesDuring: effectBlock.
+    | movementRecords movementOccurred |
+    movementRecords := board recordMovesDuring: effectBlock.
     movementOccurred := false.
-    movementReport keysAndValuesDo: [ :ship :data |
+    movementRecords keysAndValuesDo: [ :ship :report |
         | start delta |
-        start := data first.
-        delta := data second.
+        start := report startPosition.
+        delta := report delta.
         delta ~= 0 ifTrue: [
             movementOccurred := true.
             skipFuel ifFalse: [ fuelManager consumeMovement: delta forShip: ship ].
