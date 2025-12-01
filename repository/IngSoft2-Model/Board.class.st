@@ -21,6 +21,19 @@ Board class >> convertToParsecs: aLength [
         do: [ aLength ]
 ]
 
+{ #category : 'effects' }
+Board class >> effectDistributionWeights [
+    ^ {
+        [ NoEffect new ] -> 38.
+        [ CardEffect new ] -> 10.
+        [ BlackHoleEffect new ] -> 20.
+        [ HyperGravityEffect new ] -> 20.
+        [ MoonWalkEffect new ] -> 10.
+        [ HyperJumpEffect withValues: #(1 2 3) ] -> 8.
+        [ AtomicBombEffect new ] -> 2
+    }
+]
+
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells andWormholeAt: positions [
     self validateCellCount: anAmountOfCells.
@@ -214,14 +227,7 @@ Board >> initializeMovementService [
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
     | start target |
-    start := self positionOf: aShip.
-    target := self determineNewPositionFrom: start after: steps negated.
-    ^ movementService
-        moveShip: aShip
-        from: start
-        toPosition: target
-        delta: [ :new :previous | steps negated ]
-]
+    ^ OrderedCollection withAll: self effectDistributionWeights
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
@@ -326,15 +332,7 @@ Board >> randomEffect [
 
 { #category : 'effects' }
 Board >> randomEffectDistribution [
-    ^ OrderedCollection new
-        add: [ NoEffect new ] -> 38;
-        add: [ CardEffect new ] -> 10;
-        add: [ BlackHoleEffect new ] -> 20;
-        add: [ HyperGravityEffect new ] -> 20;
-        add: [ MoonWalkEffect new ] -> 10;
-        add: [ HyperJumpEffect withValues: #(1 2 3) ] -> 8;
-        add: [ AtomicBombEffect new ] -> 2;
-        yourself
+    ^ OrderedCollection withAll: self class effectDistributionWeights
 ]
 
 { #category : 'effects' }

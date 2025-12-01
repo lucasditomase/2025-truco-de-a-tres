@@ -35,6 +35,11 @@ Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNum
         laps: aNumberLaps
 ]
 
+{ #category : 'probabilities' }
+Game class >> maxRollRewardIncreaseChance [
+    ^ 80
+]
+
 { #category : 'initialize' }
 Game class >> validateBoard: aBoard [
     (aBoard isKindOf: Board) ifFalse: [
@@ -312,11 +317,8 @@ Game >> playTurn [
 
 { #category : 'process actions' }
 Game >> playUntilFinish [
-    self whenFinishedDo: [ :aWinner | ]
-        whenInProgressDo: [
-            [ self whenFinishedDo: [ :aWinner | false ] whenInProgressDo: [ true ] ]
-                whileTrue: [ self playTurn ].
-        ].
+    [ self whenFinishedDo: [ :winner | false ] whenInProgressDo: [ true ] ]
+        whileTrue: [ self playTurn ]
 ]
 
 { #category : 'process actions' }
@@ -392,7 +394,7 @@ Game >> rewardForMaxRollTo: aShip [
 
 { #category : 'process actions' }
 Game >> rewardForMaxRollTo: aShip withRoll: aNumber [
-    aNumber <= 80
+    aNumber <= self class maxRollRewardIncreaseChance
         ifTrue: [ aShip increaseMaxFuelBy: 1 ]
         ifFalse: [ aShip decreaseFuelBy: 1 ]
 ]
