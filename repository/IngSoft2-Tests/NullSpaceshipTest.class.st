@@ -9,10 +9,3 @@ Class {
 NullSpaceshipTest >> testIsNullShipReturnsTrue [
     self assert: (NullSpaceship new isNullShip).
 ]
-
-{ #category : 'tests - instance' }
-NullSpaceshipTest >> testValidateAsSpaceshipReturnsSelf [
-    | ship |
-    ship := NullSpaceship new.
-    self assert: (ship validateAsSpaceship) equals: ship.
-]

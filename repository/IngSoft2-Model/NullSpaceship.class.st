@@ -9,8 +9,3 @@ Class {
 NullSpaceship >> isNullShip [
     ^ true
 ]
-
-{ #category : 'validation' }
-NullSpaceship >> validateAsSpaceship [
-    ^ self
-]

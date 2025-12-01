@@ -371,11 +371,6 @@ Board >> totalLengthInParsecs [
     ^ totalLengthInParsecs
 ]
 
-{ #category : 'validation' }
-Board >> validateAsBoard [
-    ^ self
-]
-
 { #category : 'effects' }
 Board >> wormholeEnteringAt: aPosition [
     ^ wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ NullWormhole new ]

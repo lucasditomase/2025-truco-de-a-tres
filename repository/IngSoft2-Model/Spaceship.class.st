@@ -193,8 +193,3 @@ Spaceship >> state: aState [
 Spaceship >> isNullShip [
     ^ false
 ]
-
-{ #category : 'validation' }
-Spaceship >> validateAsSpaceship [
-    ^ self
-]

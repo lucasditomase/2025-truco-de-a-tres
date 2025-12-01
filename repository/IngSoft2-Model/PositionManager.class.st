@@ -19,9 +19,9 @@ PositionManager class >> forShips: someShips [
 PositionManager class >> validateShips: someShips [
     (someShips isCollection) ifFalse: [
         ^ self error: 'Ships must be a collection of Spaceship instances' ].
-    [ someShips do: [ :each | each validateAsSpaceship ] ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Ships must be a collection of Spaceship instances' ]
+    someShips do: [ :each |
+        (each isKindOf: Spaceship) ifFalse: [
+            ^ self error: 'Ships must be a collection of Spaceship instances' ] ]
 ]
 
 { #category : 'initialization' }

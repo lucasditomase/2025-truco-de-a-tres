@@ -33,16 +33,14 @@ Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNum
 
 { #category : 'initialize' }
 Game class >> validateBoard: aBoard [
-    [ aBoard validateAsBoard ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Board must be an instance of Board' ]
+    (aBoard isKindOf: Board) ifFalse: [
+        self error: 'Board must be an instance of Board' ]
 ]
 
 { #category : 'initialize' }
 Game class >> validateDice: someDices [
-    [ someDices validateAsDiceCup ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Dice must be an instance of DiceCup' ]
+    (someDices isKindOf: DiceCup) ifFalse: [
+        self error: 'Dice must be an instance of DiceCup' ]
 ]
 
 { #category : 'initialize' }
@@ -61,9 +59,9 @@ Game class >> validateMinimumShips: someShips [
 Game class >> validateShips: someShips [
     (someShips isCollection) ifFalse: [
         ^ self error: 'Ships must be a collection of Spaceship instances' ].
-    [ someShips do: [:each | each validateAsSpaceship ] ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Ships must be a collection of Spaceship instances' ]
+    someShips do: [ :each |
+        (each isKindOf: Spaceship) ifFalse: [
+            ^ self error: 'Ships must be a collection of Spaceship instances' ] ]
 ]
 
 { #category : 'process actions' }

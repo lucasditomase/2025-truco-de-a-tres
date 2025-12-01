@@ -758,13 +758,6 @@ BoardTest >> testShipsReturnsRegisteredShips [
 ]
 
 { #category : 'tests - instance' }
-BoardTest >> testValidateAsBoardReturnsSelf [
-    | board |
-    board := Board of: 3 andWormholeAt: {}.
-    self assert: (board validateAsBoard) equals: board.
-]
-
-{ #category : 'tests - instance' }
 BoardTest >> testCellsSetterUpdatesCells [
     | board newCells |
     board := Board of: 3 andWormholeAt: {}.
