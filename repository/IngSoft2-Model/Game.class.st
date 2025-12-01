@@ -354,7 +354,7 @@ Game >> removeActiveCard: aCard [
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
-    | position effect card |
+    | position effect card skipFuel |
     turnData lastEffectWasCard ifTrue: [
         card := turnData lastEffectiveCard.
         card class = NullCard ifTrue: [ ^ self ].
@@ -366,7 +366,10 @@ Game >> repeatLastEffectOn: aShip [
         determineNewPositionFrom: turnData lastPreviousPosition
         after: turnData lastSteps.
     effect := board effectAt: position.
-    effect applyTo: aShip inBoard: board
+    skipFuel := effect class = AtomicBombEffect.
+    self
+        applyEffectSkippingFuel: skipFuel
+        during: [ effect applyTo: aShip inBoard: board ]
 ]
 
 { #category : 'process actions' }
@@ -422,15 +425,19 @@ Game >> rollAndMoveCurrentShip [
 
 { #category : 'process actions' }
 Game >> applyEffectOfCurrentCell [
-    | effect skipFuel movementReport |
+    | effect skipFuel |
     effect := board effectAt: (board positionOf: self currentShip).
     skipFuel := effect class = AtomicBombEffect.
+    self
+        applyEffectSkippingFuel: skipFuel
+        during: [ board applyEffectTo: self currentShip ]
+]
+
+{ #category : 'process actions' }
+Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
+    | movementReport |
     turnData lastEffectWasCard: false.
-
-    movementReport := board recordMovesDuring: [
-        board applyEffectTo: self currentShip
-    ].
-
+    movementReport := board recordMovesDuring: effectBlock.
     movementReport keysAndValuesDo: [ :ship :data |
         | start delta |
         start := data first.
