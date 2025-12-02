@@ -5,13 +5,29 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+OverloadCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
+{ #category : 'support' }
+OverloadCardTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
+]
+
 { #category : 'tests' }
 OverloadCardTest >> testActivateForAddsCardToShipActiveCards [
-    | ship card |
-    ship := Spaceship withName: 'Player'.
-    card := OverloadCard forShip: ship.
-    card activateFor: ship inGame: nil.
-    self assert: (ship activeCards includes: card).
+    | scenario game alpha beta card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    card := OverloadCard forShip: beta.
+    alpha addCard: card.
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+
+    self assert: (beta activeCards includes: card)
 ]
 
 { #category : 'tests' }
