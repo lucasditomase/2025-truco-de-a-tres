@@ -225,7 +225,7 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
 GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Almost');
+        withShipNames: #('Almost' 'Filler');
         boardWithCells: 3;
         diceCup: [ DiceCup with: { MockDie value: 3 sides: 6 } ];
         laps: 2;
@@ -242,7 +242,7 @@ GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
 GameTest >> testHasWonByLapsReturnsTrueWhenEnoughLaps [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Winner');
+        withShipNames: #('Winner' 'Filler');
         boardWithCells: 3;
         diceCup: [ DiceCup with: { MockDie value: 3 sides: 6 } ];
         laps: 1;
@@ -676,7 +676,7 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
 GameTest >> testRegisterLapWhenCrossesFinishLine [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Runner');
+        withShipNames: #('Runner' 'Filler');
         boardWithCells: 3;
         diceCup: [ DiceCup with: { MockDie value: 3 sides: 6 } ];
         laps: 1;
