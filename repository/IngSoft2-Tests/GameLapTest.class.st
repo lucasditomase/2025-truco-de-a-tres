@@ -17,7 +17,7 @@ GameLapTest >> testShipAccumulatesMultipleLapsInSingleTurn [
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
         laps: 10;
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4 1 12) } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4 1 15) } ];
         build.
 
     scenario playTurns: 3.
