@@ -14,7 +14,7 @@ CardTest >> builder [
 CardTest >> testModifyRollReturnsSameNumber [
     | scenario game ship card result |
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceWithSides: 6;
         build.
     game := scenario game.
@@ -28,7 +28,7 @@ CardTest >> testModifyRollReturnsSameNumber [
 CardTest >> testPlayOnRaisesSubclassResponsibilityError [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceWithSides: 6;
         build.
     game := scenario game.
@@ -41,7 +41,7 @@ CardTest >> testPlayOnRaisesSubclassResponsibilityError [
 CardTest >> testAllyForReturnsNullSpaceship [
     | scenario ship card ally |
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceWithSides: 6;
         build.
     ship := scenario shipNamed: 'Alpha'.
