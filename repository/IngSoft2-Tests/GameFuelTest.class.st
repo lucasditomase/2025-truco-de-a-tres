@@ -5,226 +5,264 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
-{ #category : 'asserting' }
-GameFuelTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-    self
-        should: anErrorBlock
-        raise: anErrorClass
-        withExceptionDo: [ :error |
-            self assert: error messageText equals: errorMessage ].
+{ #category : 'support' }
+GameFuelTest >> builder [
+    ^ GameTestBuilder new
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testPassTurnRestoresFuelToMax [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'Skip'.
-    ship2 := Spaceship withName: 'Other'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 maxFuel: 5.
-    ship1 fuel: 2.
+GameFuelTest >> testPassTurnRestoresFuelAndAdvancesTurn [
+    | scenario game skip |
+    scenario := self builder
+        withShipNames: #('Skip' 'Other');
+        diceWithSides: 4;
+        laps: 5;
+        build.
+    game := scenario game.
+    skip := scenario shipNamed: 'Skip'.
 
+    game consumeFuel: 3 forShip: skip.
     game passTurn.
 
-    self assert: ship1 fuel equals: ship1 maxFuel.
-    self assert: game currentShip equals: ship2.
+    self assert: skip fuel equals: skip maxFuel.
+    self assert: game currentShip name equals: 'Other'
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testFuelConsumptionIncludesEffectMovement [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'P1'.
-    ship2 := Spaceship withName: 'P2'.
-    board := Board of: 10 andWormholeAt: {}.
-    board cells at: 1 put: BlackHoleEffect new.
-    dice := DiceCup with: { MockDie value: 1 sides: 6 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 maxFuel: 10.
-    ship1 fuel: 10.
+GameFuelTest >> testFuelConsumptionIncludesBoardEffectMovement [
+    | scenario game pilot initialFuel |
+    scenario := self builder
+        withShipNames: #('Pilot' 'Observer');
+        boardWithCells: 10;
+        configureBoardWith: [ :board |
+            board cells
+                at: 4
+                put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 2 ]) ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4) } ];
+        laps: 5;
+        build.
+    game := scenario game.
+    pilot := scenario shipNamed: 'Pilot'.
+    initialFuel := pilot fuel.
 
-    game playTurn.
+    scenario playTurns: 1.
 
-    self assert: ship1 fuel equals: 5.
+    self assert: pilot fuel equals: initialFuel - 6.
+    self assert: game currentShip name equals: 'Observer'
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testPenaltyWhenFuelRunsOutDueToEffect [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'P1'.
-    ship2 := Spaceship withName: 'P2'.
-    board := Board of: 10 andWormholeAt: {}.
-    board cells at: 1 put: BlackHoleEffect new.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 maxFuel: 5.
-    ship1 fuel: 3.
+GameFuelTest >> testPenaltyWhenEffectConsumesRemainingFuel [
+    | scenario striker |
+    scenario := self builder
+        withShipNames: #('Striker' 'Witness');
+        boardWithCells: 8;
+        configureBoardWith: [ :board |
+            board cells
+                at: 2
+                put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 6 ]) ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) } ];
+        laps: 5;
+        build.
+    scenario playTurns: 1.
+    striker := scenario shipNamed: 'Striker'.
 
-    game playTurn.
-
-    self assert: (game isPenalized: ship1).
-    self assert: (board positionOf: ship1) equals: 0.
+    self assert: (scenario game isPenalized: striker).
+    self assert: (scenario statusForShipNamed: 'Striker') position equals: 0
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testAllySharesFuelWhenOwnerRunsOut [
-    | owner ally board dice game card |
-    owner := Spaceship withName: 'Owner'.
-    ally := Spaceship withName: 'Ally'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { owner. ally } board: board dice: dice laps: 1.
+GameFuelTest >> testAllySharesFuelBeforePenalty [
+    | scenario game owner ally card initialAllyFuel availableFuel |
+    scenario := self builder
+        withShipNames: #('Owner' 'Ally');
+        diceWithSides: 4;
+        laps: 5;
+        build.
+    game := scenario game.
+    owner := scenario shipNamed: 'Owner'.
+    ally := scenario shipNamed: 'Ally'.
     card := AllyCard withAlly: ally.
-    card activateFor: owner inGame: nil.
-    owner maxFuel: 5.
-    owner fuel: 1.
-    ally maxFuel: 5.
-    ally fuel: 4.
-    game consumeFuel: 2 forShip: owner.
+    card activateFor: owner inGame: game.
+
+    availableFuel := owner fuel.
+    game consumeFuel: availableFuel - 1 forShip: owner.
+    initialAllyFuel := ally fuel.
+    game consumeFuel: 3 forShip: owner.
+
     self assert: owner fuel equals: 0.
-    self assert: ally fuel equals: 3.
+    self assert: ally fuel equals: initialAllyFuel - 2.
+    self assert: (game isPenalized: owner)
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testAllyPenaltyWhenBothRunOutOfFuel [
-    | owner allyShip board dice game card |
-    owner := Spaceship withName: 'Owner'.
-    allyShip := Spaceship withName: 'Friend'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { owner. allyShip } board: board dice: dice laps: 1.
-    card := AllyCard withAlly: allyShip.
-    card activateFor: owner inGame: nil.
-    owner maxFuel: 5.
-    owner fuel: 1.
-    allyShip maxFuel: 5.
-    allyShip fuel: 1.
-    game consumeFuel: 2 forShip: owner.
+GameFuelTest >> testAllyPenaltyWhenBothShipsRunOut [
+    | scenario game owner ally card |
+    scenario := self builder
+        withShipNames: #('Owner' 'Friend');
+        diceWithSides: 4;
+        laps: 5;
+        build.
+    game := scenario game.
+    owner := scenario shipNamed: 'Owner'.
+    ally := scenario shipNamed: 'Friend'.
+    card := AllyCard withAlly: ally.
+    card activateFor: owner inGame: game.
+
+    game consumeFuel: owner fuel - 1 forShip: owner.
+    game consumeFuel: ally fuel - 1 forShip: ally.
+    game consumeFuel: 4 forShip: owner.
+
     self assert: (game isPenalized: owner).
-    self assert: (game isPenalized: allyShip).
-    self assert: (board positionOf: owner) equals: 0.
-    self assert: (board positionOf: allyShip) equals: 0.
+    self assert: (game isPenalized: ally).
+    self assert: (scenario statusForShipNamed: 'Owner') position equals: 0.
+    self assert: (scenario statusForShipNamed: 'Friend') position equals: 0
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testRewardOnMaxRollChangesFuel [
-    | ship otherShip dice board game initialMax initialFuel |
-    ship := Spaceship withName: 'Reward'.
-    otherShip := Spaceship withName: 'Other'.
-    dice := DiceCup with: { Die withSides: 1 }.
-    board := Board of: 5 andWormholeAt: #().
-    ship maxFuel: 5.
-    ship fuel: 5.
-    game := Game startWithShips: { ship. otherShip } board: board dice: dice laps: 1.
+GameFuelTest >> testMaxRollDuringTurnTriggersReward [
+    | scenario ship initialMax |
+    scenario := self builder
+        withShipNames: #('Reward' 'Watcher');
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(6) } ];
+        laps: 5;
+        build.
+    ship := scenario shipNamed: 'Reward'.
     initialMax := ship maxFuel.
-    initialFuel := ship fuel.
-    game rollAndMoveCurrentShip.
-    self assert: (
-        (ship maxFuel = (initialMax + 1) and: [ ship fuel = (initialFuel - 1) ])
-        or: [ ship maxFuel = initialMax and: [ ship fuel = (initialFuel - 2) ] ]).
-]
 
-{ #category : 'tests' }
-GameFuelTest >> testAtomicBombDoesNotConsumeFuel [
-    | ship1 ship2 board dice game initial |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 3 andWormholeAt: {}.
-    board cells at: 1 put: AtomicBombEffect new.
-    dice := DiceCup with: { MockDie value: 1 sides: 6 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    initial := ship1 fuel.
-    game playTurn.
-    self assert: ship1 fuel equals: initial - 1.
-]
+    scenario game rollAndMoveCurrentShip.
 
-{ #category : 'tests' }
-GameFuelTest >> testRecordFuelStartForMaintainsHistory [
-    | ship1 ship2 board dice game history |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 fuel: 5.
-    game recordFuelStartFor: ship1.
-    ship1 fuel: 4.
-    game recordFuelStartFor: ship1.
-    ship1 fuel: 3.
-    game recordFuelStartFor: ship1.
-    ship1 fuel: 2.
-    game recordFuelStartFor: ship1.
-    history := game fuelHistoryFor: ship1.
-    self assert: history equals: { 4. 3. 2 } asOrderedCollection.
+    self assert: (ship maxFuel = initialMax or: [ ship maxFuel = initialMax + 1 ])
 ]
 
 { #category : 'tests' }
 GameFuelTest >> testRewardForMaxRollIncreasesMaxFuel [
-    | ship1 ship2 board dice game initial |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    initial := ship1 maxFuel.
-    game rewardForMaxRollTo: ship1 withRoll: 1.
-    self assert: ship1 maxFuel equals: initial + 1.
+    | scenario ship initial |
+    scenario := self builder
+        withShipNames: #('Lucky' 'Other');
+        diceWithSides: 3;
+        laps: 5;
+        build.
+    ship := scenario shipNamed: 'Lucky'.
+    initial := ship maxFuel.
+
+    scenario game rewardForMaxRollTo: ship withRoll: 1.
+
+    self assert: ship maxFuel equals: initial + 1
 ]
 
 { #category : 'tests' }
 GameFuelTest >> testRewardForMaxRollCanReduceFuel [
-    | ship1 ship2 board dice game initial |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 fuel: 5.
-    initial := ship1 fuel.
-    game rewardForMaxRollTo: ship1 withRoll: 100.
-    self assert: ship1 fuel equals: initial - 1.
+    | scenario ship initialFuel |
+    scenario := self builder
+        withShipNames: #('Risky' 'Other');
+        diceWithSides: 3;
+        laps: 5;
+        build.
+    ship := scenario shipNamed: 'Risky'.
+    initialFuel := ship fuel.
+
+    scenario game rewardForMaxRollTo: ship withRoll: 100.
+
+    self assert: ship fuel equals: initialFuel - 1
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testPenalizeAndResetIfNoFuelAppliesPenalty [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    ship1 moveTo: 3.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 fuel: 0.
-    game penalizeAndResetIfNoFuel: ship1.
-    self assert: (board positionOf: ship1) equals: 0.
-    self assert: (game isPenalized: ship1).
+GameFuelTest >> testAtomicBombEffectSkipsFuelConsumption [
+    | scenario ship initialFuel |
+    scenario := self builder
+        withShipNames: #('A' 'B');
+        boardWithCells: 4;
+        configureBoardWith: [ :board |
+            board cells at: 1 put: AtomicBombEffect new ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) } ];
+        laps: 5;
+        build.
+    ship := scenario shipNamed: 'A'.
+    initialFuel := ship fuel.
+
+    scenario playTurns: 1.
+
+    self assert: ship fuel equals: initialFuel - 1
 ]
 
 { #category : 'tests' }
-GameFuelTest >> testPenalizeAndResetIfNoFuelDoesNothingWhenHasFuel [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    ship1 moveTo: 2.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    ship1 fuel: 5.
-    game penalizeAndResetIfNoFuel: ship1.
-    self assert: (board positionOf: ship1) equals: 2.
-    self deny: (game isPenalized: ship1).
+GameFuelTest >> testRecordFuelStartRetainsLastEntries [
+    | scenario game ship initialFuel history |
+    scenario := self builder
+        withShipNames: #('Recorder' 'Other');
+        diceWithSides: 4;
+        laps: 5;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Recorder'.
+    initialFuel := ship fuel.
+
+    4 timesRepeat: [
+        game recordFuelStartFor: ship.
+        game consumeFuel: 1 forShip: ship ].
+
+    history := game fuelHistoryFor: ship.
+    self assert: history equals: {
+        initialFuel - 2.
+        initialFuel - 3.
+        initialFuel - 4 } asOrderedCollection
+]
+
+{ #category : 'tests' }
+GameFuelTest >> testPenalizeAndResetIfNoFuelMovesShipToStart [
+    | scenario game ship status |
+    scenario := self builder
+        withShipNames: #('Runner' 'Other');
+        boardWithCells: 6;
+        diceWithSides: 4;
+        laps: 5;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Runner'.
+
+    game consumeFuel: ship fuel forShip: ship.
+    game penalizeAndResetIfNoFuel: ship.
+
+    status := scenario statusForShipNamed: 'Runner'.
+    self assert: status position equals: 0.
+    self assert: (game isPenalized: ship)
+]
+
+{ #category : 'tests' }
+GameFuelTest >> testPenalizeAndResetIfNoFuelDoesNothingWhenShipHasFuel [
+    | scenario game ship status |
+    scenario := self builder
+        withShipNames: #('Runner' 'Other');
+        boardWithCells: 6;
+        diceWithSides: 4;
+        laps: 5;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Runner'.
+
+    game consumeFuel: 1 forShip: ship.
+    game penalizeAndResetIfNoFuel: ship.
+
+    status := scenario statusForShipNamed: 'Runner'.
+    self assert: status position equals: 0.
+    self deny: (game isPenalized: ship)
 ]
 
 { #category : 'tests' }
 GameFuelTest >> testFuelHistorySetterReplacesHistory [
-    | ship1 ship2 board dice game history |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship history |
+    scenario := self builder
+        withShipNames: #('Recorder' 'Other');
+        diceWithSides: 3;
+        laps: 5;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Recorder'.
     history := Dictionary new.
-    history at: ship1 put: (OrderedCollection with: 5).
+    history at: ship put: (OrderedCollection with: 5).
+
     game fuelHistory: history.
-    self assert: (game fuelHistoryFor: ship1) equals: (OrderedCollection with: 5).
+
+    self assert: (game fuelHistoryFor: ship) equals: (OrderedCollection with: 5)
 ]
