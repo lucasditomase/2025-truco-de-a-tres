@@ -376,24 +376,21 @@ GameTest >> testPassTurnAdvancesIndex [
 
 { #category : 'tests' }
 GameTest >> testPlayTurnHandlesPassTurnCorrectly [
-    | ship1 ship2 board dice game |
+    | scenario game passing next |
+    scenario := self builder
+        withShipNames: #('Passing' 'Next');
+        boardWithCells: 10;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    passing := scenario shipNamed: 'Passing'.
+    next := scenario shipNamed: 'Next'.
 
-    ship1 := Spaceship withName: 'Passing'.
-    ship2 := Spaceship withName: 'Next'.
-    board := Board of: 10 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: board
-    dice: dice
-    laps: 1.
-
-    game markShipAsWantingToPassTurn: ship1 to: true.
+    game markShipAsWantingToPassTurn: passing to: true.
     game playTurn.
 
-    self assert: game currentShip equals: ship2.
-    self deny: (game wantsToPassTurn: ship1).
+    self assert: game currentShip equals: next.
+    self deny: (game wantsToPassTurn: passing).
 ]
 
 { #category : 'tests' }
@@ -730,63 +727,77 @@ GameTest >> testRegisterLapWhenCrossesFinishLine [
 
 { #category : 'tests' }
 GameTest >> testRemoveActiveCardRemovesFromAllShips [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    card := AccelerationCard new.
-    ship1 addActiveCard: card.
+    | scenario game ship card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    self clearHandOf: ship.
+    card := ShieldCard new.
+    ship addCard: card.
+
+    self ensureTurnOf: ship inGame: game.
+    ship playCard: card inGame: game.
+    self assert: (ship activeCards includes: card).
+
     game removeActiveCard: card.
-    self assert: ship1 activeCards isEmpty.
+
+    self assert: ship activeCards isEmpty.
 ]
 
 { #category : 'tests' }
 GameTest >> testRepeatLastEffectOnDoesNothing [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game repeatLastEffectOn: ship1.
-    self assert: ship1 position equals: 0.
+    | scenario game ship |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+
+    game repeatLastEffectOn: ship.
+
+    self assert: ship position equals: 0.
 ]
 
 { #category : 'tests' }
 GameTest >> testRepeatLastEffectOnAppliesLastEffect [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    board := Board of: 5 andWormholeAt: {}.
-    board cells at: 1 put: CardEffect new.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game alpha beta |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
 
-    game rollAndMoveCurrentShip.
-    board applyEffectTo: ship1.
+    game playTurn.
 
-    game repeatLastEffectOn: ship2.
+    game repeatLastEffectOn: beta.
 
-    self assert: ship2 cards size equals: 3.
+    self assert: beta cards size equals: 3.
 ]
 
 { #category : 'tests' }
 GameTest >> testRollAndMoveCurrentShipMovesShipCorrectly [
-    | ship otherShip dice board game originalPosition |
-
-    ship := Spaceship withName: 'Mover'.
-    otherShip := Spaceship withName: 'Otro'.
-    dice := DiceCup with: { Die withSides: 1 }.
-    board := Board of: 10 andWormholeAt: #().
-    game := Game startWithShips: { ship. otherShip } board: board dice: dice laps: 1.
-
-    originalPosition := ship position.
+    | scenario game ship |
+    scenario := self builder
+        withShipNames: #('Mover' 'Otro');
+        boardWithCells: 10;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Mover'.
 
     game rollAndMoveCurrentShip.
 
-    self assert: ship position equals: originalPosition + 1.
+    self assert: ship position equals: 1.
 ]
 
 { #category : 'tests - instance' }
