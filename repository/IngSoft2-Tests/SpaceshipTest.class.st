@@ -5,6 +5,11 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'helpers' }
+SpaceshipTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'tests - instance' }
 SpaceshipTest >> testActiveCardsStartsEmpty [
     | ship |
@@ -168,29 +173,33 @@ SpaceshipTest >> testPenaltyTurnsRemainingDelegatesToState [
 
 { #category : 'tests - instance' }
 SpaceshipTest >> testPlayCardNotInHandRaisesError [
-    | ship otherShip card board dice game |
+    | scenario game ship card |
 
-    ship := Spaceship withName: 'Player'.
-    otherShip := Spaceship withName: 'Other'.
+    scenario := self builder
+        withShipNames: #('Player' 'Other');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Player'.
     card := AdvanceCard new.
-    board := Board of: 5 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship. otherShip } board: board dice: dice laps: 1.
 
     self should: [ ship playCard: card inGame: game ] raise: Error.
 ]
 
 { #category : 'tests - instance' }
 SpaceshipTest >> testPlayCardRemovesFromHandAndRecords [
-    | ship otherShip card board dice game |
+    | scenario game ship card |
 
-    ship := Spaceship withName: 'Player'.
-    otherShip := Spaceship withName: 'Other'.
+    scenario := self builder
+        withShipNames: #('Player' 'Other');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Player'.
     card := AdvanceCard new.
     ship addCard: card.
-    board := Board of: 5 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship. otherShip } board: board dice: dice laps: 1.
 
     ship playCard: card inGame: game.
 
