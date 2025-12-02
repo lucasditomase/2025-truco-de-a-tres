@@ -11,29 +11,32 @@ Class {
 
 { #category : 'asserting' }
 Wormhole class >> assertValidStateFrom: entry to: exit [
-    (entry isInteger and: [ exit isInteger ]) ifFalse: [
-        self error: 'Entry and exit must be integers'
-    ].
-
-    (entry > 0 and: [ exit > 0 ]) ifFalse: [
-        self error: 'Entry and exit must be positive'
-    ].
-
-    entry = exit ifTrue: [
-        self error: 'Wormhole cannot go to itself'
-    ].
+    self
+        ensureEntry: entry
+        exit: exit
+        samePositionMessage: 'Wormhole cannot go to itself'.
 ]
 
 { #category : 'initialize' }
 Wormhole class >> connecting: aPosition and: anotherPosition [
-    self validatePositionIsNotTheSame: aPosition and: anotherPosition.
-    ^ self basicNew initializeConnecting: aPosition and: anotherPosition.
+    | endpoints |
+
+    endpoints := self
+        ensureEntry: aPosition
+        exit: anotherPosition
+        samePositionMessage: 'Wormhole positions must be distinct'.
+    ^ self basicNew initializeConnecting: endpoints first and: endpoints second.
 ]
 
 { #category : 'initialize' }
 Wormhole class >> from: entryPosition to: exitPosition [
-    self assertValidStateFrom: entryPosition to: exitPosition.
-    ^ self basicNew initializeFrom: entryPosition to: exitPosition.
+    | endpoints |
+
+    endpoints := self
+        ensureEntry: entryPosition
+        exit: exitPosition
+        samePositionMessage: 'Wormhole cannot go to itself'.
+    ^ self basicNew initializeFrom: endpoints first to: endpoints second.
 ]
 
 { #category : 'instance creation' }
@@ -41,11 +44,21 @@ Wormhole class >> new [
     self error: 'Use Wormhole from:to: instead.'.
 ]
 
-{ #category : 'initialize' }
-Wormhole class >> validatePositionIsNotTheSame: aPosition and: anotherPosition [
-    aPosition = anotherPosition ifTrue: [
-        self error: 'Wormhole positions must be distinct'
+{ #category : 'validation' }
+Wormhole class >> ensureEntry: entryPosition exit: exitPosition samePositionMessage: samePositionMessage [
+    (entryPosition isInteger and: [ exitPosition isInteger ]) ifFalse: [
+        self error: 'Entry and exit must be integers'
     ].
+
+    (entryPosition > 0 and: [ exitPosition > 0 ]) ifFalse: [
+        self error: 'Entry and exit must be positive'
+    ].
+
+    entryPosition = exitPosition ifTrue: [
+        self error: samePositionMessage
+    ].
+
+    ^ Array with: entryPosition with: exitPosition
 ]
 
 { #category : 'validation' }
