@@ -1,0 +1,84 @@
+Class {
+    #name : 'GameTestBuilder',
+    #superclass : 'Object',
+    #instVars : [
+        'shipNames',
+        'boardFactory',
+        'boardConfigurator',
+        'diceFactory',
+        'laps'
+    ],
+    #category : 'IngSoft2-Tests',
+    #package : 'IngSoft2-Tests'
+}
+
+{ #category : 'initialization' }
+GameTestBuilder >> initialize [
+    shipNames := #('Alpha' 'Beta').
+    boardFactory := [ Board of: 10 andWormholeAt: #() ].
+    boardConfigurator := [ :board | board ].
+    diceFactory := [ DiceCup with: { Die withSides: 1 } ].
+    laps := 1.
+]
+
+{ #category : 'instance creation' }
+GameTestBuilder class >> withShipNames: aCollection [
+    ^ self new withShipNames: aCollection
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withShipNames: aCollection [
+    shipNames := aCollection.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> laps: aNumber [
+    laps := aNumber.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> boardWithCells: aNumber [
+    boardFactory := [ Board of: aNumber andWormholeAt: #() ].
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> boardFactory: aBlock [
+    boardFactory := aBlock.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> configureBoardWith: aBlock [
+    boardConfigurator := aBlock.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> diceWithSides: aNumber [
+    diceFactory := [ DiceCup with: { Die withSides: aNumber } ].
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> diceCup: aBlock [
+    diceFactory := aBlock.
+    ^ self
+]
+
+{ #category : 'instance creation' }
+GameTestBuilder >> build [
+    | ships board dice game |
+    ships := shipNames collect: [ :each | Spaceship withName: each ].
+    board := boardFactory value.
+    boardConfigurator value: board.
+    dice := diceFactory value.
+    game := Game
+        startWithShips: ships
+        board: board
+        dice: dice
+        laps: laps.
+    ^ GameTestScenario withGame: game ships: ships
+]
