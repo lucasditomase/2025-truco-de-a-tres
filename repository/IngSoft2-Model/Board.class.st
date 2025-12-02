@@ -148,10 +148,9 @@ Board >> cells [
 { #category : 'initialize' }
 Board >> cells: aCollection [
     cells := aCollection.
-    cells size > 0 ifTrue: [
-        cellCount := cells size.
-        movementService ifNotNil: [ movementService cellCount: cellCount ]
-    ]
+    cells isEmpty ifTrue: [ ^ self ].
+    cellCount := cells size.
+    movementService ifNotNil: [ movementService cellCount: cellCount ]
 ]
 
 { #category : 'moves' }
