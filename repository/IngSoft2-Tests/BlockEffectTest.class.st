@@ -5,6 +5,15 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'asserting' }
+BlockEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: errorMessage ]
+]
+
 { #category : 'tests' }
 BlockEffectTest >> testOnCreatesEffectThatRunsAction [
     | effect ship board |
@@ -12,7 +21,7 @@ BlockEffectTest >> testOnCreatesEffectThatRunsAction [
     ship := Spaceship withName: 'Runner'.
     board := Board of: 5 andWormholeAt: {}.
     board registerShips: { ship }.
-    ship moveTo: 1.
+    board moveShip: ship to: 1.
 
     effect applyEffectTo: ship inBoard: board.
 
