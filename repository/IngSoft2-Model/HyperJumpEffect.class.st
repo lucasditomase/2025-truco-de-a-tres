@@ -13,15 +13,23 @@ Class {
 HyperJumpEffect class >> withLightYearValues: aCollection [
     ^ self new
         initializeWith:
-            (aCollection collect: [ :each | Distance lightYears: each ]);
+            (self ensureValuesFrom: (aCollection collect: [ :each | Distance lightYears: each ]));
         yourself
 ]
 
 { #category : 'initialization' }
 HyperJumpEffect class >> withValues: aCollection [
     ^ self new
-        initializeWith: aCollection;
+        initializeWith: (self ensureValuesFrom: aCollection);
         yourself
+]
+
+{ #category : 'validation' }
+HyperJumpEffect class >> ensureValuesFrom: aCollection [
+    (aCollection isCollection and: [ aCollection isEmpty not ]) ifFalse: [
+        self error: 'Hyper jump values must be a non-empty collection'
+    ].
+    ^ aCollection
 ]
 
 { #category : 'operations' }
@@ -72,7 +80,7 @@ HyperJumpEffect >> convertAndSortValues: aCollection [
 
 { #category : 'operations' }
 HyperJumpEffect >> initializeWith: aCollection [
-    jumpValues := self convertAndSortValues: aCollection.
+    jumpValues := self convertAndSortValues: (self class ensureValuesFrom: aCollection).
     currentIndex := 1
 ]
 
