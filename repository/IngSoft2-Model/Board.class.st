@@ -8,7 +8,8 @@ Class {
         'totalLengthInParsecs',
         'positionManager',
         'lastMoves',
-        'movementService'
+        'movementService',
+        'cardDealer'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -186,7 +187,20 @@ Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
 
 { #category : 'deck' }
 Board >> drawCard [
-    ^ CardDeck randomCard
+    ^ cardDealer value
+]
+
+{ #category : 'deck' }
+Board >> useCardDealer: aCallable [
+    (aCallable respondsTo: #value) ifFalse: [
+        self error: 'Card dealer must respond to #value'.
+    ].
+    cardDealer := aCallable
+]
+
+{ #category : 'deck' }
+Board >> defaultCardDealer [
+    ^ [ CardDeck randomCard ]
 ]
 
 { #category : 'initialize' }
@@ -212,6 +226,7 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     cells := Dictionary new.
     positionManager := NullPositionManager new.
     lastMoves := Dictionary new.
+    cardDealer := self defaultCardDealer.
     self initializeMovementService.
 
     0 to: aCount - 1 do: [ :i |

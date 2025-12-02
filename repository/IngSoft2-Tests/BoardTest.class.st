@@ -677,6 +677,33 @@ BoardTest >> testDrawCardReturnsACard [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testDrawCardUsesInjectedDealer [
+    | board dealerCard dealerCalled |
+    board := Board of: 5 andWormholeAt: {}.
+    dealerCard := NullCard new.
+    dealerCalled := false.
+
+    board useCardDealer: [
+        dealerCalled := true.
+        dealerCard
+    ].
+
+    self assert: board drawCard equals: dealerCard.
+    self assert: dealerCalled.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testUseCardDealerRequiresCallableObject [
+    | board |
+    board := Board of: 5 andWormholeAt: {}.
+
+    self
+        should: [ board useCardDealer: Object new ]
+        raise: Error
+        withMessageText: 'Card dealer must respond to #value'.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testDetermineNewPositionAppliesWormholeWhenNoSteps [
     | board wormhole |
     wormhole := Wormhole from: 1 to: 4.
