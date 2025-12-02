@@ -619,6 +619,29 @@ BoardTest >> testRecordMovesDuringCapturesStartAndAggregatedDelta [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testWithMovementTrackingDuringKeepsSingleRecordingSession [
+    | board ship report data |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Scout'.
+    ship moveTo: 0.
+    board registerShips: { ship }.
+
+    report := board withMovementTrackingDuring: [
+        self assert: board isRecordingMoves.
+        board moveShip: ship forward: 1.
+        board withMovementTrackingDuring: [
+            self assert: board isRecordingMoves.
+            board moveShip: ship forward: 1.
+        ]
+    ].
+    data := report at: ship ifAbsent: [ self fail: 'Expected move data' ].
+
+    self deny: board isRecordingMoves.
+    self assert: ship position equals: 2.
+    self assert: data delta equals: 2.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testTotalLengthInParsecsAccessorReturnsLength [
     | board |
     board := Board of: 5 length: 8 andWormholeAt: {}.

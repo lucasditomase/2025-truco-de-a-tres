@@ -36,3 +36,14 @@ ShipPositionTest >> testShipPositionRequiresNonNegativeIntegerPosition [
         withExceptionDo: [ :error |
             self assert: error messageText equals: 'Position must be a non-negative integer' ].
 ]
+
+{ #category : 'tests' }
+ShipPositionTest >> testComparisonMessagesReflectRelativePositions [
+    | ship lower higher |
+    ship := Spaceship withName: 'Comparator'.
+    lower := ShipPosition ship: ship position: 1.
+    higher := ShipPosition ship: ship position: 3.
+
+    self assert: (higher isGreaterThan: lower).
+    self assert: (lower isLessThan: higher).
+]

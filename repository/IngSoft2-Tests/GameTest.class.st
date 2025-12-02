@@ -774,6 +774,29 @@ GameTest >> testRepeatLastEffectOnAppliesLastEffect [
 ]
 
 { #category : 'tests' }
+GameTest >> testRepeatLastEffectOnReplaysLastCardEffect [
+    | scenario game alpha beta card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
+    card := AdvanceCard new.
+    alpha addCard: card.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+
+    game repeatLastEffectOn: beta.
+
+    self assert: beta position equals: 1.
+]
+
+{ #category : 'tests' }
 GameTest >> testRollAndMoveCurrentShipMovesShipCorrectly [
     | scenario game ship |
     scenario := self builder
