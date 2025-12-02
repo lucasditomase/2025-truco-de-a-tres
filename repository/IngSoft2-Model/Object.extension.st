@@ -61,3 +61,8 @@ Object >> asGameBoard [
 Object >> asDiceCupForGame [
     self error: Game invalidDiceMessage
 ]
+
+{ #category : '*IngSoft2-Model' }
+Object >> asBoardEffect [
+    self error: Board invalidEffectMessage
+]

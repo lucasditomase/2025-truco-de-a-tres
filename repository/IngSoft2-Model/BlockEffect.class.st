@@ -20,7 +20,7 @@ BlockEffect class >> ensureActionBlockFrom: aBlock [
 
 { #category : 'validation' }
 BlockEffect class >> invalidActionMessage [
-    ^ 'Block effect action must be a callable that takes two arguments'
+    ^ 'Block effect action must be a block that takes two arguments'
 ]
 
 { #category : 'initialization' }

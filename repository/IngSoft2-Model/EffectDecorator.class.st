@@ -73,3 +73,8 @@ EffectDecorator >> allowsEntryWithRoll: aRoll [
 EffectDecorator >> consumesFuel [
     ^ true
 ]
+
+{ #category : 'converting' }
+EffectDecorator >> asBoardEffect [
+    ^ self
+]

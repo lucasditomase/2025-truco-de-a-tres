@@ -226,7 +226,7 @@ Board >> validateCardDealer: aCallable [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
+    ^ (cells at: aPosition ifAbsent: [ NullEffect new ]) asBoardEffect
 ]
 
 { #category : 'initialize' }
@@ -436,6 +436,11 @@ Board >> totalLengthInParsecs [
 { #category : 'converting' }
 Board >> asGameBoard [
     ^ self
+]
+
+{ #category : 'initialize' }
+Board class >> invalidEffectMessage [
+    ^ 'Board cells must contain effects'
 ]
 
 { #category : 'effects' }

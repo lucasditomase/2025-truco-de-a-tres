@@ -36,3 +36,8 @@ NullEffect >> consumesFuel [
     ^ true
 ]
 
+{ #category : 'converting' }
+NullEffect >> asBoardEffect [
+    ^ self
+]
+
