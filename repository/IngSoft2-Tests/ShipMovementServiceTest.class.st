@@ -141,3 +141,46 @@ ShipMovementServiceTest >> testConfigurationSettersRewireService [
     self assert: (service lastMoveFor: ship) equals: -2.
     self assert: (newLastMoves at: ship) equals: -2.
 ]
+
+{ #category : 'tests' }
+ShipMovementServiceTest >> testWithPositionManagerRequiresPositionManagerInstance [
+    self
+        should: [
+            ShipMovementService
+                withPositionManager: 'not a manager'
+                cellCount: 5
+                lastMoves: Dictionary new ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Position manager must be an instance of PositionManager' ].
+]
+
+{ #category : 'tests' }
+ShipMovementServiceTest >> testWithPositionManagerRequiresNonNegativeCellCount [
+    | manager |
+    manager := PositionManager forShips: { Spaceship withName: 'Mover' }.
+    self
+        should: [
+            ShipMovementService
+                withPositionManager: manager
+                cellCount: -1
+                lastMoves: Dictionary new ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Cell count must be a non-negative integer' ].
+]
+
+{ #category : 'tests' }
+ShipMovementServiceTest >> testWithPositionManagerRequiresDictionaryForLastMoves [
+    | manager |
+    manager := PositionManager forShips: { Spaceship withName: 'Mover' }.
+    self
+        should: [
+            ShipMovementService
+                withPositionManager: manager
+                cellCount: 1
+                lastMoves: OrderedCollection new ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Last moves must be stored in a Dictionary' ].
+]

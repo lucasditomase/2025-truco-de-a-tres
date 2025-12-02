@@ -15,16 +15,40 @@ Class {
 { #category : 'instance creation' }
 ShipMovementService class >> withPositionManager: aManager cellCount: aCount lastMoves: aDictionary [
     ^ self new
-        initializeWithPositionManager: aManager
-        cellCount: aCount
-        lastMoves: aDictionary
+        initializeWithPositionManager: (self ensurePositionManagerFrom: aManager)
+        cellCount: (self ensureCellCountFrom: aCount)
+        lastMoves: (self ensureLastMovesFrom: aDictionary)
+]
+
+{ #category : 'validation' }
+ShipMovementService class >> ensureCellCountFrom: aCount [
+    (aCount isInteger and: [ aCount >= 0 ]) ifFalse: [
+        self error: 'Cell count must be a non-negative integer'
+    ].
+    ^ aCount
+]
+
+{ #category : 'validation' }
+ShipMovementService class >> ensureLastMovesFrom: aDictionary [
+    (aDictionary isKindOf: Dictionary) ifFalse: [
+        self error: 'Last moves must be stored in a Dictionary'
+    ].
+    ^ aDictionary
+]
+
+{ #category : 'validation' }
+ShipMovementService class >> ensurePositionManagerFrom: aManager [
+    (aManager isKindOf: PositionManager) ifFalse: [
+        self error: 'Position manager must be an instance of PositionManager'
+    ].
+    ^ aManager
 ]
 
 { #category : 'initialization' }
 ShipMovementService >> initializeWithPositionManager: aManager cellCount: aCount lastMoves: aDictionary [
-    positionManager := aManager.
-    cellCount := aCount.
-    lastMoves := aDictionary.
+    positionManager := self class ensurePositionManagerFrom: aManager.
+    cellCount := self class ensureCellCountFrom: aCount.
+    lastMoves := self class ensureLastMovesFrom: aDictionary.
     recentMoves := Dictionary new.
     recordingMoves := false.
     ^ self
