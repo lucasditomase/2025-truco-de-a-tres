@@ -192,15 +192,22 @@ Board >> drawCard [
 
 { #category : 'deck' }
 Board >> useCardDealer: aCallable [
-    (aCallable respondsTo: #value) ifFalse: [
-        self error: 'Card dealer must respond to #value'.
-    ].
+    self validateCardDealer: aCallable.
     cardDealer := aCallable
 ]
 
 { #category : 'deck' }
 Board >> defaultCardDealer [
     ^ [ CardDeck randomCard ]
+]
+
+{ #category : 'deck' }
+Board >> validateCardDealer: aCallable [
+    | method |
+    method := aCallable class lookupSelector: #value.
+    (method isNil or: [ method methodClass = Object ]) ifTrue: [
+        self error: 'Card dealer must respond to #value'
+    ]
 ]
 
 { #category : 'initialize' }
