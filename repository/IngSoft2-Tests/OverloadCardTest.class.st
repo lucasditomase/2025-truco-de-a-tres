@@ -64,3 +64,12 @@ OverloadCardTest >> testModifyRollForTargetShipSubtractsTwo [
     result := card modifyRoll: 5 forShip: ship inGame: nil.
     self assert: result equals: 3.
 ]
+
+{ #category : 'tests' }
+OverloadCardTest >> testForShipRequiresSpaceshipInstance [
+    self
+        should: [ OverloadCard forShip: 'not a ship' ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Target ship must be a Spaceship instance' ].
+]
