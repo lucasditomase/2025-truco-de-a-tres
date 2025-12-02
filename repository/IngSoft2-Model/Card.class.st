@@ -24,3 +24,8 @@ Card >> allyFor: aShip [
 Card >> recordsLastEffect [
     ^ true
 ]
+
+{ #category : 'querying' }
+Card >> requiresTurnToActivate [
+    ^ false
+]

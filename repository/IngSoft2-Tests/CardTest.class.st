@@ -49,3 +49,17 @@ CardTest >> testAllyForReturnsNullSpaceship [
     ally := card allyFor: ship.
     self assert: ally class equals: NullSpaceship.
 ]
+
+{ #category : 'tests' }
+CardTest >> testPermanentCardRequiresTurnToActivate [
+    | card |
+    card := ShieldCard new.
+    self assert: card requiresTurnToActivate.
+]
+
+{ #category : 'tests' }
+CardTest >> testInstantCardDoesNotRequireTurnToActivate [
+    | card |
+    card := AdvanceCard new.
+    self deny: card requiresTurnToActivate.
+]

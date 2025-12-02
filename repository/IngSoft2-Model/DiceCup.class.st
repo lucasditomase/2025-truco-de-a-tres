@@ -43,3 +43,8 @@ DiceCup >> maxRoll [
 DiceCup >> roll [
     ^ diceCollection sum: [ :die | die roll ]
 ]
+
+{ #category : 'converting' }
+DiceCup >> asDiceCupForGame [
+    ^ self
+]

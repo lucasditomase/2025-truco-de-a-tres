@@ -54,3 +54,8 @@ PositionManager >> positionOf: aShip [
 PositionManager >> ships [
     ^ positions keys
 ]
+
+{ #category : 'converting' }
+PositionManager >> asPositionManagerWithMessage: errorMessage [
+    ^ self
+]

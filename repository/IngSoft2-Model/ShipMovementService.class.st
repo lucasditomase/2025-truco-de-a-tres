@@ -30,18 +30,22 @@ ShipMovementService class >> ensureCellCountFrom: aCount [
 
 { #category : 'validation' }
 ShipMovementService class >> ensureLastMovesFrom: aDictionary [
-    (aDictionary isKindOf: Dictionary) ifFalse: [
-        self error: 'Last moves must be stored in a Dictionary'
-    ].
-    ^ aDictionary
+    ^ aDictionary asMovementHistoryDictionaryWithMessage: self invalidLastMovesMessage
 ]
 
 { #category : 'validation' }
 ShipMovementService class >> ensurePositionManagerFrom: aManager [
-    (aManager isKindOf: PositionManager) ifFalse: [
-        self error: 'Position manager must be an instance of PositionManager'
-    ].
-    ^ aManager
+    ^ aManager asPositionManagerWithMessage: self invalidPositionManagerMessage
+]
+
+{ #category : 'validation' }
+ShipMovementService class >> invalidLastMovesMessage [
+    ^ 'Last moves must be stored in a Dictionary'
+]
+
+{ #category : 'validation' }
+ShipMovementService class >> invalidPositionManagerMessage [
+    ^ 'Position manager must be an instance of PositionManager'
 ]
 
 { #category : 'initialization' }

@@ -15,10 +15,12 @@ BlockEffect class >> on: aBlock [
 
 { #category : 'validation' }
 BlockEffect class >> ensureActionBlockFrom: aBlock [
-    ((aBlock isKindOf: BlockClosure) and: [ aBlock numArgs = 2 ]) ifFalse: [
-        self error: 'Block effect action must be a block that takes two arguments'
-    ].
-    ^ aBlock
+    ^ aBlock asBlockEffectAction
+]
+
+{ #category : 'validation' }
+BlockEffect class >> invalidActionMessage [
+    ^ 'Block effect action must be a callable that takes two arguments'
 ]
 
 { #category : 'initialization' }

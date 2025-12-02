@@ -18,23 +18,32 @@ PenaltyPolicy class >> withStatuses: aDictionary restoreFuelWith: aBlock [
 
 { #category : 'validation' }
 PenaltyPolicy class >> ensureFuelRestorerFrom: aBlock [
-    (aBlock isKindOf: BlockClosure) ifFalse: [
-        self error: 'Fuel restorer must be a block'
-    ].
-    ^ aBlock
+    ^ aBlock asFuelRestorer
 ]
 
 { #category : 'validation' }
 PenaltyPolicy class >> ensureStatusesFrom: aDictionary [
-    (aDictionary isKindOf: Dictionary) ifFalse: [
-        self error: 'Ship statuses must be stored in a Dictionary'
+    | statuses |
+    statuses := aDictionary asShipStatusRegistry.
+    statuses valuesDo: [ :each |
+        ShipStatus ensureStatus: each errorMessage: self invalidStatusValueMessage
     ].
-    aDictionary valuesDo: [ :each |
-        (each isKindOf: ShipStatus) ifFalse: [
-            self error: 'Ship statuses must contain ShipStatus values'
-        ]
-    ].
-    ^ aDictionary
+    ^ statuses
+]
+
+{ #category : 'validation' }
+PenaltyPolicy class >> invalidStatusRegistryMessage [
+    ^ 'Ship statuses must be stored in a Dictionary'
+]
+
+{ #category : 'validation' }
+PenaltyPolicy class >> invalidStatusValueMessage [
+    ^ 'Ship statuses must contain ShipStatus values'
+]
+
+{ #category : 'validation' }
+PenaltyPolicy class >> invalidFuelRestorerMessage [
+    ^ 'Fuel restorer must be a block'
 ]
 
 { #category : 'initialization' }

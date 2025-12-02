@@ -11,10 +11,7 @@ Class {
 
 { #category : 'validation' }
 AllyCard class >> ensureAllyFrom: aShip [
-    (aShip isKindOf: Spaceship) ifFalse: [
-        self error: 'Ally must be a Spaceship instance'
-    ].
-    ^ aShip
+    ^ Spaceship ensureSpaceship: aShip errorMessage: 'Ally must be a Spaceship instance'
 ]
 
 { #category : 'initialization' }

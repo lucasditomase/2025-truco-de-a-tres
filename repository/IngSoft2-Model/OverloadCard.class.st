@@ -15,10 +15,7 @@ OverloadCard class >> forShip: aShip [
 
 { #category : 'validation' }
 OverloadCard class >> ensureTargetShipFrom: aShip [
-    (aShip isKindOf: Spaceship) ifFalse: [
-        self error: 'Target ship must be a Spaceship instance'
-    ].
-    ^ aShip
+    ^ Spaceship ensureSpaceship: aShip errorMessage: 'Target ship must be a Spaceship instance'
 ]
 
 { #category : 'playing' }

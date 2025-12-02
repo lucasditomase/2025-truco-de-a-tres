@@ -29,10 +29,7 @@ ShipPosition class >> ensurePositionFrom: aPosition [
 
 { #category : 'validation' }
 ShipPosition class >> ensureShipFrom: aShip [
-    (aShip isKindOf: Spaceship) ifFalse: [
-        self error: 'Ship must be a Spaceship instance'
-    ].
-    ^ aShip
+    ^ Spaceship ensureSpaceship: aShip errorMessage: 'Ship must be a Spaceship instance'
 ]
 
 { #category : 'accessing' }

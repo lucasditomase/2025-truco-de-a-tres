@@ -15,6 +15,12 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
+{ #category : 'initialization' }
+Board >> initialize [
+    super initialize.
+    movementService := NullShipMovementService new.
+]
+
 { #category : 'initialize' }
 Board class >> convertToParsecs: aLength [
     ^ (self ensureDistanceFrom: aLength) asParsecs
@@ -22,9 +28,12 @@ Board class >> convertToParsecs: aLength [
 
 { #category : 'initialize' }
 Board class >> ensureDistanceFrom: aLength [
-    (aLength isKindOf: Distance) ifTrue: [ ^ aLength ].
-    (aLength isNumber and: [ aLength > 0 ]) ifTrue: [ ^ Distance parsecs: aLength ].
-    self error: 'Board length must be provided as a positive Distance or numeric value'.
+    ^ aLength asBoardDistance
+]
+
+{ #category : 'initialize' }
+Board class >> invalidDistanceMessage [
+    ^ 'Board length must be provided as a positive Distance or numeric value'
 ]
 
 { #category : 'effects' }
@@ -156,7 +165,7 @@ Board >> cells: aCollection [
     cells := aCollection.
     cells isEmpty ifTrue: [ ^ self ].
     cellCount := cells size.
-    movementService ifNotNil: [ movementService cellCount: cellCount ]
+    movementService cellCount: cellCount
 ]
 
 { #category : 'moves' }
@@ -217,9 +226,7 @@ Board >> validateCardDealer: aCallable [
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    | effect |
-    effect := cells at: aPosition ifAbsent: [ ^ NullEffect new ].
-    ^ effect ifNil: [ NullEffect new ]
+    ^ cells at: aPosition ifAbsent: [ NullEffect new ]
 ]
 
 { #category : 'initialize' }
@@ -424,6 +431,11 @@ Board >> stepsFromParsecs: someParsecs [
 { #category : 'accessing' }
 Board >> totalLengthInParsecs [
     ^ totalLengthInParsecs
+]
+
+{ #category : 'converting' }
+Board >> asGameBoard [
+    ^ self
 ]
 
 { #category : 'effects' }

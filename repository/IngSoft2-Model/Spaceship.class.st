@@ -29,11 +29,17 @@ Spaceship class >> withName: aName [
 
 { #category : 'validation' }
 Spaceship class >> ensureCollectionOfSpaceships: someShips [
-    (someShips isCollection) ifFalse: [
-        ^ self error: 'Ships must be a collection of Spaceship instances' ].
-    someShips do: [ :each |
-        (each isKindOf: Spaceship) ifFalse: [
-            ^ self error: 'Ships must be a collection of Spaceship instances' ] ]
+    someShips asSpaceshipCollection
+]
+
+{ #category : 'validation' }
+Spaceship class >> ensureSpaceship: aShip errorMessage: errorMessage [
+    ^ aShip asSpaceshipWithMessage: errorMessage
+]
+
+{ #category : 'validation' }
+Spaceship class >> invalidCollectionMessage [
+    ^ 'Ships must be a collection of Spaceship instances'
 ]
 
 { #category : 'validation' }
@@ -197,6 +203,11 @@ Spaceship >> state [
 { #category : 'state' }
 Spaceship >> state: aState [
     state := aState
+]
+
+{ #category : 'converting' }
+Spaceship >> asSpaceshipWithMessage: errorMessage [
+    ^ self
 ]
 
 { #category : 'testing' }

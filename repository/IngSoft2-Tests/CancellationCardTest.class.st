@@ -17,7 +17,7 @@ CancellationCardTest >> ensureTurnOf: aShip inGame: aGame [
 
 { #category : 'support' }
 CancellationCardTest >> activate: aCard for: aShip inGame: aGame [
-    (aCard isKindOf: PermanentCard)
+    aCard requiresTurnToActivate
         ifTrue: [
             aShip addCard: aCard.
             self ensureTurnOf: aShip inGame: aGame.

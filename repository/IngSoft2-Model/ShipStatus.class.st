@@ -30,10 +30,7 @@ ShipStatus class >> ensureLapCountFrom: aLapCount [
 
 { #category : 'validation' }
 ShipStatus class >> ensurePenaltyFlagFrom: aFlag [
-    (aFlag isKindOf: Boolean) ifFalse: [
-        self error: 'Penalized flag must be a Boolean'
-    ].
-    ^ aFlag
+    ^ aFlag asPenaltyFlagWithMessage: self invalidPenaltyFlagMessage
 ]
 
 { #category : 'validation' }
@@ -46,10 +43,22 @@ ShipStatus class >> ensurePositionFrom: aPosition [
 
 { #category : 'validation' }
 ShipStatus class >> ensureShipFrom: aShip [
-    (aShip isKindOf: Spaceship) ifFalse: [
-        self error: 'Ship must be a Spaceship instance'
-    ].
-    ^ aShip
+    ^ Spaceship ensureSpaceship: aShip errorMessage: self invalidShipMessage
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensureStatus: aStatus errorMessage: errorMessage [
+    ^ aStatus asShipStatusWithMessage: errorMessage
+]
+
+{ #category : 'validation' }
+ShipStatus class >> invalidPenaltyFlagMessage [
+    ^ 'Penalized flag must be a Boolean'
+]
+
+{ #category : 'validation' }
+ShipStatus class >> invalidShipMessage [
+    ^ 'Ship must be a Spaceship instance'
 ]
 
 { #category : 'updating' }
@@ -103,4 +112,9 @@ ShipStatus >> position: aPosition [
 { #category : 'accessing' }
 ShipStatus >> ship [
     ^ ship
+]
+
+{ #category : 'converting' }
+ShipStatus >> asShipStatusWithMessage: errorMessage [
+    ^ self
 ]

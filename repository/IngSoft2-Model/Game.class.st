@@ -43,26 +43,32 @@ Game class >> maxRollRewardIncreaseChance [
 
 { #category : 'initialize' }
 Game class >> validateBoard: aBoard [
-    (aBoard isKindOf: Board) ifFalse: [
-        self error: 'Board must be an instance of Board' ]
+    ^ aBoard asGameBoard
 ]
 
 { #category : 'validation' }
 Game class >> ensureBoardFrom: aBoard [
-    self validateBoard: aBoard.
-    ^ aBoard
+    ^ self validateBoard: aBoard
 ]
 
 { #category : 'initialize' }
 Game class >> validateDice: someDices [
-    (someDices isKindOf: DiceCup) ifFalse: [
-        self error: 'Dice must be an instance of DiceCup' ]
+    ^ someDices asDiceCupForGame
 ]
 
 { #category : 'validation' }
 Game class >> ensureDiceCupFrom: someDices [
-    self validateDice: someDices.
-    ^ someDices
+    ^ self validateDice: someDices
+]
+
+{ #category : 'validation' }
+Game class >> invalidBoardMessage [
+    ^ 'Board must be an instance of Board'
+]
+
+{ #category : 'validation' }
+Game class >> invalidDiceMessage [
+    ^ 'Dice must be an instance of DiceCup'
 ]
 
 { #category : 'initialize' }
@@ -89,8 +95,8 @@ Game class >> validateShips: someShips [
 
 { #category : 'validation' }
 Game class >> ensureShipsFrom: someShips [
-    self validateMinimumShips: someShips.
     self validateShips: someShips.
+    self validateMinimumShips: someShips.
     ^ someShips asOrderedCollection
 ]
 
