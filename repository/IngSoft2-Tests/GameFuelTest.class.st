@@ -61,7 +61,7 @@ GameFuelTest >> testPenaltyWhenEffectConsumesRemainingFuel [
             board cells
                 at: 2
                 put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 6 ]) ];
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) sides: 6 } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) sides: 3 } ];
         laps: 5;
         build.
     scenario playTurns: 1.
