@@ -22,17 +22,18 @@ Class {
 
 { #category : 'initialize' }
 Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
-    self validateMinimumShips: someShips.
-    self validateShips: someShips.
-    self validateBoard: aBoard.
-    self validateDice: someDices.
-    self validateLaps: aNumberLaps.
+    | ensuredShips ensuredBoard ensuredDice ensuredLaps |
+
+    ensuredShips := self ensureShipsFrom: someShips.
+    ensuredBoard := self ensureBoardFrom: aBoard.
+    ensuredDice := self ensureDiceCupFrom: someDices.
+    ensuredLaps := self ensureLapCountFrom: aNumberLaps.
 
     ^ self new
-        initializeWithShips: someShips
-        board: aBoard
-        dice: someDices
-        laps: aNumberLaps
+        initializeWithShips: ensuredShips
+        board: ensuredBoard
+        dice: ensuredDice
+        laps: ensuredLaps
 ]
 
 { #category : 'probabilities' }
@@ -46,16 +47,34 @@ Game class >> validateBoard: aBoard [
         self error: 'Board must be an instance of Board' ]
 ]
 
+{ #category : 'validation' }
+Game class >> ensureBoardFrom: aBoard [
+    self validateBoard: aBoard.
+    ^ aBoard
+]
+
 { #category : 'initialize' }
 Game class >> validateDice: someDices [
     (someDices isKindOf: DiceCup) ifFalse: [
         self error: 'Dice must be an instance of DiceCup' ]
 ]
 
+{ #category : 'validation' }
+Game class >> ensureDiceCupFrom: someDices [
+    self validateDice: someDices.
+    ^ someDices
+]
+
 { #category : 'initialize' }
 Game class >> validateLaps: aNumberLaps [
     (aNumberLaps isInteger and: [ aNumberLaps > 0 ]) ifFalse: [
         self error: 'Laps must be a positive integer' ]
+]
+
+{ #category : 'validation' }
+Game class >> ensureLapCountFrom: aNumberLaps [
+    self validateLaps: aNumberLaps.
+    ^ aNumberLaps
 ]
 
 { #category : 'initialize' }
@@ -66,6 +85,13 @@ Game class >> validateMinimumShips: someShips [
 { #category : 'initialize' }
 Game class >> validateShips: someShips [
     Spaceship ensureCollectionOfSpaceships: someShips
+]
+
+{ #category : 'validation' }
+Game class >> ensureShipsFrom: someShips [
+    self validateMinimumShips: someShips.
+    self validateShips: someShips.
+    ^ someShips asOrderedCollection
 ]
 
 { #category : 'process actions' }
