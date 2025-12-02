@@ -15,15 +15,16 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'initialize' }
-Spaceship class >> validatingName: aName [
-    aName isEmpty ifTrue: [ self error: 'A name cannot be empty' ].
+{ #category : 'validation' }
+Spaceship class >> ensureNameFrom: aName [
+    (aName isString and: [ aName isEmpty not ]) ifFalse: [
+        self error: 'A name cannot be empty' ].
+    ^ aName
 ]
 
 { #category : 'initialize' }
 Spaceship class >> withName: aName [
-    self validatingName: aName.
-    ^ self new initializeWith: aName
+    ^ self new initializeWith: (self ensureNameFrom: aName)
 ]
 
 { #category : 'validation' }
