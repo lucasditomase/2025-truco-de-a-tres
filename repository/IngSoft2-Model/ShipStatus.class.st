@@ -30,7 +30,7 @@ ShipStatus class >> ensureLapCountFrom: aLapCount [
 
 { #category : 'validation' }
 ShipStatus class >> ensurePenaltyFlagFrom: aFlag [
-    (aFlag isBoolean) ifFalse: [
+    (aFlag isKindOf: Boolean) ifFalse: [
         self error: 'Penalized flag must be a Boolean'
     ].
     ^ aFlag
