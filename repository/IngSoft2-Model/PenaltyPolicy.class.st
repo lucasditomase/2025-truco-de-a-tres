@@ -11,13 +11,36 @@ Class {
 
 { #category : 'instance creation' }
 PenaltyPolicy class >> withStatuses: aDictionary restoreFuelWith: aBlock [
-    ^ self new initializeWithStatuses: aDictionary restoreFuelWith: aBlock
+    ^ self new
+        initializeWithStatuses: (self ensureStatusesFrom: aDictionary)
+        restoreFuelWith: (self ensureFuelRestorerFrom: aBlock)
+]
+
+{ #category : 'validation' }
+PenaltyPolicy class >> ensureFuelRestorerFrom: aBlock [
+    (aBlock isKindOf: BlockClosure) ifFalse: [
+        self error: 'Fuel restorer must be a block'
+    ].
+    ^ aBlock
+]
+
+{ #category : 'validation' }
+PenaltyPolicy class >> ensureStatusesFrom: aDictionary [
+    (aDictionary isKindOf: Dictionary) ifFalse: [
+        self error: 'Ship statuses must be stored in a Dictionary'
+    ].
+    aDictionary valuesDo: [ :each |
+        (each isKindOf: ShipStatus) ifFalse: [
+            self error: 'Ship statuses must contain ShipStatus values'
+        ]
+    ].
+    ^ aDictionary
 ]
 
 { #category : 'initialization' }
 PenaltyPolicy >> initializeWithStatuses: aDictionary restoreFuelWith: aBlock [
-    shipStatuses := aDictionary.
-    fuelRestorer := aBlock.
+    shipStatuses := self class ensureStatusesFrom: aDictionary.
+    fuelRestorer := self class ensureFuelRestorerFrom: aBlock.
     ^ self
 ]
 
