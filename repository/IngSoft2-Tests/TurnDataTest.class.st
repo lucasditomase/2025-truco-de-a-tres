@@ -85,9 +85,9 @@ TurnDataTest >> testFuelHistorySetterReplacesDictionary [
     data := TurnData new.
     ship := self shipNamed: 'Stored' withFuel: 9.
     history := Dictionary new.
-    history at: ship put: (OrderedCollection with: 3 4).
+    history at: ship put: (OrderedCollection with: 3 with: 4).
 
     data fuelHistory: history.
 
-    self assert: (data fuelHistoryFor: ship) equals: (OrderedCollection with: 3 4).
+    self assert: (data fuelHistoryFor: ship) equals: (OrderedCollection with: 3 with: 4).
 ]
