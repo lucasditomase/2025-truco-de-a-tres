@@ -5,6 +5,11 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+HyperGravityEffectTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'asserting' }
 HyperGravityEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -37,10 +42,12 @@ HyperGravityEffectTest >> testAllowsEntryWithRollTrueWhenEnough [
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testApplyEffectDoesNotMoveShip [
-    | ship effect |
+    | scenario board ship effect |
 
-    ship := Spaceship withName: 'Heavy'.
-    ship moveTo: 5.
+    scenario := (self builder boardWithCells: 10) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
+    board moveShip: ship to: 5.
 
     effect := HyperGravityEffect new.
     effect applyTo: ship.
