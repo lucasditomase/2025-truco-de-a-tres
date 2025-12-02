@@ -15,6 +15,7 @@ EffectDecorator class >> new [
 
 { #category : 'initialization' }
 EffectDecorator >> initialize [
+    super initialize.
     wrapped := NullEffect new.
     ^ self
 ]
