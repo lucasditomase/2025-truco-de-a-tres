@@ -5,6 +5,16 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+GameTest >> builder [
+    ^ GameTestBuilder new
+]
+
+{ #category : 'support' }
+GameTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
+]
+
 { #category : 'asserting' }
 GameTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -16,38 +26,32 @@ GameTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessa
 
 { #category : 'tests' }
 GameTest >> testActiveCardsReturnsAllActiveCards [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game ship card |
+    scenario := self builder
+        withShipNames: #('A' 'B');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'A'.
     card := AccelerationCard new.
-    ship1 addActiveCard: card.
-    self assert: (game activeCards size) equals: 1.
+    ship addCard: card.
+    self ensureTurnOf: ship inGame: game.
+    ship playCard: card inGame: game.
+
+    self assert: game activeCards size equals: 1.
     self assert: (game activeCards includes: card).
 ]
 
 { #category : 'tests' }
 GameTest >> testAdvanceTurnCyclesCorrectly [
-    | ship1 ship2 ship3 board dice game |
-
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship3 := Spaceship withName: 'Three'.
-
-    board := Board of: 10 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game
-    startWithShips: { ship1. ship2. ship3 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game |
+    scenario := self builder
+        withShipNames: #('One' 'Two' 'Three');
+        boardWithCells: 10;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
 
     game advanceTurn.
     self assert: game currentTurnIndex equals: 2.
@@ -61,16 +65,15 @@ GameTest >> testAdvanceTurnCyclesCorrectly [
 
 { #category : 'tests' }
 GameTest >> testAdvanceTurnRotatesToNextShip [
-    | ship1 ship2 game dice |
-
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: (Board of: 5 andWormholeAt: {})
-    dice: dice
-    laps: 1.
+    | scenario game ship1 ship2 |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'One'.
+    ship2 := scenario shipNamed: 'Two'.
 
     self assert: game currentShip equals: ship1.
     game advanceTurn.
@@ -79,48 +82,39 @@ GameTest >> testAdvanceTurnRotatesToNextShip [
 
 { #category : 'tests - instance' }
 GameTest >> testBoardAccessorReturnsBoard [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game board |
+    board := nil.
+    scenario := self builder
+        boardFactory: [ board := Board of: 5 andWormholeAt: {} ];
+        diceWithSides: 1;
+        build.
+    game := scenario game.
     self assert: game board equals: board.
 ]
 
 { #category : 'tests - instance' }
 GameTest >> testCurrentPlayerIndexMatchesTurnIndex [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
     self assert: game currentPlayerIndex equals: game currentTurnIndex.
 ]
 
 { #category : 'tests - instance' }
 GameTest >> testCurrentShipReturnsCorrectShip [
-    | ship1 ship2 board dice game |
-
-    ship1 := Spaceship withName: 'First'.
-    ship2 := Spaceship withName: 'Second'.
-    board := Board of: 10 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game ship1 ship2 |
+    scenario := self builder
+        withShipNames: #('First' 'Second');
+        boardWithCells: 10;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'First'.
+    ship2 := scenario shipNamed: 'Second'.
 
     self assert: game currentShip equals: ship1.
     game advanceTurn.
@@ -129,16 +123,12 @@ GameTest >> testCurrentShipReturnsCorrectShip [
 
 { #category : 'tests - instance' }
 GameTest >> testDieAccessorReturnsDiceCup [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'S1'.
-    ship2 := Spaceship withName: 'S2'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-    startWithShips: { ship1. ship2 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game dice |
+    dice := nil.
+    scenario := self builder
+        diceCup: [ dice := DiceCup with: { Die withSides: 1 } ];
+        build.
+    game := scenario game.
     self assert: game die equals: dice.
 ]
 
