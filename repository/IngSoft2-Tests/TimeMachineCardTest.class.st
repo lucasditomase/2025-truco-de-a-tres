@@ -5,6 +5,11 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'helpers' }
+TimeMachineCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'asserting' }
 TimeMachineCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -15,32 +20,40 @@ TimeMachineCardTest >> should: anErrorBlock raise: anErrorClass withMessageText:
 
 { #category : 'tests' }
 TimeMachineCardTest >> testApplyEffectRestoresFuel [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship1 ship2 card |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'One'.
+    ship2 := scenario shipNamed: 'Two'.
     game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 20 with: 10);
         at: ship2 put: (OrderedCollection with: 0 with: 0);
         yourself).
     ship1 fuel: 2.
     card := TimeMachineCard new.
+
     card applyEffectTo: ship1 inGame: game.
+
     self assert: ship1 fuel equals: 20.
 ]
 
 { #category : 'tests' }
 TimeMachineCardTest >> testApplyEffectWithAlliesRestoresAll [
-    | ship1 ship2 board dice game card ally |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
+    | scenario game ship1 ship2 card ally |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'One'.
+    ship2 := scenario shipNamed: 'Two'.
     ally := AllyCard withAlly: ship2.
-    ally activateFor: ship1 inGame: nil.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ally activateFor: ship1 inGame: game.
     game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 20 with: 10);
         at: ship2 put: (OrderedCollection with: 15 with: 5);
@@ -48,24 +61,30 @@ TimeMachineCardTest >> testApplyEffectWithAlliesRestoresAll [
     ship1 fuel: 2.
     ship2 fuel: 1.
     card := TimeMachineCard new.
+
     card applyEffectTo: ship1 inGame: game.
+
     self assert: ship1 fuel equals: 20.
     self assert: ship2 fuel equals: 15.
 ]
 
 { #category : 'tests' }
 TimeMachineCardTest >> testApplyEffectRequiresTwoTurns [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship1 ship2 card |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'One'.
+    ship2 := scenario shipNamed: 'Two'.
     game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 10);
         at: ship2 put: (OrderedCollection with: 0);
         yourself).
     card := TimeMachineCard new.
+
     self
         should: [ card applyEffectTo: ship1 inGame: game ]
         raise: Error
@@ -74,19 +93,23 @@ TimeMachineCardTest >> testApplyEffectRequiresTwoTurns [
 
 { #category : 'tests' }
 TimeMachineCardTest >> testApplyEffectWithAlliesRequiresTwoTurns [
-    | ship1 ship2 board dice game card ally |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
+    | scenario game ship1 ship2 card ally |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'One'.
+    ship2 := scenario shipNamed: 'Two'.
     ally := AllyCard withAlly: ship2.
-    ally activateFor: ship1 inGame: nil.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    ally activateFor: ship1 inGame: game.
     game fuelHistory: (Dictionary new
         at: ship1 put: (OrderedCollection with: 20 with: 10);
         at: ship2 put: (OrderedCollection with: 15);
         yourself).
     card := TimeMachineCard new.
+
     self
         should: [ card applyEffectTo: ship1 inGame: game ]
         raise: Error
