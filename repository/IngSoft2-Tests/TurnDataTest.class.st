@@ -42,6 +42,18 @@ TurnDataTest >> testRecordFuelForKeepsOnlyLastThreeEntries [
 ]
 
 { #category : 'tests' }
+TurnDataTest >> testFuelHistoryForReturnsEmptyCollectionWhenUnknown [
+    | data ship history |
+    data := TurnData new.
+    ship := self shipNamed: 'Stranger' withFuel: 5.
+
+    history := data fuelHistoryFor: ship.
+
+    self assert: history isEmpty.
+    self assert: history class equals: OrderedCollection.
+]
+
+{ #category : 'tests' }
 TurnDataTest >> testLastCardPlayedTracksEffectiveCardWhenRecording [
     | data card |
     data := TurnData new.
@@ -65,4 +77,17 @@ TurnDataTest >> testLastCardPlayedIgnoresCardsThatDoNotRecord [
     self assert: data lastCardPlayed equals: card.
     self deny: data lastEffectWasCard.
     self assert: data lastEffectiveCard class equals: NullCard
+]
+
+{ #category : 'tests' }
+TurnDataTest >> testFuelHistorySetterReplacesDictionary [
+    | data ship history |
+    data := TurnData new.
+    ship := self shipNamed: 'Stored' withFuel: 9.
+    history := Dictionary new.
+    history at: ship put: (OrderedCollection with: 3 4).
+
+    data fuelHistory: history.
+
+    self assert: (data fuelHistoryFor: ship) equals: (OrderedCollection with: 3 4).
 ]

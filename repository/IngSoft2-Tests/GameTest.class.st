@@ -697,6 +697,22 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
     self assert: (beta activeCards includes: card).
 ]
 
+{ #category : 'tests' }
+GameTest >> testRedoLastCardOnDoesNothingWhenNoCardWasPlayed [
+    | scenario game ship |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+
+    game redoLastCardOn: ship.
+
+    self assert: ship position equals: 0.
+]
+
 { #category : 'tests - instance' }
 GameTest >> testRegisterLapWhenCrossesFinishLine [
     | scenario game ship |
@@ -794,6 +810,23 @@ GameTest >> testRepeatLastEffectOnReplaysLastCardEffect [
     game repeatLastEffectOn: beta.
 
     self assert: beta position equals: 1.
+]
+
+{ #category : 'tests' }
+GameTest >> testRepeatLastEffectOnIgnoresNullCard [
+    | scenario game beta |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    beta := scenario shipNamed: 'Beta'.
+
+    game lastCardPlayed: NullCard new.
+    game repeatLastEffectOn: beta.
+
+    self assert: beta position equals: 0.
 ]
 
 { #category : 'tests' }

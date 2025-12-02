@@ -786,3 +786,24 @@ BoardTest >> testCellsSetterUpdatesCells [
     self assert: board cells equals: newCells.
     self assert: board cellCount equals: 1.
 ]
+
+{ #category : 'tests - instance' }
+BoardTest >> testCellsSetterKeepsCellCountWhenCollectionEmpty [
+    | board originalCount |
+    board := Board of: 4 andWormholeAt: {}.
+    originalCount := board cellCount.
+
+    board cells: #().
+
+    self assert: board cellCount equals: originalCount.
+    self assert: board cells isEmpty.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testTotalEffectWeightMatchesDistributionSum [
+    | board expected |
+    board := Board of: 5 andWormholeAt: {}.
+    expected := board randomEffectDistribution sum: [ :entry | entry value ].
+
+    self assert: board totalEffectWeight equals: expected.
+]
