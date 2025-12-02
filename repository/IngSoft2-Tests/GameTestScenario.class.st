@@ -60,7 +60,7 @@ GameTestScenario >> statusForShipNamed: aName [
 
 { #category : 'accessing' }
 GameTestScenario >> lapCountForShipNamed: aName [
-    ^ (self statusForShipNamed: aName) laps
+    ^ (self statusForShipNamed: aName) lapCount
 ]
 
 { #category : 'testing' }
