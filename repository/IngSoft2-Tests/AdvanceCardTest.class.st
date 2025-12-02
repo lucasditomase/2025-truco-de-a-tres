@@ -5,6 +5,11 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+AdvanceCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'asserting' }
 AdvanceCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -16,34 +21,25 @@ AdvanceCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: err
 
 { #category : 'tests' }
 AdvanceCardTest >> testApplyEffectMovesShipForward [
-    | card ship board dice game |
+    | scenario game ship card |
+    scenario := (self builder boardWithCells: 10) build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
     card := AdvanceCard new.
-    ship := Spaceship withName: 'Explorer'.
-    board := Board of: 10 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-        startWithShips: { ship. (Spaceship withName: 'Other') }
-        board: board
-        dice: dice
-        laps: 1.
-    board moveShip: ship to: 2.
+    scenario game board moveShip: ship to: 2.
     card applyEffectTo: ship inGame: game.
     self assert: ship position equals: 3.
 ]
 
 { #category : 'tests' }
 AdvanceCardTest >> testPlayOnMovesShipForwardWhenInProgress [
-    | card ship board dice game |
+    | scenario game ship card |
+    scenario := (self builder boardWithCells: 10) build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
     card := AdvanceCard new.
-    ship := Spaceship withName: 'Racer'.
-    board := Board of: 10 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-        startWithShips: { ship. (Spaceship withName: 'Opponent') }
-        board: board
-        dice: dice
-        laps: 1.
-    board moveShip: ship to: 1.
-    card playOn: ship inGame: game.
+    scenario game board moveShip: ship to: 1.
+    ship addCard: card.
+    ship playCard: card inGame: game.
     self assert: ship position equals: 2.
 ]

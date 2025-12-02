@@ -10,7 +10,11 @@ Class {
         'totalLaps',
         'state',
         'shipStatuses',
-        'turnData'
+        'turnData',
+        'fuelManager',
+        'lapTracker',
+        'penaltyPolicy',
+        'rankingService'
         ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -18,31 +22,53 @@ Class {
 
 { #category : 'initialize' }
 Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
-    self validateMinimumShips: someShips.
-    self validateShips: someShips.
-    self validateBoard: aBoard.
-    self validateDice: someDices.
-    self validateLaps: aNumberLaps.
+    | ensuredShips ensuredBoard ensuredDice ensuredLaps |
+
+    ensuredShips := self ensureShipsFrom: someShips.
+    ensuredBoard := self ensureBoardFrom: aBoard.
+    ensuredDice := self ensureDiceCupFrom: someDices.
+    ensuredLaps := self ensureLapCountFrom: aNumberLaps.
 
     ^ self new
-        initializeWithShips: someShips
-        board: aBoard
-        dice: someDices
-        laps: aNumberLaps
+        initializeWithShips: ensuredShips
+        board: ensuredBoard
+        dice: ensuredDice
+        laps: ensuredLaps
+]
+
+{ #category : 'probabilities' }
+Game class >> maxRollRewardIncreaseChance [
+    ^ 80
 ]
 
 { #category : 'initialize' }
 Game class >> validateBoard: aBoard [
-    [ aBoard validateAsBoard ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Board must be an instance of Board' ]
+    ^ aBoard asGameBoard
+]
+
+{ #category : 'validation' }
+Game class >> ensureBoardFrom: aBoard [
+    ^ self validateBoard: aBoard
 ]
 
 { #category : 'initialize' }
 Game class >> validateDice: someDices [
-    [ someDices validateAsDiceCup ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Dice must be an instance of DiceCup' ]
+    ^ someDices asDiceCupForGame
+]
+
+{ #category : 'validation' }
+Game class >> ensureDiceCupFrom: someDices [
+    ^ self validateDice: someDices
+]
+
+{ #category : 'validation' }
+Game class >> invalidBoardMessage [
+    ^ 'Board must be an instance of Board'
+]
+
+{ #category : 'validation' }
+Game class >> invalidDiceMessage [
+    ^ 'Dice must be an instance of DiceCup'
 ]
 
 { #category : 'initialize' }
@@ -51,19 +77,27 @@ Game class >> validateLaps: aNumberLaps [
         self error: 'Laps must be a positive integer' ]
 ]
 
+{ #category : 'validation' }
+Game class >> ensureLapCountFrom: aNumberLaps [
+    self validateLaps: aNumberLaps.
+    ^ aNumberLaps
+]
+
 { #category : 'initialize' }
 Game class >> validateMinimumShips: someShips [
-    someShips size < 2 ifTrue: [
-        self error: 'Need 2 space ships or more to initialize the game' ]
+    Spaceship ensureMinimumCountIn: someShips
 ]
 
 { #category : 'initialize' }
 Game class >> validateShips: someShips [
-    (someShips isCollection) ifFalse: [
-        ^ self error: 'Ships must be a collection of Spaceship instances' ].
-    [ someShips do: [:each | each validateAsSpaceship ] ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Ships must be a collection of Spaceship instances' ]
+    Spaceship ensureCollectionOfSpaceships: someShips
+]
+
+{ #category : 'validation' }
+Game class >> ensureShipsFrom: someShips [
+    self validateShips: someShips.
+    self validateMinimumShips: someShips.
+    ^ someShips asOrderedCollection
 ]
 
 { #category : 'process actions' }
@@ -128,7 +162,7 @@ Game >> handlePenaltyOrPassIfNeeded [
     ship := self currentShip.
 
     (self isPenalized: ship) ifTrue: [
-        self reducePenaltyFor: ship.
+        penaltyPolicy reducePenaltyFor: ship.
         self advanceTurn.
         ^ true ].
 
@@ -151,10 +185,31 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
     self
         initializeBasicDataWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps;
         initializeFuelForShips;
+        initializeHyperGravityRequirements;
         initializeTurnManager;
         initializeShipStatuses;
+        initializeManagers;
         initializeTurnData.
     ^ self
+]
+
+{ #category : 'initialization' }
+Game >> initializeManagers [
+    lapTracker := LapTracker
+        forBoard: board
+        statuses: shipStatuses.
+    penaltyPolicy := PenaltyPolicy
+        withStatuses: shipStatuses
+        restoreFuelWith: [ :ship | ship restoreFuel ].
+    fuelManager := FuelManager
+        forBoard: board
+        penalizeWith: [ :ship :turns | penaltyPolicy penalize: ship forTurns: turns ].
+    rankingService := RankingService new
+]
+
+{ #category : 'initialization' }
+Game >> initializeHyperGravityRequirements [
+    board configureHyperGravityRequirementsWithMaxRoll: dice maxRoll
 ]
 
 { #category : 'initialization' }
@@ -256,21 +311,17 @@ Game >> passTurn [
 
 { #category : 'process actions' }
 Game >> penalize: aShip forTurns: turns [
-    aShip penalizeFor: turns.
-    (self lapTrackerFor: aShip) penalized: true
+    penaltyPolicy penalize: aShip forTurns: turns
+]
+
+{ #category : 'process actions' }
+Game >> penalizeAndResetIfNoFuel: aShip [
+    fuelManager penalizeIfDepleted: aShip
 ]
 
 { #category : 'testing' }
 Game >> penalizedTurnsRemainingFor: aShip [
     ^ aShip penaltyTurnsRemaining
-]
-
-{ #category : 'process actions' }
-Game >> penalizeAndResetIfNoFuel: aShip [
-    aShip fuel > 0 ifTrue: [ ^ self ].
-
-    board moveShip: aShip to: 0.
-    self penalize: aShip forTurns: 2
 ]
 
 { #category : 'accessing' }
@@ -298,26 +349,13 @@ Game >> playTurn [
 
 { #category : 'process actions' }
 Game >> playUntilFinish [
-    self whenFinishedDo: [ :aWinner | ]
-        whenInProgressDo: [
-            [ self whenFinishedDo: [ :aWinner | false ] whenInProgressDo: [ true ] ]
-                whileTrue: [ self playTurn ].
-        ].
+    [ self whenFinishedDo: [ :winner | false ] whenInProgressDo: [ true ] ]
+        whileTrue: [ self playTurn ]
 ]
 
 { #category : 'process actions' }
 Game >> ranking [
-    ^ self allStatuses sort: [ :a :b |
-        | sameLaps samePosition |
-        sameLaps := a lapCount = b lapCount.
-        samePosition := a position = b position.
-
-        sameLaps
-            ifTrue: [
-                samePosition
-                    ifTrue: [ a ship name < b ship name ]
-                    ifFalse: [ a position > b position ] ]
-            ifFalse: [ a lapCount > b lapCount ] ]
+    ^ rankingService rankingFor: self allStatuses
 ]
 
 { #category : 'process actions' }
@@ -327,24 +365,12 @@ Game >> redoLastCardOn: aShip [
 
 { #category : 'testing' }
 Game >> reducePenaltyFor: aShip [
-    aShip reducePenalty.
-    (self lapTrackerFor: aShip) penalized: aShip isPenalized.
-    aShip restoreFuel
+    penaltyPolicy reducePenaltyFor: aShip
 ]
 
 { #category : 'testing' }
 Game >> registerLapFor: aShip from: oldPosition after: someSteps [
-    | cellCount status |
-    cellCount := board cellCount.
-    status := self lapTrackerFor: aShip.
-
-    someSteps > 0
-        ifTrue: [
-            oldPosition + someSteps < cellCount ifTrue: [ ^ self ].
-            status addLap ]
-        ifFalse: [
-            oldPosition + someSteps >= 0 ifTrue: [ ^ self ].
-            status removeLap ]
+    lapTracker registerLapFor: aShip from: oldPosition after: someSteps
 ]
 
 { #category : 'process actions' }
@@ -355,36 +381,27 @@ Game >> removeActiveCard: aCard [
 
 { #category : 'process actions' }
 Game >> repeatLastEffectOn: aShip [
-    | position effect |
+    | position effect card skipFuel |
+    turnData lastEffectWasCard ifTrue: [
+        card := turnData lastEffectiveCard.
+        card class = NullCard ifTrue: [ ^ self ].
+        card playOn: aShip inGame: self.
+        ^ self
+    ].
     (turnData lastSteps = 0 and: [ turnData lastPreviousPosition = 0 ]) ifTrue: [ ^ self ].
     position := board
         determineNewPositionFrom: turnData lastPreviousPosition
         after: turnData lastSteps.
     effect := board effectAt: position.
-    effect applyTo: aShip inBoard: board
+    skipFuel := effect consumesFuel not.
+    self
+        applyEffectSkippingFuel: skipFuel
+        during: [ effect applyTo: aShip inBoard: board ]
 ]
 
 { #category : 'process actions' }
 Game >> consumeFuel: aNumber forShip: aShip [
-    | initialFuel deficit allies ally |
-    initialFuel := aShip fuel.
-    aShip decreaseFuelBy: aNumber.
-    allies := aShip allies.
-
-    initialFuel < aNumber ifFalse: [ ^ self ].
-
-    deficit := aNumber - initialFuel.
-    allies isEmpty ifTrue: [
-        board moveShip: aShip to: 0.
-        self penalize: aShip forTurns: 2.
-        ^ self
-    ].
-
-    ally := allies first.
-    ally decreaseFuelBy: deficit.
-    self penalizeAndResetIfNoFuel: ally.
-
-    self penalizeAndResetIfNoFuel: aShip.
+    fuelManager consumeFuel: aNumber forShip: aShip
 ]
 
 { #category : 'process actions' }
@@ -404,7 +421,14 @@ Game >> fuelHistory: aDictionary [
 
 { #category : 'process actions' }
 Game >> rewardForMaxRollTo: aShip [
-    aShip increaseMaxFuelBy: 1
+    self rewardForMaxRollTo: aShip withRoll: (1 to: 100) atRandom
+]
+
+{ #category : 'process actions' }
+Game >> rewardForMaxRollTo: aShip withRoll: aNumber [
+    aNumber <= self class maxRollRewardIncreaseChance
+        ifTrue: [ aShip increaseMaxFuelBy: 1 ]
+        ifFalse: [ aShip decreaseFuelBy: 1 ]
 ]
 
 { #category : 'process actions' }
@@ -415,39 +439,40 @@ Game >> rollAndMoveCurrentShip [
     steps = dice maxRoll ifTrue: [
         self rewardForMaxRollTo: self currentShip ].
     modified := self modifyRoll: steps forShip: self currentShip.
-    modified >= 0
-        ifTrue: [
-            newPosition := board
-                determineNewPositionFrom: turnData lastPreviousPosition
-                after: modified.
-            board moveShip: self currentShip to: newPosition ]
-        ifFalse: [ board moveShip: self currentShip backward: modified abs ].
+    newPosition := board
+        determineNewPositionFrom: turnData lastPreviousPosition
+        after: modified.
+    board moveShip: self currentShip to: newPosition.
     turnData lastSteps: modified.
-    self consumeFuel: modified abs forShip: self currentShip
+    fuelManager consumeMovement: modified forShip: self currentShip
 ]
 
 { #category : 'process actions' }
 Game >> applyEffectOfCurrentCell [
-    | beforePositions effect skipFuel |
-    beforePositions := Dictionary new.
-    board ships do: [ :ship | beforePositions at: ship put: (board positionOf: ship) ].
-
+    | effect skipFuel |
     effect := board effectAt: (board positionOf: self currentShip).
-    skipFuel := effect class = AtomicBombEffect.
+    skipFuel := effect consumesFuel not.
+    self
+        applyEffectSkippingFuel: skipFuel
+        during: [ board applyEffectTo: self currentShip ]
+]
 
-    board clearLastMoves.
-    board applyEffectTo: self currentShip.
-
-    board ships do: [ :ship |
-        | before diff |
-        before := beforePositions at: ship.
-        diff := board lastMoveFor: ship.
-        diff = 0 ifTrue: [ diff := (board positionOf: ship) - before ].
-        diff ~= 0 ifTrue: [
-            skipFuel ifFalse: [ self consumeFuel: diff abs forShip: ship ].
-            self registerLapFor: ship from: before after: diff
+{ #category : 'process actions' }
+Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
+    | movementRecords movementOccurred |
+    movementRecords := board recordMovesDuring: effectBlock.
+    movementOccurred := false.
+    movementRecords keysAndValuesDo: [ :ship :report |
+        | start delta |
+        start := report startPosition.
+        delta := report delta.
+        delta ~= 0 ifTrue: [
+            movementOccurred := true.
+            skipFuel ifFalse: [ fuelManager consumeMovement: delta forShip: ship ].
+            lapTracker registerLapFor: ship from: start after: delta
         ]
-    ]
+    ].
+    movementOccurred ifTrue: [ turnData lastEffectWasCard: false ]
 ]
 
 { #category : 'accessing' }
@@ -457,7 +482,14 @@ Game >> spaceShips [
 
 { #category : 'process actions' }
 Game >> spaceshipPositions [
-    ^ spaceShips collect: [ :ship | ShipPosition for: ship ]
+    ^ spaceShips collect: [ :ship |
+        | tracker |
+        tracker := self lapTrackerFor: ship.
+        ShipStatus
+            for: ship
+            position: ship position
+            laps: tracker lapCount
+            penalized: tracker isPenalized ]
 ]
 
 { #category : 'testing' }

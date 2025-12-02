@@ -42,6 +42,11 @@ Distance >> asParsecs [
     ^ unit asParsecs: value
 ]
 
+{ #category : 'converting' }
+Distance >> asBoardDistance [
+    ^ self
+]
+
 { #category : 'initialization' }
 Distance >> initializeWith: aNumber unit: aUnit [
     value := aNumber.

@@ -15,11 +15,18 @@ DiceCup class >> validateMinimumDice: someDice [
         self error: 'At least one die is required to initialize the game' ]
 ]
 
-{ #category : 'initalize' }
-DiceCup class >> with: someDice [
+{ #category : 'validation' }
+DiceCup class >> ensureDiceCollectionFrom: someDice [
     self validateMinimumDice: someDice.
+    someDice do: [ :each |
+        ((each respondsTo: #roll) and: [ each respondsTo: #sides ]) ifFalse: [
+            self error: 'Dice must understand #roll and #sides' ] ].
+    ^ someDice asOrderedCollection
+]
 
-    ^ self new initializeWith: someDice
+{ #category : 'instance creation' }
+DiceCup class >> with: someDice [
+    ^ self new initializeWith: (self ensureDiceCollectionFrom: someDice)
 ]
 
 { #category : 'initialize' }
@@ -37,7 +44,7 @@ DiceCup >> roll [
     ^ diceCollection sum: [ :die | die roll ]
 ]
 
-{ #category : 'validation' }
-DiceCup >> validateAsDiceCup [
+{ #category : 'converting' }
+DiceCup >> asDiceCupForGame [
     ^ self
 ]

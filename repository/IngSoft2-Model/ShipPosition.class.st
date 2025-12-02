@@ -11,18 +11,31 @@ Class {
 
 { #category : 'initialization' }
 ShipPosition class >> for: aShip [
-    ^ self ship: aShip position: aShip position
+    ^ self ship: (self ensureShipFrom: aShip) position: aShip position
 ]
 
 { #category : 'initialization' }
 ShipPosition class >> ship: aShip position: aPosition [
-    ^ self new initializeWithShip: aShip position: aPosition
+    ^ self new initializeWithShip: (self ensureShipFrom: aShip) position: (self ensurePositionFrom: aPosition)
+]
+
+{ #category : 'validation' }
+ShipPosition class >> ensurePositionFrom: aPosition [
+    (aPosition isInteger and: [ aPosition >= 0 ]) ifFalse: [
+        self error: 'Position must be a non-negative integer'
+    ].
+    ^ aPosition
+]
+
+{ #category : 'validation' }
+ShipPosition class >> ensureShipFrom: aShip [
+    ^ Spaceship ensureSpaceship: aShip errorMessage: 'Ship must be a Spaceship instance'
 ]
 
 { #category : 'accessing' }
 ShipPosition >> initializeWithShip: aShip position: aPosition [
-    ship := aShip.
-    position := aPosition.
+    ship := self class ensureShipFrom: aShip.
+    position := self class ensurePositionFrom: aPosition.
     ^ self
 ]
 

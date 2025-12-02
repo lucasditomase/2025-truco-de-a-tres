@@ -31,8 +31,8 @@ HyperGravityEffect >> requiredRoll [
 
 { #category : 'initialization' }
 HyperGravityEffect >> requiredRoll: aNumber [
-    aNumber > 12 ifTrue: [
-        self error: 'Required roll cannot exceed dice maximum'.
+    (aNumber isInteger and: [ aNumber > 0 ]) ifFalse: [
+        self error: 'Required roll must be a positive integer'.
     ].
     requiredRoll := aNumber.
 ]

@@ -12,12 +12,12 @@ NullWormhole >> hasEntryAt: aPosition [
 
 { #category : 'operations' }
 NullWormhole >> exitFrom: aPosition [
-    ^ aPosition
+    ^ NullBehavior passThrough: aPosition
 ]
 
 { #category : 'operations' }
 NullWormhole >> exitFrom: aPosition inBoard: aBoard [
-    ^ aPosition
+    ^ self exitFrom: aPosition
 ]
 
 { #category : 'operations' }

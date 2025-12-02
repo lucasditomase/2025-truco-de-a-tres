@@ -234,20 +234,6 @@ BoardTest >> testEffectAtHandlesAllCases [
 ]
 
 { #category : 'tests - instance' }
-BoardTest >> testEffectAtReturnsCorrectEffect [
-    | board customEffect |
-
-    board := Board of: 10 andWormholeAt: {}.
-    customEffect := BlackHoleEffect new.
-    board cells: (Dictionary new).
-    board cells at: 5 put: customEffect.
-    board cells at: 8 put: NoEffect new.
-
-    self assert: (board effectAt: 5) equals: customEffect.
-    self assert: (board effectAt: 8) class equals: NoEffect.
-]
-
-{ #category : 'tests - instance' }
 BoardTest >> testHyperGravityAllowsEntryWhenRollIsSufficient [
     | board ship effect newPosition |
 
@@ -336,45 +322,6 @@ BoardTest >> testInvalidBoardWithInvalidWormholeRaisesError [
         should: [ Board of: 10 andWormholeAt: fakeWormhole ]
         raise: Error
         withMessageText: 'All wormholes must be valid objects'
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReached [
-    | board |
-
-    board := Board of: 10 andWormholeAt: #().
-
-    self assert: (board isPositionReachedAt: 10).
-    self assert: (board isPositionReachedAt: 11).
-
-    self deny: (board isPositionReachedAt: 9).
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReachedAtReturnsFalseIfPositionLower [
-    | board |
-
-    board := Board of: 5 andWormholeAt: {}.
-
-    self deny: (board isPositionReachedAt: 4).
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionEqual [
-    | board |
-
-    board := Board of: 5 andWormholeAt: {}.
-
-    self assert: (board isPositionReachedAt: 5).
-]
-
-{ #category : 'tests - instance' }
-BoardTest >> testIsGoalReachedAtReturnsTrueIfPositionGreater [
-    | board |
-
-    board := Board of: 5 andWormholeAt: {}.
-
-    self assert: (board isPositionReachedAt: 7).
 ]
 
 { #category : 'tests - instance' }
@@ -521,19 +468,11 @@ BoardTest >> testPositionOfWithoutManager [
 ]
 
 { #category : 'tests - instance' }
-BoardTest >> testPositionWithoutWormholeReturnsSame [
-    | board |
-    board := Board of: 10 andWormholeAt: #().
-
-    self assert: (board applyWormholeIfPresentAt: 5) equals: 5.
-]
-
-{ #category : 'tests - instance' }
 BoardTest >> testRandomEffectProducesRecognizedClass [
     | board effect valid |
     board := Board of: 5 andWormholeAt: #().
     effect := board randomEffect.
-    valid := { NoEffect. BlackHoleEffect. HyperGravityEffect.
+    valid := { NoEffect. CardEffect. BlackHoleEffect. HyperGravityEffect.
         MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
 
     self assert: (valid anySatisfy: [ :cls | effect class = cls ]).
@@ -662,6 +601,47 @@ BoardTest >> testLastMoveForTracksMovementAndCanBeCleared [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testRecordMovesDuringCapturesStartAndAggregatedDelta [
+    | board ship report data |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Tracker'.
+    ship moveTo: 1.
+    board registerShips: { ship }.
+
+    report := board recordMovesDuring: [
+        board moveShip: ship forward: 7.
+        board moveShip: ship backward: 2
+    ].
+    data := report at: ship ifAbsent: [ self fail: 'Expected move data' ].
+
+    self assert: data startPosition equals: 1.
+    self assert: data delta equals: 5.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testWithMovementTrackingDuringKeepsSingleRecordingSession [
+    | board ship report data |
+    board := Board of: 5 andWormholeAt: {}.
+    ship := Spaceship withName: 'Scout'.
+    ship moveTo: 0.
+    board registerShips: { ship }.
+
+    report := board withMovementTrackingDuring: [
+        self assert: board isRecordingMoves.
+        board moveShip: ship forward: 1.
+        board withMovementTrackingDuring: [
+            self assert: board isRecordingMoves.
+            board moveShip: ship forward: 1.
+        ]
+    ].
+    data := report at: ship ifAbsent: [ self fail: 'Expected move data' ].
+
+    self deny: board isRecordingMoves.
+    self assert: ship position equals: 2.
+    self assert: data delta equals: 2.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testTotalLengthInParsecsAccessorReturnsLength [
     | board |
     board := Board of: 5 length: 8 andWormholeAt: {}.
@@ -680,10 +660,34 @@ BoardTest >> testBoardCreationWithoutRandomEffectsProducesNoEffects [
 BoardTest >> testPopulateRandomEffectsProducesRecognizedClasses [
     | board valid |
     board := Board of: 5 andWormholeAt: {} withRandomEffects: false.
-    valid := { NoEffect. BlackHoleEffect. HyperGravityEffect. MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
+    valid := { NoEffect. CardEffect. BlackHoleEffect. HyperGravityEffect. MoonWalkEffect. HyperJumpEffect. AtomicBombEffect }.
 
     board populateRandomEffects.
     self assert: (board cells values allSatisfy: [ :e | valid anySatisfy: [ :cls | e class = cls ] ]).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testConfigureHyperGravityRequirementsUsesMaxRoll [
+    | board effect |
+    board := Board of: 5 andWormholeAt: {}.
+    effect := HyperGravityEffect new.
+    board cells at: 2 put: effect.
+    board configureHyperGravityRequirementsWithMaxRoll: 3.
+    self assert: ((1 to: 3) includes: effect requiredRoll).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testRandomEffectForRollDistributesAccordingToSpecification [
+    | board |
+    board := Board of: 5 andWormholeAt: {}.
+
+    self assert: (board randomEffectForRoll: 1) class equals: NoEffect.
+    self assert: (board randomEffectForRoll: 45) class equals: CardEffect.
+    self assert: (board randomEffectForRoll: 60) class equals: BlackHoleEffect.
+    self assert: (board randomEffectForRoll: 70) class equals: HyperGravityEffect.
+    self assert: (board randomEffectForRoll: 95) class equals: MoonWalkEffect.
+    self assert: (board randomEffectForRoll: 100) class equals: HyperJumpEffect.
+    self assert: (board randomEffectForRoll: 108) class equals: AtomicBombEffect.
 ]
 
 { #category : 'tests - instance' }
@@ -693,6 +697,45 @@ BoardTest >> testDrawCardReturnsACard [
     card := board drawCard.
 
     self assert: (Card withAllSubclasses includes: card class).
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testDrawCardUsesInjectedDealer [
+    | board dealerCard dealerCalled |
+    board := Board of: 5 andWormholeAt: {}.
+    dealerCard := NullCard new.
+    dealerCalled := false.
+
+    board useCardDealer: [
+        dealerCalled := true.
+        dealerCard
+    ].
+
+    self assert: board drawCard equals: dealerCard.
+    self assert: dealerCalled.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testUseCardDealerCyclingThroughReturnsCardsInSequence [
+    | board |
+    board := Board of: 5 andWormholeAt: {}.
+
+    board useCardDealerCyclingThrough: { AdvanceCard. ShieldCard }.
+
+    self assert: board drawCard class equals: AdvanceCard.
+    self assert: board drawCard class equals: ShieldCard.
+    self assert: board drawCard class equals: AdvanceCard.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testUseCardDealerRequiresCallableObject [
+    | board |
+    board := Board of: 5 andWormholeAt: {}.
+
+    self
+        should: [ board useCardDealer: Object new ]
+        raise: Error
+        withMessageText: 'Card dealer must respond to #value'.
 ]
 
 { #category : 'tests - instance' }
@@ -734,13 +777,6 @@ BoardTest >> testShipsReturnsRegisteredShips [
 ]
 
 { #category : 'tests - instance' }
-BoardTest >> testValidateAsBoardReturnsSelf [
-    | board |
-    board := Board of: 3 andWormholeAt: {}.
-    self assert: (board validateAsBoard) equals: board.
-]
-
-{ #category : 'tests - instance' }
 BoardTest >> testCellsSetterUpdatesCells [
     | board newCells |
     board := Board of: 3 andWormholeAt: {}.
@@ -749,4 +785,54 @@ BoardTest >> testCellsSetterUpdatesCells [
     board cells: newCells.
     self assert: board cells equals: newCells.
     self assert: board cellCount equals: 1.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testCellsSetterKeepsCellCountWhenCollectionEmpty [
+    | board originalCount |
+    board := Board of: 4 andWormholeAt: {}.
+    originalCount := board cellCount.
+
+    board cells: #().
+
+    self assert: board cellCount equals: originalCount.
+    self assert: board cells isEmpty.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testTotalEffectWeightMatchesDistributionSum [
+    | board expected |
+    board := Board of: 5 andWormholeAt: {}.
+    expected := board randomEffectDistribution sum: [ :entry | entry value ].
+
+    self assert: board totalEffectWeight equals: expected.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testInvalidLengthUsesDistanceErrorMessage [
+    self
+        should: [ Board of: 4 length: 'invalid' andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Board length must be provided as a positive Distance or numeric value'.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testEffectLookupRejectsInvalidEntries [
+    | board |
+    board := Board of: 3 andWormholeAt: {}.
+    board cells at: 0 put: Object new.
+
+    self
+        should: [ board effectAt: 0 ]
+        raise: Error
+        withMessageText: 'Board cells must contain effects'.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testInitializeWithCellsAndWormholesMatchesLengthInitializer [
+    | board |
+    board := Board new initializeWithCells: 4 andWormholes: #().
+
+    self assert: board cellCount equals: 4.
+    self assert: board totalLengthInParsecs equals: 4.
 ]

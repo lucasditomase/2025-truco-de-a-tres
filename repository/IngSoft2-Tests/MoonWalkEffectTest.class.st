@@ -82,3 +82,17 @@ MoonWalkEffectTest >> testStepsAccessorWorks [
     effect steps: 3.
     self assert: effect steps equals: 3.
 ]
+
+{ #category : 'tests' }
+MoonWalkEffectTest >> testWithStepsRequiresPositiveInteger [
+    self
+        should: [ MoonWalkEffect withSteps: 0 ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Steps must be a positive integer' ].
+    self
+        should: [ MoonWalkEffect withSteps: 'two' ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Steps must be a positive integer' ].
+]

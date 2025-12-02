@@ -15,15 +15,37 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
-{ #category : 'initialize' }
-Spaceship class >> validatingName: aName [
-    aName isEmpty ifTrue: [ self error: 'A name cannot be empty' ].
+{ #category : 'validation' }
+Spaceship class >> ensureNameFrom: aName [
+    (aName isString and: [ aName isEmpty not ]) ifFalse: [
+        self error: 'A name cannot be empty' ].
+    ^ aName
 ]
 
 { #category : 'initialize' }
 Spaceship class >> withName: aName [
-    self validatingName: aName.
-    ^ self new initializeWith: aName
+    ^ self new initializeWith: (self ensureNameFrom: aName)
+]
+
+{ #category : 'validation' }
+Spaceship class >> ensureCollectionOfSpaceships: someShips [
+    someShips asSpaceshipCollection
+]
+
+{ #category : 'validation' }
+Spaceship class >> ensureSpaceship: aShip errorMessage: errorMessage [
+    ^ aShip asSpaceshipWithMessage: errorMessage
+]
+
+{ #category : 'validation' }
+Spaceship class >> invalidCollectionMessage [
+    ^ 'Ships must be a collection of Spaceship instances'
+]
+
+{ #category : 'validation' }
+Spaceship class >> ensureMinimumCountIn: someShips [
+    someShips size < 2 ifTrue: [
+        self error: 'Need 2 space ships or more to initialize the game' ]
 ]
 
 { #category : 'methods' }
@@ -59,11 +81,6 @@ Spaceship >> fuel [
 { #category : 'fuel' }
 Spaceship >> fuel: anAmount [
     fuel := anAmount
-]
-
-{ #category : 'initialize' }
-Spaceship >> hasReachedGoalOn: aBoard [
-    ^ aBoard isPositionReachedAt: position.
 ]
 
 { #category : 'fuel' }
@@ -145,8 +162,7 @@ Spaceship >> playCard: aCard inGame: aGame [
     (cards includes: aCard) ifFalse: [ self error: 'Card not in hand' ].
     aCard playOn: self inGame: aGame.
     self removeCard: aCard.
-    aGame lastCardPlayed: aCard.
-    aCard class = RedoCard ifFalse: [ aGame lastEffectiveCard: aCard ]
+    aGame lastCardPlayed: aCard
 ]
 
 { #category : 'initialize' }
@@ -189,12 +205,12 @@ Spaceship >> state: aState [
     state := aState
 ]
 
+{ #category : 'converting' }
+Spaceship >> asSpaceshipWithMessage: errorMessage [
+    ^ self
+]
+
 { #category : 'testing' }
 Spaceship >> isNullShip [
     ^ false
-]
-
-{ #category : 'validation' }
-Spaceship >> validateAsSpaceship [
-    ^ self
 ]

@@ -32,10 +32,3 @@ NullBoardTest >> testMoveShipToSetsExactPosition [
     board moveShip: ship to: 5.
     self assert: ship position equals: 5.
 ]
-
-{ #category : 'tests - instance' }
-NullBoardTest >> testValidateAsBoardReturnsSelf [
-    | board |
-    board := NullBoard new.
-    self assert: (board validateAsBoard) equals: board.
-]

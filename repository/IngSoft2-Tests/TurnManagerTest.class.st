@@ -44,3 +44,23 @@ TurnManagerTest >> testWithShipsInitializesCorrectly [
     self assert: 1 equals: manager currentTurnIndex.
     self assert: ship1 equals: manager currentShip.
 ]
+
+{ #category : 'tests' }
+TurnManagerTest >> testWithShipsRequiresAtLeastTwoShips [
+    | ship |
+    ship := Spaceship withName: 'Solo'.
+    self
+        should: [ TurnManager withShips: { ship } ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Need 2 space ships or more to initialize the game' ].
+]
+
+{ #category : 'tests' }
+TurnManagerTest >> testWithShipsRequiresSpaceshipInstances [
+    self
+        should: [ TurnManager withShips: { 'not a ship' } ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Ships must be a collection of Spaceship instances' ].
+]

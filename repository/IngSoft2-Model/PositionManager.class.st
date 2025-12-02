@@ -17,11 +17,7 @@ PositionManager class >> forShips: someShips [
 
 { #category : 'initialization' }
 PositionManager class >> validateShips: someShips [
-    (someShips isCollection) ifFalse: [
-        ^ self error: 'Ships must be a collection of Spaceship instances' ].
-    [ someShips do: [ :each | each validateAsSpaceship ] ]
-        on: MessageNotUnderstood
-        do: [ self error: 'Ships must be a collection of Spaceship instances' ]
+    Spaceship ensureCollectionOfSpaceships: someShips
 ]
 
 { #category : 'initialization' }
@@ -57,4 +53,9 @@ PositionManager >> positionOf: aShip [
 { #category : 'accessing' }
 PositionManager >> ships [
     ^ positions keys
+]
+
+{ #category : 'converting' }
+PositionManager >> asPositionManagerWithMessage: errorMessage [
+    ^ self
 ]

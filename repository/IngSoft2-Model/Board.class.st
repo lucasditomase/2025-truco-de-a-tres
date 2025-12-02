@@ -7,39 +7,62 @@ Class {
         'cells',
         'totalLengthInParsecs',
         'positionManager',
-        'lastMoves'
+        'lastMoves',
+        'movementService',
+        'cardDealer'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
 }
 
+{ #category : 'initialization' }
+Board >> initialize [
+    super initialize.
+    movementService := NullShipMovementService new.
+]
+
 { #category : 'initialize' }
 Board class >> convertToParsecs: aLength [
-    ^ [ aLength asParsecs ]
-        on: MessageNotUnderstood
-        do: [ aLength ]
+    ^ (self ensureDistanceFrom: aLength) asParsecs
+]
+
+{ #category : 'initialize' }
+Board class >> ensureDistanceFrom: aLength [
+    ^ aLength asBoardDistance
+]
+
+{ #category : 'initialize' }
+Board class >> invalidDistanceMessage [
+    ^ 'Board length must be provided as a positive Distance or numeric value'
+]
+
+{ #category : 'effects' }
+Board class >> effectDistributionWeights [
+    ^ {
+        [ NoEffect new ] -> 38.
+        [ CardEffect new ] -> 10.
+        [ BlackHoleEffect new ] -> 20.
+        [ HyperGravityEffect new ] -> 20.
+        [ MoonWalkEffect new ] -> 10.
+        [ HyperJumpEffect withValues: #(1 2 3) ] -> 8.
+        [ AtomicBombEffect new ] -> 2
+    }
 ]
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells andWormholeAt: positions [
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-    ^ self new
-        initializeWithCells: anAmountOfCells
-        andWormholes: positions
+    ^ self
+        withCells: anAmountOfCells
+        length: anAmountOfCells
+        wormholes: positions
 ]
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells length: parsecLength andWormholeAt: positions [
-    | lengthOnParsecs |
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-    lengthOnParsecs := self convertToParsecs: parsecLength.
-
-    ^ self new
-        initializeWithCells: anAmountOfCells
-        length: lengthOnParsecs
-        andWormholes: positions
+    ^ self
+        withCells: anAmountOfCells
+        length: parsecLength
+        wormholes: positions
 ]
 
 { #category : 'initialize' }
@@ -47,9 +70,6 @@ Board class >> of: anAmountOfCells length: parsecLength lengthLightYears: lightY
     self
         validateLengthConsistencyBetweenParsecs: parsecLength
         andLightYears: lightYears.
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-
     ^ self
         of: anAmountOfCells
         length: parsecLength
@@ -58,13 +78,10 @@ Board class >> of: anAmountOfCells length: parsecLength lengthLightYears: lightY
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells lengthLightYears: lightYears andWormholeAt: positions [
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-
     ^ self
-        of: anAmountOfCells
-        length: (Distance lightYears: lightYears) asParsecs
-        andWormholeAt: positions
+        withCells: anAmountOfCells
+        length: (Distance lightYears: lightYears)
+        wormholes: positions
 ]
 
 { #category : 'initialize' }
@@ -85,7 +102,7 @@ Board class >> validateCellCount: aCount [
 
 { #category : 'initialize' }
 Board class >> validateLengthConsistencyBetweenParsecs: parsecLength andLightYears: lightYears [
-    (Distance parsecs: parsecLength) asLightYears = lightYears ifFalse: [
+    ((self ensureDistanceFrom: parsecLength) asLightYears = lightYears) ifFalse: [
         self error: 'Length mismatch between parsecs and light years'
     ]
 ]
@@ -98,6 +115,18 @@ Board class >> validateWormholes: aCollection [
 ]
 
 { #category : 'initialize' }
+Board class >> withCells: cellCount length: aLength wormholes: positions [
+    | distance |
+    self validateCellCount: cellCount.
+    self validateWormholes: positions.
+    distance := self ensureDistanceFrom: aLength.
+    ^ self new
+        initializeWithCells: cellCount
+        length: distance asParsecs
+        andWormholes: positions
+]
+
+{ #category : 'initialize' }
 Board >> applyEffectTo: aSpaceship [
     | effect |
 
@@ -107,9 +136,7 @@ Board >> applyEffectTo: aSpaceship [
 
 { #category : 'initialize' }
 Board >> applyWormholeIfPresentAt: aPosition [
-    | wormhole |
-    wormhole := wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ NullWormhole new ].
-    ^ wormhole exitFrom: aPosition inBoard: self
+    ^ (self wormholeEnteringAt: aPosition) exitFrom: aPosition inBoard: self
 ]
 
 { #category : 'initialize' }
@@ -125,7 +152,7 @@ Board >> calculateNewPositionFrom: current after: steps moves: aShipStatus [
 
 { #category : 'initialize' }
 Board >> cellCount [
-    ^ cells size.
+    ^ cellCount
 ]
 
 { #category : 'initialize' }
@@ -135,7 +162,10 @@ Board >> cells [
 
 { #category : 'initialize' }
 Board >> cells: aCollection [
-    cells := aCollection
+    cells := aCollection.
+    cells isEmpty ifTrue: [ ^ self ].
+    cellCount := cells size.
+    movementService cellCount: cellCount
 ]
 
 { #category : 'moves' }
@@ -166,14 +196,37 @@ Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
 
 { #category : 'deck' }
 Board >> drawCard [
-    ^ CardDeck randomCard
+    ^ cardDealer value
+]
+
+{ #category : 'deck' }
+Board >> useCardDealer: aCallable [
+    self validateCardDealer: aCallable.
+    cardDealer := aCallable
+]
+
+{ #category : 'deck' }
+Board >> useCardDealerCyclingThrough: cardClasses [
+    self useCardDealer: (CardDeck cyclingThrough: cardClasses)
+]
+
+{ #category : 'deck' }
+Board >> defaultCardDealer [
+    ^ [ CardDeck randomCard ]
+]
+
+{ #category : 'deck' }
+Board >> validateCardDealer: aCallable [
+    | method |
+    method := aCallable class lookupSelector: #value.
+    (method isNil or: [ method methodClass = Object ]) ifTrue: [
+        self error: 'Card dealer must respond to #value'
+    ]
 ]
 
 { #category : 'initialize' }
 Board >> effectAt: aPosition [
-    | effect |
-    effect := cells at: aPosition ifAbsent: [ NullEffect new ].
-    ^ effect ifNil: [ NullEffect new ] ifNotNil: [ effect ]
+    ^ (cells at: aPosition ifAbsent: [ NullEffect new ]) asBoardEffect
 ]
 
 { #category : 'initialize' }
@@ -192,6 +245,8 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
     cells := Dictionary new.
     positionManager := NullPositionManager new.
     lastMoves := Dictionary new.
+    cardDealer := self defaultCardDealer.
+    self initializeMovementService.
 
     0 to: aCount - 1 do: [ :i |
         cells at: i put: NoEffect new ].
@@ -200,39 +255,46 @@ Board >> initializeWithCells: aCount length: aLengthInParsecs andWormholes: aCol
 ]
 
 { #category : 'initialize' }
-Board >> isPositionReachedAt: aPosition [
-    ^ aPosition >= cellCount.
+Board >> initializeMovementService [
+    movementService := ShipMovementService
+        withPositionManager: positionManager
+        cellCount: (cellCount max: 1)
+        lastMoves: lastMoves
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip backward: steps [
-    | oldPos newPos |
-    oldPos := self positionOf: aShip.
-    newPos := (oldPos - steps) \\ cellCount.
-    positionManager moveShip: aShip to: newPos.
-    lastMoves at: aShip put: steps negated.
-    ^ steps negated
+    | start target |
+    start := self positionOf: aShip.
+    target := self determineNewPositionFrom: start after: steps negated.
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: target
+        delta: [ :new :previous | steps negated ]
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip forward: steps [
-    | oldPos newPos |
-    oldPos := self positionOf: aShip.
-    newPos := (oldPos + steps) \\ cellCount.
-    positionManager moveShip: aShip to: newPos.
-    lastMoves at: aShip put: steps.
-    ^ steps
+    | start target |
+    start := self positionOf: aShip.
+    target := self determineNewPositionFrom: start after: steps.
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: target
+        delta: [ :new :previous | steps ]
 ]
 
 { #category : 'spaceships' }
 Board >> moveShip: aShip to: aPosition [
-    | oldPos newPos diff |
-    oldPos := self positionOf: aShip.
-    newPos := aPosition \\ cellCount.
-    positionManager moveShip: aShip to: newPos.
-    diff := newPos - oldPos.
-    lastMoves at: aShip put: diff.
-    ^ diff
+    | start |
+    start := self positionOf: aShip.
+    ^ movementService
+        moveShip: aShip
+        from: start
+        toPosition: aPosition
+        delta: [ :new :previous | new - previous ]
 ]
 
 { #category : 'spaceships' }
@@ -242,25 +304,28 @@ Board >> positionOf: aShip [
 
 { #category : 'spaceships' }
 Board >> clearLastMoves [
-    lastMoves := Dictionary new
+    movementService clearLastMoves
 ]
 
 { #category : 'spaceships' }
 Board >> lastMoveFor: aShip [
-    ^ lastMoves at: aShip ifAbsent: [ 0 ]
+    ^ movementService lastMoveFor: aShip
 ]
 
-{ #category : 'initialize' }
-Board >> randomEffect [
-    | randomNumber |
-    randomNumber := (1 to: 100) atRandom.
+{ #category : 'spaceships' }
+Board >> isRecordingMoves [
+    ^ movementService isRecordingMoves
+]
 
-    randomNumber <= 40 ifTrue: [ ^ NoEffect new ].
-    randomNumber <= 60 ifTrue: [ ^ BlackHoleEffect new ].
-    randomNumber <= 80 ifTrue: [ ^ HyperGravityEffect new ].
-    randomNumber <= 90 ifTrue: [ ^ MoonWalkEffect new ].
-    randomNumber <= 98 ifTrue: [ ^ HyperJumpEffect withValues: #(1 2 3) ].
-    ^ AtomicBombEffect new
+{ #category : 'spaceships' }
+Board >> withMovementTrackingDuring: aBlock [
+    self isRecordingMoves ifTrue: [ ^ aBlock value ].
+    ^ self recordMovesDuring: aBlock
+]
+
+{ #category : 'spaceships' }
+Board >> recordMovesDuring: aBlock [
+    ^ movementService recentMovesDuring: aBlock
 ]
 
 { #category : 'initialize' }
@@ -273,7 +338,8 @@ Board >> populateRandomEffects [
 
 { #category : 'spaceships' }
 Board >> registerShips: someShips [
-    positionManager := PositionManager forShips: someShips
+    positionManager := PositionManager forShips: someShips.
+    movementService positionManager: positionManager.
 ]
 
 { #category : 'spaceships' }
@@ -283,9 +349,7 @@ Board >> ships [
 
 { #category : 'effects' }
 Board >> reverseAt: aPosition [
-    | wormhole |
-    wormhole := wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ NullWormhole new ].
-    wormhole reverseOnBoard: self at: aPosition
+    (self wormholeTouching: aPosition) reverseOnBoard: self at: aPosition
 ]
 
 { #category : 'effects' }
@@ -304,6 +368,45 @@ Board >> addWormhole: aWormhole [
 { #category : 'effects' }
 Board >> removeWormhole: aWormhole [
     wormholes remove: aWormhole
+]
+
+{ #category : 'effects' }
+Board >> randomEffect [
+    ^ self randomEffectForRoll: (1 to: self totalEffectWeight) atRandom
+]
+
+{ #category : 'effects' }
+Board >> randomEffectDistribution [
+    ^ OrderedCollection new
+        addAll: self class effectDistributionWeights;
+        yourself
+]
+
+{ #category : 'effects' }
+Board >> randomEffectForRoll: aNumber [
+    | cumulative |
+    cumulative := 0.
+    self randomEffectDistribution do: [ :entry |
+        cumulative := cumulative + entry value.
+        aNumber <= cumulative ifTrue: [ ^ entry key value ].
+    ].
+    ^ AtomicBombEffect new
+]
+
+{ #category : 'effects' }
+Board >> configureHyperGravityRequirementsWithMaxRoll: maxRoll [
+    | safeMax |
+    safeMax := (maxRoll isInteger and: [ maxRoll > 0 ]) ifTrue: [ maxRoll ] ifFalse: [ 6 ].
+    cells valuesDo: [ :effect |
+        effect class = HyperGravityEffect ifTrue: [
+            effect requiredRoll: safeMax
+        ]
+    ]
+]
+
+{ #category : 'effects' }
+Board >> totalEffectWeight [
+    ^ self randomEffectDistribution sum: [ :entry | entry value ]
 ]
 
 { #category : 'initialize' }
@@ -330,7 +433,22 @@ Board >> totalLengthInParsecs [
     ^ totalLengthInParsecs
 ]
 
-{ #category : 'validation' }
-Board >> validateAsBoard [
+{ #category : 'converting' }
+Board >> asGameBoard [
     ^ self
+]
+
+{ #category : 'initialize' }
+Board class >> invalidEffectMessage [
+    ^ 'Board cells must contain effects'
+]
+
+{ #category : 'effects' }
+Board >> wormholeEnteringAt: aPosition [
+    ^ wormholes detect: [ :w | w hasEntryAt: aPosition ] ifNone: [ NullWormhole new ]
+]
+
+{ #category : 'effects' }
+Board >> wormholeTouching: aPosition [
+    ^ wormholes detect: [ :w | (w entry = aPosition) or: [ w exit = aPosition ] ] ifNone: [ NullWormhole new ]
 ]

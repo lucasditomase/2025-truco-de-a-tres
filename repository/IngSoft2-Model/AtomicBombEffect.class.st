@@ -16,3 +16,8 @@ AtomicBombEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoa
         aBoard moveShip: ship to: 0
     ].
 ]
+
+{ #category : 'querying' }
+AtomicBombEffect >> consumesFuel [
+    ^ false
+]

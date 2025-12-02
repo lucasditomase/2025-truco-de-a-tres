@@ -6,7 +6,8 @@ Class {
         'lastPreviousPosition',
         'lastCardPlayed',
         'lastEffectiveCard',
-        'fuelHistory'
+        'fuelHistory',
+        'lastEffectWasCard'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
@@ -14,11 +15,13 @@ Class {
 
 { #category : 'initialization' }
 TurnData >> initialize [
+    super initialize.
     lastSteps := 0.
     lastPreviousPosition := 0.
     lastCardPlayed := NullCard new.
     lastEffectiveCard := NullCard new.
     fuelHistory := Dictionary new.
+    lastEffectWasCard := false.
     ^ self
 ]
 
@@ -74,7 +77,19 @@ TurnData >> lastCardPlayed [
 { #category : 'accessing' }
 TurnData >> lastCardPlayed: aCard [
     lastCardPlayed := aCard.
-    aCard class = RedoCard ifFalse: [ lastEffectiveCard := aCard ]
+    aCard recordsLastEffect ifFalse: [ ^ self ].
+    lastEffectWasCard := true.
+    lastEffectiveCard := aCard
+]
+
+{ #category : 'accessing' }
+TurnData >> lastEffectWasCard [
+    ^ lastEffectWasCard
+]
+
+{ #category : 'accessing' }
+TurnData >> lastEffectWasCard: aBoolean [
+    lastEffectWasCard := aBoolean
 ]
 
 { #category : 'accessing' }

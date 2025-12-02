@@ -9,3 +9,8 @@ Class {
 RedoCard >> playOn: aShip inGame: aGame [
     aGame redoLastCardOn: aShip
 ]
+
+{ #category : 'querying' }
+RedoCard >> recordsLastEffect [
+    ^ false
+]

@@ -36,3 +36,21 @@ NullEffectTest >> testReversedReturnsSelf [
     effect := NullEffect new.
     self assert: effect reversed equals: effect.
 ]
+
+{ #category : 'tests - instance' }
+NullEffectTest >> testApplyEffectToDelegatesToApplyTo [
+    | effect ship board |
+    effect := NullEffect new.
+    ship := Spaceship withName: 'Apply'.
+    ship moveTo: 4.
+    board := NullBoard new.
+
+    effect applyEffectTo: ship inBoard: board.
+
+    self assert: ship position equals: 4.
+]
+
+{ #category : 'tests - instance' }
+NullEffectTest >> testConsumesFuelIsTrue [
+    self assert: NullEffect new consumesFuel.
+]

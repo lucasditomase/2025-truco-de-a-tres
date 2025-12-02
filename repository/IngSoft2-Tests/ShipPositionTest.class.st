@@ -6,37 +6,44 @@ Class {
 }
 
 { #category : 'tests' }
-ShipPositionTest >> testIsGreaterThanReturnsFalseWhenLower [
-    | ship1 ship2 pos1 pos2 |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 moveTo: 2.
-    ship2 moveTo: 4.
-    pos1 := ShipPosition for: ship1.
-    pos2 := ShipPosition for: ship2.
-    self deny: (pos1 isGreaterThan: pos2).
+ShipPositionTest >> testForReturnsShipPosition [
+    | ship shipPosition |
+
+    ship := Spaceship withName: 'Runner'.
+    ship moveTo: 7.
+    shipPosition := ShipPosition for: ship.
+
+    self assert: shipPosition ship equals: ship.
+    self assert: shipPosition position equals: ship position.
 ]
 
 { #category : 'tests' }
-ShipPositionTest >> testIsGreaterThanReturnsTrueWhenHigher [
-    | ship1 ship2 pos1 pos2 |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 moveTo: 5.
-    ship2 moveTo: 3.
-    pos1 := ShipPosition for: ship1.
-    pos2 := ShipPosition for: ship2.
-    self assert: (pos1 isGreaterThan: pos2).
+ShipPositionTest >> testForRequiresSpaceshipInstance [
+    self
+        should: [ ShipPosition for: 'not a ship' ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Ship must be a Spaceship instance' ].
 ]
 
 { #category : 'tests' }
-ShipPositionTest >> testIsLessThanReturnsTrueWhenLower [
-    | ship1 ship2 pos1 pos2 |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 moveTo: 1.
-    ship2 moveTo: 2.
-    pos1 := ShipPosition for: ship1.
-    pos2 := ShipPosition for: ship2.
-    self assert: (pos1 isLessThan: pos2).
+ShipPositionTest >> testShipPositionRequiresNonNegativeIntegerPosition [
+    | ship |
+    ship := Spaceship withName: 'Explorer'.
+    self
+        should: [ ShipPosition ship: ship position: -1 ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Position must be a non-negative integer' ].
+]
+
+{ #category : 'tests' }
+ShipPositionTest >> testComparisonMessagesReflectRelativePositions [
+    | ship lower higher |
+    ship := Spaceship withName: 'Comparator'.
+    lower := ShipPosition ship: ship position: 1.
+    higher := ShipPosition ship: ship position: 3.
+
+    self assert: (higher isGreaterThan: lower).
+    self assert: (lower isLessThan: higher).
 ]

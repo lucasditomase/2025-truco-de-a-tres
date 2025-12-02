@@ -5,253 +5,111 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
-{ #category : 'asserting' }
-GamePenaltyTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-    self
-        should: anErrorBlock
-        raise: anErrorClass
-        withExceptionDo: [ :error |
-            self assert: error messageText equals: errorMessage ].
+{ #category : 'support' }
+GamePenaltyTest >> builder [
+    ^ GameTestBuilder new
+]
+
+{ #category : 'support' }
+GamePenaltyTest >> scenarioWithPenalizedFirstShipFor: turns [
+    | scenario |
+    scenario := self builder
+        withShipNames: #('Penalized' 'Other');
+        boardWithCells: 6;
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
+        laps: 5;
+        build.
+    scenario game penalize: (scenario shipNamed: 'Penalized') forTurns: turns.
+    ^ scenario
 ]
 
 { #category : 'tests' }
-GamePenaltyTest >> testHandlePenaltyOrPassIfNeededReturnsFalseWhenNoPenaltyAndNoPass [
-    | ship dice board game result |
+GamePenaltyTest >> testPenaltyFlowSkipsPenalizedShipAndReducesTurns [
+    | scenario game |
+    scenario := self scenarioWithPenalizedFirstShipFor: 2.
+    game := scenario game.
 
-    ship := Spaceship withName: 'Neutral'.
-    dice := DiceCup with: { Die withSides: 6 }.
-    board := Board of: 5 andWormholeAt: #().
-    game := Game
-        startWithShips: { ship. (Spaceship withName: 'Other') }
-        board: board
-        dice: dice
-        laps: 1.
+    self assert: game currentShip name equals: 'Penalized'.
+    game playTurn.
+    self assert: game currentShip name equals: 'Other'.
 
-    result := game handlePenaltyOrPassIfNeeded.
+    game playTurn.
+    self assert: game currentShip name equals: 'Penalized'.
 
-    self assert: result equals: false.
+    game playTurn.
+    self deny: (game isPenalized: (scenario shipNamed: 'Penalized')).
+    self assert: game currentShip name equals: 'Other'.
 ]
 
 { #category : 'tests' }
-GamePenaltyTest >> testHandlePenaltyOrPassIfNeededReturnsTrueWhenPenalized [
-    | ship dice board game result |
+GamePenaltyTest >> testPenaltyTurnsDecreaseAfterEachSkippedTurn [
+    | scenario penalizedShip game |
+    scenario := self scenarioWithPenalizedFirstShipFor: 3.
+    game := scenario game.
+    penalizedShip := scenario shipNamed: 'Penalized'.
 
-    ship := Spaceship withName: 'Penalized'.
-    dice := DiceCup with: { Die withSides: 6 }.
-    board := Board of: 5 andWormholeAt: #().
-    game := Game
-        startWithShips: { ship. (Spaceship withName: 'Other') }
-        board: board
-        dice: dice
-        laps: 1.
-
-    game penalize: ship forTurns: 1.
-
-    result := game handlePenaltyOrPassIfNeeded.
-
-    self assert: result equals: true.
+    self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 3.
+    game playTurn.
+    self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 2.
+    game playTurn.
+    self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 2.
+    game playTurn.
+    self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 1.
 ]
 
 { #category : 'tests' }
-GamePenaltyTest >> testHandlePenaltyOrPassIfNeededReturnsTrueWhenShipWantsToPassTurn [
-    | ship dice board game result |
+GamePenaltyTest >> testPenaltyShipListReflectsCurrentPenalizations [
+    | scenario penalizedShip |
+    scenario := self scenarioWithPenalizedFirstShipFor: 1.
+    penalizedShip := scenario shipNamed: 'Penalized'.
 
-    ship := Spaceship withName: 'Pasante'.
-    dice := DiceCup with: { Die withSides: 6 }.
-    board := Board of: 5 andWormholeAt: #().
-    game := Game
-        startWithShips: { ship. (Spaceship withName: 'Other') }
-        board: board
-        dice: dice
-        laps: 1.
-
-    game markShipAsWantingToPassTurn: ship to: true.
-
-    result := game handlePenaltyOrPassIfNeeded.
-
-    self assert: result equals: true.
+    self assert: ((scenario game) penaltyShip includes: penalizedShip).
+    (scenario game) reducePenaltyFor: penalizedShip.
+    self deny: ((scenario game) penaltyShip includes: penalizedShip).
 ]
 
 { #category : 'tests' }
-GamePenaltyTest >> testPenalizeAddsPenalizedShip [
-    | ship1 ship2 board dice game |
+GamePenaltyTest >> testPassingTurnRestoresFuelAndSkips [
+    | scenario game passingShip |
+    scenario := self builder
+        withShipNames: #('Passing' 'Follower');
+        boardWithCells: 8;
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(3) sides: 6 } ];
+        laps: 5;
+        build.
+    game := scenario game.
+    passingShip := scenario shipNamed: 'Passing'.
 
-    ship1 := Spaceship withName: 'Solo'.
-    ship2 := Spaceship withName: 'Dummy'.
-    board := Board of: 10 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game
-        startWithShips: { ship1. ship2 }
-        board: board
-        dice: dice
-        laps: 1.
-
-    game penalize: ship1 forTurns: 2.
-
-    self assert: (game isPenalized: ship1).
-]
-
-{ #category : 'tests - instance' }
-GamePenaltyTest >> testPenaltyShipReturnsPenalizedShipsCollection [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'Pen'.
-    ship2 := Spaceship withName: 'Ok'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game penalize: ship1 forTurns: 1.
-    self assert: (game penaltyShip size) equals: 1.
-    self assert: (game penaltyShip first) equals: ship1.
-]
-
-{ #category : 'tests' }
-GamePenaltyTest >> testPenaltyTurnsRemainingFor [
-    | ship1 ship2 board dice game |
-
-    ship1 := Spaceship withName: 'Penalized'.
-    ship2 := Spaceship withName: 'Other'.
-    board := Board of: 10 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game
-        startWithShips: { ship1. ship2 }
-        board: board
-        dice: dice
-        laps: 1.
-
-    game penalize: ship1 forTurns: 2.
-
-    self assert: (game penalizedTurnsRemainingFor: ship1) equals: 2.
-
-    game reducePenaltyFor: ship1.
-
-    self assert: (game penalizedTurnsRemainingFor: ship1) equals: 1.
-]
-
-{ #category : 'tests' }
-GamePenaltyTest >> testPlayTurnSkipsPenalizedShip [
-    | ship1 ship2 board dice game |
-
-    ship1 := Spaceship withName: 'Penalized'.
-    ship2 := Spaceship withName: 'Next'.
-    board := Board of: 10 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game
-        startWithShips: { ship1. ship2 }
-        board: board
-        dice: dice
-        laps: 1.
-
-    game penalize: ship1 forTurns: 1.
+    game recordFuelStartFor: passingShip.
+    passingShip decreaseFuelBy: 4.
+    game markShipAsWantingToPassTurn: passingShip to: true.
     game playTurn.
 
-    self assert: game currentShip equals: ship2.
+    self assert: passingShip fuel equals: passingShip maxFuel.
+    self assert: game currentShip name equals: 'Follower'.
 ]
 
 { #category : 'tests' }
-GamePenaltyTest >> testReducePenaltyDecreasesTurnCount [
-    | ship1 ship2 board dice game |
+GamePenaltyTest >> testPenaltyEndsAfterEnoughTurns [
+    | scenario game penalizedShip |
+    scenario := self scenarioWithPenalizedFirstShipFor: 1.
+    game := scenario game.
+    penalizedShip := scenario shipNamed: 'Penalized'.
 
-    ship1 := Spaceship withName: 'PenaltyShip'.
-    ship2 := Spaceship withName: 'Other'.
-    board := Board of: 10 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game penalize: ship1 forTurns: 2.
-    game reducePenaltyFor: ship1.
-    game reducePenaltyFor: ship1.
-
-    self deny: (game isPenalized: ship1).
-]
-
-{ #category : 'tests' }
-GamePenaltyTest >> testReducePenaltyRemovesPenaltyEventually [
-    | ship game dice penalty |
-
-    ship := Spaceship withName: 'Penalized'.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-        startWithShips: { ship. Spaceship withName: 'Other' }
-        board: (Board of: 5 andWormholeAt: {})
-        dice: dice
-        laps: 1.
-
-    game penalize: ship forTurns: 1.
-    penalty := game stateOf: ship.
-
-    self assert: (penalty hasPenalty).
-
-    game reducePenaltyFor: ship.
-
-    self deny: (penalty hasPenalty).
-]
-
-{ #category : 'tests' }
-GamePenaltyTest >> testIsPenalizedDetectsPenalizedShip [
-    | ship1 ship2 game dice |
-
-    ship1 := Spaceship withName: 'P1'.
-    ship2 := Spaceship withName: 'P2'.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game
-        startWithShips: { ship1. ship2 }
-        board: (Board of: 5 andWormholeAt: {})
-        dice: dice
-        laps: 1.
-
-    game penalize: ship1 forTurns: 2.
-
-    self assert: (game isPenalized: ship1).
-    self deny: (game isPenalized: ship2).
-]
-
-{ #category : 'tests' }
-GamePenaltyTest >> testWhenShipIsPenalizedThenSkipsTurnAndReducesPenalty [
-    | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game |
-
-    dice1 := Die withSides: 6.
-    dicesGame := DiceCup with: (OrderedCollection with: dice1).
-
-    spaceShip1 := Spaceship withName: 'Ship Num1'.
-    spaceShip2 := Spaceship withName: 'Ship Num2'.
-    spaceShipsGame := OrderedCollection with: spaceShip1 with: spaceShip2.
-
-    boardGame := Board of: 25 andWormholeAt: #(  ).
-
-    game := Game
-        startWithShips: spaceShipsGame
-        board: boardGame
-        dice: dicesGame
-        laps: 1.
-
-    game penalize: spaceShip1 forTurns: 2.
     game playTurn.
+    self deny: (game isPenalized: penalizedShip).
+]
 
-    self assert: game currentShip equals: spaceShip2.
+{ #category : 'tests' }
+GamePenaltyTest >> testPenaltyStatusPersistsAcrossMultipleRounds [
+    | scenario game penalizedShip |
+    scenario := self scenarioWithPenalizedFirstShipFor: 2.
+    game := scenario game.
+    penalizedShip := scenario shipNamed: 'Penalized'.
 
     game playTurn.
     game playTurn.
+    self assert: (game isPenalized: penalizedShip).
     game playTurn.
-
-    self assert: (game isPenalized: spaceShip1) not.
-    self assert: game currentShip equals: spaceShip1.
-
-    game playTurn.
-    game playUntilFinish
-]
-
-{ #category : 'tests' }
-GamePenaltyTest >> testPenalizedTurnsRemainingAndPenaltyShip [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    game penalize: ship1 forTurns: 3.
-    self assert: (game penalizedTurnsRemainingFor: ship1) equals: 3.
-    self assert: (game penaltyShip includes: ship1).
+    self deny: (game isPenalized: penalizedShip).
 ]

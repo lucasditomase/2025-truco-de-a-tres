@@ -7,10 +7,5 @@ Class {
 
 { #category : 'testing' }
 NullSpaceship >> isNullShip [
-    ^ true
-]
-
-{ #category : 'validation' }
-NullSpaceship >> validateAsSpaceship [
-    ^ self
+    ^ NullBehavior alwaysTrue
 ]

@@ -15,6 +15,7 @@ EffectDecorator class >> new [
 
 { #category : 'initialization' }
 EffectDecorator >> initialize [
+    super initialize.
     wrapped := NullEffect new.
     ^ self
 ]
@@ -30,18 +31,15 @@ EffectDecorator >> applyTo: aShip inContextOf: ships inBoard: aBoard [
 
 { #category : 'instance creation' }
 EffectDecorator >> applyTo: aShip [
-    | board |
-    board := NullBoard new.
-    self applyEffectTo: aShip inBoard: board.
-    wrapped applyTo: aShip inBoard: board.
+    self applyTo: aShip inBoard: NullBehavior temporaryBoard
 ]
 
 { #category : 'instance creation' }
 EffectDecorator >> applyTo: aShip inBoard: aBoard [
-    | board |
-    board := aBoard.
-    self applyEffectTo: aShip inBoard: board.
-    wrapped applyTo: aShip inBoard: board.
+    | targetBoard |
+    targetBoard := aBoard.
+    self applyEffectTo: aShip inBoard: targetBoard.
+    wrapped applyTo: aShip inBoard: targetBoard.
 ]
 
 { #category : 'instance creation' }
@@ -62,6 +60,21 @@ EffectDecorator >> reversed [
 ]
 
 { #category : 'operations' }
+EffectDecorator >> reversedVersion [
+    ^ NullEffect new
+]
+
+{ #category : 'operations' }
 EffectDecorator >> allowsEntryWithRoll: aRoll [
     ^ true
+]
+
+{ #category : 'querying' }
+EffectDecorator >> consumesFuel [
+    ^ true
+]
+
+{ #category : 'converting' }
+EffectDecorator >> asBoardEffect [
+    ^ self
 ]

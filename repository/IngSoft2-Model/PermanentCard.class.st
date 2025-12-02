@@ -16,3 +16,8 @@ PermanentCard >> playOn: aShip inGame: aGame [
         ifTrue: [ self activateFor: aShip inGame: aGame ]
         ifFalse: [ self error: 'Not your turn' ]
 ]
+
+{ #category : 'querying' }
+PermanentCard >> requiresTurnToActivate [
+    ^ true
+]

@@ -14,10 +14,51 @@ Class {
 { #category : 'initialization' }
 ShipStatus class >> for: aShip position: aPosition laps: aLapCount penalized: isPenalized [
     ^ self new
-        initializeWith: aShip
-        position: aPosition
-        laps: aLapCount
-        penalized: isPenalized.
+        initializeWith: (self ensureShipFrom: aShip)
+        position: (self ensurePositionFrom: aPosition)
+        laps: (self ensureLapCountFrom: aLapCount)
+        penalized: (self ensurePenaltyFlagFrom: isPenalized).
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensureLapCountFrom: aLapCount [
+    (aLapCount isInteger and: [ aLapCount >= 0 ]) ifFalse: [
+        self error: 'Lap count must be a non-negative integer'
+    ].
+    ^ aLapCount
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensurePenaltyFlagFrom: aFlag [
+    ^ aFlag asPenaltyFlagWithMessage: self invalidPenaltyFlagMessage
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensurePositionFrom: aPosition [
+    (aPosition isInteger and: [ aPosition >= 0 ]) ifFalse: [
+        self error: 'Position must be a non-negative integer'
+    ].
+    ^ aPosition
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensureShipFrom: aShip [
+    ^ Spaceship ensureSpaceship: aShip errorMessage: self invalidShipMessage
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensureStatus: aStatus errorMessage: errorMessage [
+    ^ aStatus asShipStatusWithMessage: errorMessage
+]
+
+{ #category : 'validation' }
+ShipStatus class >> invalidPenaltyFlagMessage [
+    ^ 'Penalized flag must be a Boolean'
+]
+
+{ #category : 'validation' }
+ShipStatus class >> invalidShipMessage [
+    ^ 'Ship must be a Spaceship instance'
 ]
 
 { #category : 'updating' }
@@ -37,10 +78,10 @@ ShipStatus >> hasWonWithTotalLaps: aNumber [
 
 { #category : 'initialization' }
 ShipStatus >> initializeWith: aShip position: aPosition laps: aLapCount penalized: isPenalized [
-    ship := aShip.
-    position := aPosition.
-    lapCount := aLapCount.
-    penalized := isPenalized
+    ship := self class ensureShipFrom: aShip.
+    position := self class ensurePositionFrom: aPosition.
+    lapCount := self class ensureLapCountFrom: aLapCount.
+    penalized := self class ensurePenaltyFlagFrom: isPenalized
 ]
 
 { #category : 'accessing' }
@@ -71,4 +112,9 @@ ShipStatus >> position: aPosition [
 { #category : 'accessing' }
 ShipStatus >> ship [
     ^ ship
+]
+
+{ #category : 'converting' }
+ShipStatus >> asShipStatusWithMessage: errorMessage [
+    ^ self
 ]

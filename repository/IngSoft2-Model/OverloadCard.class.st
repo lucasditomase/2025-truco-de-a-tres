@@ -10,7 +10,12 @@ Class {
 
 { #category : 'initialization' }
 OverloadCard class >> forShip: aShip [
-    ^ self new initializeForShip: aShip
+    ^ self new initializeForShip: (self ensureTargetShipFrom: aShip)
+]
+
+{ #category : 'validation' }
+OverloadCard class >> ensureTargetShipFrom: aShip [
+    ^ Spaceship ensureSpaceship: aShip errorMessage: 'Target ship must be a Spaceship instance'
 ]
 
 { #category : 'playing' }
@@ -20,7 +25,7 @@ OverloadCard >> activateFor: aShip inGame: aGame [
 
 { #category : 'initialization' }
 OverloadCard >> initializeForShip: aShip [
-    targetShip := aShip.
+    targetShip := self class ensureTargetShipFrom: aShip.
     ^ self
 ]
 

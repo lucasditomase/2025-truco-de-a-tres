@@ -5,6 +5,11 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'helpers' }
+InstantCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'asserting' }
 InstantCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -22,13 +27,17 @@ InstantCardTest >> testApplyEffectToIsAbstract [
 
 { #category : 'tests' }
 InstantCardTest >> testPlayOnInvokesApplyEffect [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    board := Board of: 5 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship card |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'One'.
     card := AdvanceCard new.
-    card playOn: ship1 inGame: game.
-    self assert: ship1 position equals: 1.
+
+    card playOn: ship inGame: game.
+
+    self assert: ship position equals: 1.
 ]

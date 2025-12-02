@@ -7,20 +7,15 @@ Class {
 
 { #category : 'spaceships' }
 NullBoard >> moveShip: aShip backward: steps [
-    aShip moveBack: steps.
+    ShipMover move: aShip backward: steps.
 ]
 
 { #category : 'spaceships' }
 NullBoard >> moveShip: aShip forward: steps [
-    aShip moveForward: steps.
+    ShipMover move: aShip forward: steps.
 ]
 
 { #category : 'spaceships' }
 NullBoard >> moveShip: aShip to: aPosition [
-    aShip moveTo: aPosition.
-]
-
-{ #category : 'validation' }
-NullBoard >> validateAsBoard [
-    ^ self
+    ShipMover move: aShip to: aPosition.
 ]
