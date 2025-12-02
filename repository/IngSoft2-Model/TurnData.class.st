@@ -15,6 +15,7 @@ Class {
 
 { #category : 'initialization' }
 TurnData >> initialize [
+    super initialize.
     lastSteps := 0.
     lastPreviousPosition := 0.
     lastCardPlayed := NullCard new.
