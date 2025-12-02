@@ -25,7 +25,7 @@ CardDeck class >> cyclingThrough: cardClasses [
     ].
     index := 0.
     ^ [
-        index := (index \ collection size) + 1.
+        index := (index \\ collection size) + 1.
         (collection at: index) new
     ]
 ]
