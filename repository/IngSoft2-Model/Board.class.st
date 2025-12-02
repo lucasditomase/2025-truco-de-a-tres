@@ -43,7 +43,7 @@ Board class >> effectDistributionWeights [
 Board class >> of: anAmountOfCells andWormholeAt: positions [
     ^ self
         withCells: anAmountOfCells
-        length: (Distance parsecs: anAmountOfCells)
+        length: anAmountOfCells
         wormholes: positions
 ]
 
