@@ -14,6 +14,11 @@ PermanentCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: e
             self assert: error messageText equals: errorMessage].
 ]
 
+{ #category : 'helpers' }
+PermanentCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'tests' }
 PermanentCardTest >> testActivateForRaisesError [
     | card |
@@ -23,12 +28,14 @@ PermanentCardTest >> testActivateForRaisesError [
 
 { #category : 'tests' }
 PermanentCardTest >> testPlayOnActivatesCardWhenCurrentPlayer [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    board := Board of: 5 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship1 card |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'One'.
     card := OverloadCard forShip: ship1.
     card playOn: ship1 inGame: game.
     self assert: (ship1 activeCards includes: card).
@@ -36,32 +43,36 @@ PermanentCardTest >> testPlayOnActivatesCardWhenCurrentPlayer [
 
 { #category : 'tests' }
 PermanentCardTest >> testPlayOnRaisesErrorIfGameFinished [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'First'.
-    ship2 := Spaceship withName: 'Second'.
-    board := Board of: 2 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship card |
+    scenario := self builder
+        withShipNames: #('First' 'Second');
+        boardWithCells: 2;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'First'.
     game playUntilFinish.
-    card := OverloadCard forShip: ship1.
-    ship1 addCard: card.
+    card := OverloadCard forShip: ship.
+    ship addCard: card.
     self
-        should: [ ship1 playCard: card inGame: game ]
+        should: [ ship playCard: card inGame: game ]
         raise: Error
         withMessageText: 'Game is already over'.
 ]
 
 { #category : 'tests' }
 PermanentCardTest >> testPlayOnRaisesErrorIfNotPlayersTurn [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'Alpha'.
-    ship2 := Spaceship withName: 'Beta'.
-    board := Board of: 5 andWormholeAt: #().
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    card := OverloadCard forShip: ship2.
+    | scenario game ship card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Beta'.
+    card := OverloadCard forShip: ship.
     self
-        should: [ card playOn: ship2 inGame: game ]
+        should: [ card playOn: ship inGame: game ]
         raise: Error
         withMessageText: 'Not your turn'.
 ]
