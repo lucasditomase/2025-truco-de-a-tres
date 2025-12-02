@@ -358,7 +358,7 @@ Board >> randomEffectForRoll: aNumber [
 Board >> configureHyperGravityRequirementsWithMaxRoll: maxRoll [
     | safeMax |
     safeMax := (maxRoll isInteger and: [ maxRoll > 0 ]) ifTrue: [ maxRoll ] ifFalse: [ 6 ].
-    cells values do: [ :effect |
+    cells valuesDo: [ :effect |
         effect class = HyperGravityEffect ifTrue: [
             effect requiredRoll: safeMax
         ]
