@@ -769,18 +769,20 @@ GameTest >> testRollAndMoveCurrentShipMovesShipCorrectly [
 
 { #category : 'tests - instance' }
 GameTest >> testSetAndQueryWantsToPassTurn [
-    | ship1 ship2 board dice game |
+    | scenario game picky |
+    scenario := self builder
+        withShipNames: #('Picky' 'Spare');
+        boardWithCells: 10;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    picky := scenario shipNamed: 'Picky'.
 
-    ship1 := Spaceship withName: 'Picky'.
-    ship2 := Spaceship withName: 'Spare'.
-    board := Board of: 10 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
+    self deny: (game wantsToPassTurn: picky).
 
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    self deny: (game wantsToPassTurn: ship1).
+    game markShipAsWantingToPassTurn: picky to: true.
 
-    game markShipAsWantingToPassTurn: ship1 to: true.
-    self assert: (game wantsToPassTurn: ship1).
+    self assert: (game wantsToPassTurn: picky).
 ]
 
 { #category : 'tests' }
@@ -981,29 +983,18 @@ GameTest >> testStatusForReturnsCorrectShipStatus [
 
 { #category : 'tests' }
 GameTest >> testWhenPlayTurnThenAdvancesShip [
-    | spaceShip1 spaceShip2 spaceShipsGame dice1 dice2 dicesGame boardGame game originalPosition newPosition |
+    | scenario game ship |
+    scenario := self builder
+        withShipNames: #('Ship Num1' 'Ship Num2');
+        boardWithCells: 10;
+        diceCup: [ DiceCup with: (OrderedCollection with: (MockDie value: 1 sides: 6) with: (Die withSides: 6)) ];
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Ship Num1'.
 
-    dice1 := MockDie value: 1 sides: 6.
-    dice2 := Die withSides: 6.
-    dicesGame := DiceCup with: (OrderedCollection with: dice1 with: dice2).
-
-    spaceShip1 := Spaceship withName: 'Ship Num1'.
-    spaceShip2 := Spaceship withName: 'Ship Num2'.
-    spaceShipsGame := OrderedCollection with: spaceShip1 with: spaceShip2.
-
-    boardGame := Board of: 10 andWormholeAt: #(  ).
-
-    game := Game
-    startWithShips: spaceShipsGame
-    board: boardGame
-    dice: dicesGame
-    laps: 1.
-
-    originalPosition := spaceShip1 position.
+    self assert: ship position equals: 0.
     game playTurn.
-    newPosition := spaceShip1 position.
-
-    self deny: originalPosition equals: newPosition.
+    self assert: ship position equals: 1.
 ]
 
 { #category : 'tests' }
@@ -1064,39 +1055,32 @@ GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [
 
 { #category : 'tests' }
 GameTest >> testWhenSpaceShipEndsTurnThenRotatesPlayerTurn [
-    | spaceShip1 spaceShip2 spaceShipsGame dice1 dicesGame boardGame game expectedSequence actualSequence |
-
-    dice1 := Die withSides: 1.
-    dicesGame := DiceCup with: (OrderedCollection with: dice1).
-
-    spaceShip1 := Spaceship withName: 'Ship Num1'.
-    spaceShip2 := Spaceship withName: 'Ship Num2'.
-    spaceShipsGame := OrderedCollection with: spaceShip1 with: spaceShip2.
-
-    boardGame := Board of: 5 andWormholeAt: #().
-
-    game := Game
-    startWithShips: spaceShipsGame
-    board: boardGame
-    dice: dicesGame
-    laps: 1.
+    | scenario game ship1 ship2 expectedSequence actualSequence |
+    scenario := self builder
+        withShipNames: #('Ship Num1' 'Ship Num2');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'Ship Num1'.
+    ship2 := scenario shipNamed: 'Ship Num2'.
 
     expectedSequence := OrderedCollection withAll: {
-        spaceShip1.
-        spaceShip2.
-        spaceShip1.
-        spaceShip2.
-        spaceShip1 }.
+        ship1.
+        ship2.
+        ship1.
+        ship2.
+        ship1 }.
 
     actualSequence := OrderedCollection new.
 
     [ actualSequence size < expectedSequence size and: (
         game whenFinishedDo: [ :w | false ]
         whenInProgressDo: [ true ]) ]
-    whileTrue: [
-        actualSequence add: game currentShip.
-        game playTurn
-    ].
+        whileTrue: [
+            actualSequence add: game currentShip.
+            game playTurn
+        ].
 
     self assert: actualSequence equals: expectedSequence.
 ]
@@ -1152,14 +1136,17 @@ GameTest >> testWinnerReturnsShipWhenGameFinishes [
 
 { #category : 'tests' }
 GameTest >> testValidateIsCurrentPlayerRaisesError [
-    | ship1 ship2 board dice game |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game ship |
+    scenario := self builder
+        withShipNames: #('A' 'B');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'B'.
+
     self
-        should: [ game validateIsCurrentPlayer: ship2 ]
+        should: [ game validateIsCurrentPlayer: ship ]
         raise: Error
         withMessageText: 'It is not the turn of this spaceship'.
 ]
