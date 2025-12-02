@@ -16,9 +16,14 @@ Class {
 
 { #category : 'initialize' }
 Board class >> convertToParsecs: aLength [
-    ^ [ aLength asParsecs ]
-        on: MessageNotUnderstood
-        do: [ aLength ]
+    ^ (self ensureDistanceFrom: aLength) asParsecs
+]
+
+{ #category : 'initialize' }
+Board class >> ensureDistanceFrom: aLength [
+    (aLength isKindOf: Distance) ifTrue: [ ^ aLength ].
+    (aLength isNumber and: [ aLength > 0 ]) ifTrue: [ ^ Distance parsecs: aLength ].
+    self error: 'Board length must be provided as a positive Distance or numeric value'.
 ]
 
 { #category : 'effects' }
@@ -36,24 +41,18 @@ Board class >> effectDistributionWeights [
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells andWormholeAt: positions [
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-    ^ self new
-        initializeWithCells: anAmountOfCells
-        andWormholes: positions
+    ^ self
+        withCells: anAmountOfCells
+        length: (Distance parsecs: anAmountOfCells)
+        wormholes: positions
 ]
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells length: parsecLength andWormholeAt: positions [
-    | lengthOnParsecs |
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-    lengthOnParsecs := self convertToParsecs: parsecLength.
-
-    ^ self new
-        initializeWithCells: anAmountOfCells
-        length: lengthOnParsecs
-        andWormholes: positions
+    ^ self
+        withCells: anAmountOfCells
+        length: parsecLength
+        wormholes: positions
 ]
 
 { #category : 'initialize' }
@@ -61,9 +60,6 @@ Board class >> of: anAmountOfCells length: parsecLength lengthLightYears: lightY
     self
         validateLengthConsistencyBetweenParsecs: parsecLength
         andLightYears: lightYears.
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-
     ^ self
         of: anAmountOfCells
         length: parsecLength
@@ -72,13 +68,10 @@ Board class >> of: anAmountOfCells length: parsecLength lengthLightYears: lightY
 
 { #category : 'initialize' }
 Board class >> of: anAmountOfCells lengthLightYears: lightYears andWormholeAt: positions [
-    self validateCellCount: anAmountOfCells.
-    self validateWormholes: positions.
-
     ^ self
-        of: anAmountOfCells
-        length: (Distance lightYears: lightYears) asParsecs
-        andWormholeAt: positions
+        withCells: anAmountOfCells
+        length: (Distance lightYears: lightYears)
+        wormholes: positions
 ]
 
 { #category : 'initialize' }
@@ -99,7 +92,7 @@ Board class >> validateCellCount: aCount [
 
 { #category : 'initialize' }
 Board class >> validateLengthConsistencyBetweenParsecs: parsecLength andLightYears: lightYears [
-    (Distance parsecs: parsecLength) asLightYears = lightYears ifFalse: [
+    ((self ensureDistanceFrom: parsecLength) asLightYears = lightYears) ifFalse: [
         self error: 'Length mismatch between parsecs and light years'
     ]
 ]
@@ -109,6 +102,18 @@ Board class >> validateWormholes: aCollection [
     (aCollection isCollection and: [
         aCollection allSatisfy: [ :each | each isValid ] ]) ifFalse: [
         self error: 'All wormholes must be valid objects' ]
+]
+
+{ #category : 'initialize' }
+Board class >> withCells: cellCount length: aLength wormholes: positions [
+    | distance |
+    self validateCellCount: cellCount.
+    self validateWormholes: positions.
+    distance := self ensureDistanceFrom: aLength.
+    ^ self new
+        initializeWithCells: cellCount
+        length: distance asParsecs
+        andWormholes: positions
 ]
 
 { #category : 'initialize' }
