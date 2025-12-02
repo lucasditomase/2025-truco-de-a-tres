@@ -34,7 +34,11 @@ GamePenaltyTest >> testPenaltyFlowSkipsPenalizedShipAndReducesTurns [
     self assert: game currentShip name equals: 'Other'.
 
     game playTurn.
-    self assert: (game isPenalized: (scenario shipNamed: 'Penalized')) not.
+    self assert: game currentShip name equals: 'Penalized'.
+
+    game playTurn.
+    self deny: (game isPenalized: (scenario shipNamed: 'Penalized')).
+    self assert: game currentShip name equals: 'Other'.
 ]
 
 { #category : 'tests' }
@@ -45,6 +49,8 @@ GamePenaltyTest >> testPenaltyTurnsDecreaseAfterEachSkippedTurn [
     penalizedShip := scenario shipNamed: 'Penalized'.
 
     self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 3.
+    game playTurn.
+    self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 2.
     game playTurn.
     self assert: (game penalizedTurnsRemainingFor: penalizedShip) equals: 2.
     game playTurn.
