@@ -15,6 +15,13 @@ TurnManager class >> withShips: someShips [
     ^ self new initializeWithShips: someShips.
 ]
 
+{ #category : 'validation' }
+TurnManager class >> ensureShipsFrom: someShips [
+    Spaceship ensureCollectionOfSpaceships: someShips.
+    Spaceship ensureMinimumCountIn: someShips.
+    ^ someShips asOrderedCollection
+]
+
 { #category : 'process actions' }
 TurnManager >> advanceTurn [
     currentIndex := currentIndex + 1.
@@ -34,7 +41,7 @@ TurnManager >> currentTurnIndex [
 
 { #category : 'initialize' }
 TurnManager >> initializeWithShips: someShips [
-    ships := someShips.
+    ships := self class ensureShipsFrom: someShips.
     currentIndex := 1.
     turn := 1.
     ^ self
