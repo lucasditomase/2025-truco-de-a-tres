@@ -5,13 +5,20 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+AllyCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'tests' }
 AllyCardTest >> testActivateForAddsCardToOwnerAndAlly [
-    | owner ally card |
-    owner := Spaceship withName: 'Owner'.
-    ally := Spaceship withName: 'Ally'.
+    | scenario owner ally card |
+    scenario := self builder build.
+    owner := scenario shipNamed: 'Alpha'.
+    ally := scenario shipNamed: 'Beta'.
     card := AllyCard withAlly: ally.
-    card activateFor: owner inGame: nil.
+    owner addCard: card.
+    owner playCard: card inGame: scenario game.
     self assert: (owner activeCards includes: card).
     self assert: (ally activeCards includes: card).
     self assert: card ownerShip equals: owner.
@@ -19,12 +26,16 @@ AllyCardTest >> testActivateForAddsCardToOwnerAndAlly [
 
 { #category : 'tests' }
 AllyCardTest >> testAllyForReturnsCorrectShip [
-    | owner ally other card |
-    owner := Spaceship withName: 'Owner'.
-    ally := Spaceship withName: 'Ally'.
-    other := Spaceship withName: 'Other'.
+    | scenario owner ally other card |
+    scenario := self builder
+        withShipNames: #('Owner' 'Ally' 'Other');
+        build.
+    owner := scenario shipNamed: 'Owner'.
+    ally := scenario shipNamed: 'Ally'.
+    other := scenario shipNamed: 'Other'.
     card := AllyCard withAlly: ally.
-    card activateFor: owner inGame: nil.
+    owner addCard: card.
+    owner playCard: card inGame: scenario game.
     self assert: (card allyFor: owner) equals: ally.
     self assert: (card allyFor: ally) equals: owner.
     self assert: (card allyFor: other) isNullShip.
