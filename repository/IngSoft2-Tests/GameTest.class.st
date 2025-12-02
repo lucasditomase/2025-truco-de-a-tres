@@ -15,6 +15,11 @@ GameTest >> ensureTurnOf: aShip inGame: aGame [
     [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
 ]
 
+{ #category : 'support' }
+GameTest >> clearHandOf: aShip [
+    aShip cards copy do: [ :each | aShip removeCard: each ]
+]
+
 { #category : 'asserting' }
 GameTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -507,140 +512,203 @@ GameTest >> testPlayUntilFinishEndsWhenWinnerIsFound [
 
 { #category : 'tests' }
 GameTest >> testRankingReturnsShipsOrderedByLapsAndPosition [
-    | spaceShip1 spaceShip2 spaceShip3 spaceShipsGame  dice1  dicesGame boardGame game ranking |
-
-    dice1 := MockDie value: 1 sides: 6.
-    dicesGame := DiceCup with: (OrderedCollection with: dice1).
-
-    spaceShip1 := Spaceship withName: 'Ship Num1'.
-    spaceShip2 := Spaceship withName: 'Ship Num2'.
-    spaceShip3 := Spaceship withName: 'Ship Num3'.
-    spaceShipsGame := OrderedCollection with: spaceShip1 with: spaceShip2 with: spaceShip3.
-
-    boardGame := Board of: 3 andWormholeAt: #(  ).
-
-    game := Game
-    startWithShips: spaceShipsGame
-    board: boardGame
-    dice: dicesGame
-    laps: 2.
+    | scenario game ranking ship1 ship2 ship3 |
+    scenario := self builder
+        withShipNames: #('Ship Num1' 'Ship Num2' 'Ship Num3');
+        boardWithCells: 3;
+        diceCup: [ DiceCup with: (OrderedCollection with: (MockDie value: 1 sides: 6)) ];
+        laps: 2;
+        build.
+    game := scenario game.
 
     game playUntilFinish.
-
     ranking := game ranking.
+    ship1 := scenario shipNamed: 'Ship Num1'.
+    ship2 := scenario shipNamed: 'Ship Num2'.
+    ship3 := scenario shipNamed: 'Ship Num3'.
 
     self assert: ranking size equals: 3.
-
-    self assert: ranking first ship equals: spaceShip1.
-    self assert: ranking second ship equals: spaceShip2.
-    self assert: ranking third ship equals: spaceShip3
+    self assert: ranking first ship equals: ship1.
+    self assert: ranking second ship equals: ship2.
+    self assert: ranking third ship equals: ship3
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysAccelerationCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game alpha beta card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
     card := AccelerationCard new.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self assert: (ship1 activeCards includes: card).
+    alpha addCard: card.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+
+    self ensureTurnOf: beta inGame: game.
+    self assert: beta activeCards isEmpty.
+    game redoLastCardOn: beta.
+
+    self assert: (beta activeCards includes: card).
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysAllyCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    card := AllyCard withAlly: ship2.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self assert: (ship1 activeCards includes: card).
-    self assert: (ship2 activeCards includes: card).
+    | scenario game owner ally newOwner card |
+    scenario := self builder
+        withShipNames: #('Owner' 'Ally' 'NewOwner');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    owner := scenario shipNamed: 'Owner'.
+    ally := scenario shipNamed: 'Ally'.
+    newOwner := scenario shipNamed: 'NewOwner'.
+    self clearHandOf: owner.
+    card := AllyCard withAlly: ally.
+    owner addCard: card.
+
+    self ensureTurnOf: owner inGame: game.
+    owner playCard: card inGame: game.
+    game removeActiveCard: card.
+
+    self ensureTurnOf: newOwner inGame: game.
+    game redoLastCardOn: newOwner.
+
+    self assert: (newOwner activeCards includes: card).
+    self assert: (ally activeCards includes: card).
+    self deny: (owner activeCards includes: card).
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysCancellationCard [
-    | ship1 ship2 board dice game card target |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    target := ShieldCard new.
-    ship1 addActiveCard: target.
-    card := CancellationCard cancelling: target.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self deny: (ship1 activeCards includes: target).
+    | scenario game alpha beta shield cancel |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
+    self clearHandOf: beta.
+    shield := ShieldCard new.
+    alpha addCard: shield.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: shield inGame: game.
+
+    cancel := CancellationCard cancelling: shield.
+    beta addCard: cancel.
+    self ensureTurnOf: beta inGame: game.
+    beta playCard: cancel inGame: game.
+
+    shield activateFor: alpha inGame: game.
+    game redoLastCardOn: alpha.
+
+    self deny: (alpha activeCards includes: shield).
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game alpha beta card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
     card := AdvanceCard new.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self assert: ship1 position equals: 1.
+    alpha addCard: card.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+
+    self ensureTurnOf: beta inGame: game.
+    game redoLastCardOn: beta.
+
+    self assert: beta position equals: 1.
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysOverloadCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-    card := OverloadCard forShip: ship1.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self assert: (ship1 activeCards includes: card).
+    | scenario game alpha beta card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
+    card := OverloadCard forShip: beta.
+    alpha addCard: card.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+    game removeActiveCard: card.
+
+    self ensureTurnOf: beta inGame: game.
+    game redoLastCardOn: beta.
+
+    self assert: (beta activeCards includes: card).
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysRepeatCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {  }.
-    dice := DiceCup with: { (Die withSides: 1) }.
-    game := Game
-    startWithShips: {
-        ship1.
-        ship2 }
-    board: board
-    dice: dice
-    laps: 1.
+    | scenario game alpha card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    self clearHandOf: alpha.
     card := RepeatCard new.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self assert: ship1 position equals: 0
+    alpha addCard: card.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+    game redoLastCardOn: alpha.
+
+    self assert: alpha position equals: 0.
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysShieldCard [
-    | ship1 ship2 board dice game card |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game alpha beta card |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
     card := ShieldCard new.
-    game lastCardPlayed: card.
-    game redoLastCardOn: ship1.
-    self assert: (ship1 activeCards includes: card).
+    alpha addCard: card.
+
+    self ensureTurnOf: alpha inGame: game.
+    alpha playCard: card inGame: game.
+    game removeActiveCard: card.
+
+    self ensureTurnOf: beta inGame: game.
+    game redoLastCardOn: beta.
+
+    self assert: (beta activeCards includes: card).
 ]
 
 { #category : 'tests - instance' }
