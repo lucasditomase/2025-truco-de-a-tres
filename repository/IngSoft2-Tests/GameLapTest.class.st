@@ -16,6 +16,7 @@ GameLapTest >> testShipAccumulatesMultipleLapsInSingleTurn [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        laps: 10;
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(4 1 12) } ];
         build.
 
@@ -30,6 +31,7 @@ GameLapTest >> testBackwardEffectRemovesSingleLapWhenCrossingStart [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        laps: 5;
         configureBoardWith: [ :board |
             board cells
                 at: 1
@@ -48,6 +50,7 @@ GameLapTest >> testBackwardEffectCanRemoveMultipleLaps [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        laps: 5;
         configureBoardWith: [ :board |
             board cells
                 at: 2
