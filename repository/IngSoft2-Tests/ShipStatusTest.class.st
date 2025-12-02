@@ -27,3 +27,45 @@ ShipStatusTest >> testIsPenalizedReturnsFalse [
 
     self deny: status isPenalized.
 ]
+
+{ #category : 'tests' }
+ShipStatusTest >> testForRequiresSpaceshipInstance [
+    self
+        should: [ ShipStatus for: 'not a ship' position: 0 laps: 0 penalized: false ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Ship must be a Spaceship instance' ].
+]
+
+{ #category : 'tests' }
+ShipStatusTest >> testForRequiresNonNegativeIntegerPosition [
+    | ship |
+    ship := Spaceship withName: 'Apollo'.
+    self
+        should: [ ShipStatus for: ship position: -1 laps: 0 penalized: false ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Position must be a non-negative integer' ].
+]
+
+{ #category : 'tests' }
+ShipStatusTest >> testForRequiresNonNegativeIntegerLapCount [
+    | ship |
+    ship := Spaceship withName: 'Pegasus'.
+    self
+        should: [ ShipStatus for: ship position: 0 laps: -1 penalized: false ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Lap count must be a non-negative integer' ].
+]
+
+{ #category : 'tests' }
+ShipStatusTest >> testForRequiresBooleanPenalizedFlag [
+    | ship |
+    ship := Spaceship withName: 'Discovery'.
+    self
+        should: [ ShipStatus for: ship position: 0 laps: 0 penalized: 'yes' ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Penalized flag must be a Boolean' ].
+]
