@@ -51,6 +51,18 @@ GameTestScenario >> ships [
     ^ ships copy
 ]
 
+{ #category : 'accessing' }
+GameTestScenario >> statusForShipNamed: aName [
+    ^ game spaceshipPositions
+        detect: [ :status | status ship name = aName ]
+        ifNone: [ self error: 'No status recorded for ', aName ]
+]
+
+{ #category : 'accessing' }
+GameTestScenario >> lapCountForShipNamed: aName [
+    ^ (self statusForShipNamed: aName) laps
+]
+
 { #category : 'testing' }
 GameTestScenario >> currentShipName [
     ^ game currentShip name

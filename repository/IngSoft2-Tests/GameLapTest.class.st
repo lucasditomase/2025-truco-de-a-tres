@@ -5,56 +5,57 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
-{ #category : 'asserting' }
-GameLapTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
-    self
-        should: anErrorBlock
-        raise: anErrorClass
-        withExceptionDo: [ :error |
-            self assert: error messageText equals: errorMessage ]
+{ #category : 'support' }
+GameLapTest >> builder [
+    ^ GameTestBuilder new
 ]
 
 { #category : 'tests' }
-GameLapTest >> testRegisterLapForSubtractsLapWhenMovingBackwardsPastStart [
-    | ship1 ship2 board dice game status |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 3.
-    status := game lapTrackerFor: ship1.
-    status addLap.
-    game registerLapFor: ship1 from: 1 after: -3.
-    self assert: status lapCount equals: 0.
+GameLapTest >> testShipAccumulatesMultipleLapsInSingleTurn [
+    | scenario |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4 1 12) } ];
+        build.
+
+    scenario playTurns: 3.
+
+    self assert: (scenario lapCountForShipNamed: 'Alpha') equals: 3.
 ]
 
 { #category : 'tests' }
-GameLapTest >> testRegisterLapForAddsMultipleForwardLapsWhenWrappingRepeatedly [
-    | ship1 ship2 board dice game status |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 10.
-    status := game lapTrackerFor: ship1.
+GameLapTest >> testBackwardEffectRemovesSingleLapWhenCrossingStart [
+    | scenario |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        configureBoardWith: [ :board |
+            board cells
+                at: 1
+                put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship backward: 3 ]) ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(5 1 1) } ];
+        build.
 
-    game registerLapFor: ship1 from: 4 after: 12.
+    scenario playTurns: 3.
 
-    self assert: status lapCount equals: 3.
+    self assert: (scenario lapCountForShipNamed: 'Alpha') equals: 0.
 ]
 
 { #category : 'tests' }
-GameLapTest >> testRegisterLapForSubtractsMultipleBackwardLapsWhenWrappingRepeatedly [
-    | ship1 ship2 board dice game status |
-    ship1 := Spaceship withName: 'A'.
-    ship2 := Spaceship withName: 'B'.
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 10.
-    status := game lapTrackerFor: ship1.
-    4 timesRepeat: [ status addLap ].
+GameLapTest >> testBackwardEffectCanRemoveMultipleLaps [
+    | scenario |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        configureBoardWith: [ :board |
+            board cells
+                at: 2
+                put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship backward: 11 ]) ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4 1 12 1 6) } ];
+        build.
 
-    game registerLapFor: ship1 from: 1 after: -11.
+    scenario playTurns: 5.
 
-    self assert: status lapCount equals: 2.
+    self assert: (scenario lapCountForShipNamed: 'Alpha') equals: 2.
 ]
