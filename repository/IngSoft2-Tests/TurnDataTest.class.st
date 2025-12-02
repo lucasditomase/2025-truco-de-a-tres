@@ -91,3 +91,14 @@ TurnDataTest >> testFuelHistorySetterReplacesDictionary [
 
     self assert: (data fuelHistoryFor: ship) equals: (OrderedCollection with: 3 with: 4).
 ]
+
+{ #category : 'tests' }
+TurnDataTest >> testLastEffectiveCardSetterStoresCard [
+    | data card |
+    data := TurnData new.
+    card := ShieldCard new.
+
+    data lastEffectiveCard: card.
+
+    self assert: data lastEffectiveCard equals: card.
+]

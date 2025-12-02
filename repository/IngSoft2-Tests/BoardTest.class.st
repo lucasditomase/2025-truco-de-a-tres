@@ -807,3 +807,32 @@ BoardTest >> testTotalEffectWeightMatchesDistributionSum [
 
     self assert: board totalEffectWeight equals: expected.
 ]
+
+{ #category : 'tests - instance' }
+BoardTest >> testInvalidLengthUsesDistanceErrorMessage [
+    self
+        should: [ Board of: 4 length: 'invalid' andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Board length must be provided as a positive Distance or numeric value'.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testEffectLookupRejectsInvalidEntries [
+    | board |
+    board := Board of: 3 andWormholeAt: {}.
+    board cells at: 0 put: Object new.
+
+    self
+        should: [ board effectAt: 0 ]
+        raise: Error
+        withMessageText: 'Board cells must contain effects'.
+]
+
+{ #category : 'tests - instance' }
+BoardTest >> testInitializeWithCellsAndWormholesMatchesLengthInitializer [
+    | board |
+    board := Board new initializeWithCells: 4 andWormholes: #().
+
+    self assert: board cellCount equals: 4.
+    self assert: board totalLengthInParsecs equals: 4.
+]

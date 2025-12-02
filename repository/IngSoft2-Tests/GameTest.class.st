@@ -288,6 +288,22 @@ GameTest >> testLastCardPlayedAccessors [
 ]
 
 { #category : 'tests' }
+GameTest >> testLastEffectiveCardAccessorDelegatesToTurnData [
+    | scenario game card |
+    scenario := self builder
+        withShipNames: #('One' 'Two');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    card := ShieldCard new.
+
+    game lastEffectiveCard: card.
+
+    self assert: game lastEffectiveCard equals: card.
+]
+
+{ #category : 'tests' }
 GameTest >> testModifyRollAppliesActiveCardEffect [
     | scenario game ship card |
     scenario := self builder
@@ -904,6 +920,21 @@ GameTest >> testShipStatusReturnsCorrectValues [
     self assert: status position equals: ship position.
     self assert: status lapCount equals: 0.
     self assert: status isPenalized equals: false.
+]
+
+{ #category : 'tests' }
+GameTest >> testStateOfDelegatesToShipState [
+    | scenario game ship |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        diceWithSides: 1;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    ship penalizeFor: 1.
+
+    self assert: (game stateOf: ship) class equals: PenalizedShipState.
 ]
 
 { #category : 'tests' }
