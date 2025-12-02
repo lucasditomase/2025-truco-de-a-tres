@@ -12,7 +12,7 @@ RepeatCardTest >> builder [
 
 { #category : 'tests' }
 RepeatCardTest >> testApplyEffectDoesNothing [
-    | scenario game ship |
+    | scenario game ship card |
     scenario := self builder
         withShipNames: #('Enterprise' 'Defiant');
         boardWithCells: 5;
@@ -29,7 +29,7 @@ RepeatCardTest >> testApplyEffectDoesNothing [
 
 { #category : 'tests' }
 RepeatCardTest >> testPlayOnDoesNothing [
-    | scenario game ship |
+    | scenario game ship card |
     scenario := self builder
         withShipNames: #('Voyager' 'Enterprise');
         boardWithCells: 5;
