@@ -188,6 +188,7 @@ RedoCardTest >> testPlayOnReplaysShieldCard [
     game removeActiveCard: shield.
 
     alpha addCard: redo.
+    self ensureTurnOf: alpha inGame: game.
     alpha playCard: redo inGame: game.
 
     self assert: (alpha activeCards includes: shield).
