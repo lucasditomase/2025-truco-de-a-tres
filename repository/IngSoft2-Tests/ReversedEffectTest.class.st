@@ -75,6 +75,7 @@ ReversedEffectTest >> testApplyEffectToReversesCardEffect [
     | scenario ship card effect reversed |
     scenario := GameTestBuilder new build.
     ship := scenario shipNamed: 'Alpha'.
+    ship cards copy do: [ :each | ship removeCard: each ].
     card := AccelerationCard new.
     ship addCard: card.
     effect := CardEffect new.
