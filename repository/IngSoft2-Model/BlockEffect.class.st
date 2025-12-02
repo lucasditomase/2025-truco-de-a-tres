@@ -10,13 +10,21 @@ Class {
 
 { #category : 'instance creation' }
 BlockEffect class >> on: aBlock [
-    ^ self new initializeWith: aBlock
+    ^ self new initializeWith: (self ensureActionBlockFrom: aBlock)
+]
+
+{ #category : 'validation' }
+BlockEffect class >> ensureActionBlockFrom: aBlock [
+    ((aBlock isKindOf: BlockClosure) and: [ aBlock numArgs = 2 ]) ifFalse: [
+        self error: 'Block effect action must be a block that takes two arguments'
+    ].
+    ^ aBlock
 ]
 
 { #category : 'initialization' }
 BlockEffect >> initializeWith: aBlock [
     super initialize.
-    action := aBlock.
+    action := self class ensureActionBlockFrom: aBlock.
     ^ self
 ]
 
