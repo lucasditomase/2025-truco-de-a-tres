@@ -987,7 +987,7 @@ GameTest >> testWhenPlayTurnThenAdvancesShip [
     scenario := self builder
         withShipNames: #('Ship Num1' 'Ship Num2');
         boardWithCells: 10;
-        diceCup: [ DiceCup with: (OrderedCollection with: (MockDie value: 1 sides: 6) with: (Die withSides: 6)) ];
+        diceCup: [ DiceCup with: { MockDie value: 1 sides: 6 } ];
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Ship Num1'.
