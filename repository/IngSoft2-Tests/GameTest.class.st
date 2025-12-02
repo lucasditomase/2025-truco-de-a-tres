@@ -396,6 +396,31 @@ GameTest >> testPlayTurnAppliesBoardEffect [
 ]
 
 { #category : 'tests' }
+GameTest >> testDeckCyclingConfigurationProvidesDeterministicCards [
+    | scenario game alpha beta |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 5;
+        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withDeckCyclingThrough: { ShieldCard. AdvanceCard };
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
+        build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    self clearHandOf: alpha.
+    self clearHandOf: beta.
+
+    game playTurn.
+    self assert: alpha cards size equals: 1.
+    self assert: alpha cards last class equals: ShieldCard.
+
+    game playTurn.
+    self assert: beta cards size equals: 1.
+    self assert: beta cards last class equals: AdvanceCard.
+]
+
+{ #category : 'tests' }
 GameTest >> testRepeatCardCanApplyLastCardEffectToChosenShip [
     | scenario game alpha beta advance repeat |
     scenario := self builder

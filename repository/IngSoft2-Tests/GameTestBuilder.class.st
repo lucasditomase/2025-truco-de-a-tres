@@ -4,7 +4,7 @@ Class {
     #instVars : [
         'shipNames',
         'boardFactory',
-        'boardConfigurator',
+        'boardConfigurators',
         'diceFactory',
         'laps'
     ],
@@ -16,7 +16,7 @@ Class {
 GameTestBuilder >> initialize [
     shipNames := #('Alpha' 'Beta').
     boardFactory := [ Board of: 10 andWormholeAt: #() ].
-    boardConfigurator := [ :board | board ].
+    boardConfigurators := OrderedCollection new.
     diceFactory := [ DiceCup with: { Die withSides: 1 } ].
     laps := 1.
 ]
@@ -52,7 +52,8 @@ GameTestBuilder >> boardFactory: aBlock [
 
 { #category : 'configuration' }
 GameTestBuilder >> configureBoardWith: aBlock [
-    boardConfigurator := aBlock.
+    "Allows composing multiple board tweaks; executes in the same order they were declared."
+    boardConfigurators add: aBlock.
     ^ self
 ]
 
@@ -73,7 +74,7 @@ GameTestBuilder >> build [
     | ships board dice game |
     ships := shipNames collect: [ :each | Spaceship withName: each ].
     board := boardFactory value.
-    boardConfigurator value: board.
+    boardConfigurators do: [ :config | config value: board ].
     dice := diceFactory value.
     game := Game
         startWithShips: ships
@@ -81,4 +82,15 @@ GameTestBuilder >> build [
         dice: dice
         laps: laps.
     ^ GameTestScenario withGame: game ships: ships
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withCardDealer: aCallable [
+    ^ self configureBoardWith: [ :board | board useCardDealer: aCallable ]
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withDeckCyclingThrough: cardClasses [
+    "Convenience for deterministic tests that need a predictable draw order."
+    ^ self configureBoardWith: [ :board | board useCardDealerCyclingThrough: cardClasses ]
 ]
