@@ -56,3 +56,12 @@ AllyCardTest >> testWithAllyInitializesAllyShip [
     card := AllyCard withAlly: ally.
     self assert: card allyShip equals: ally.
 ]
+
+{ #category : 'tests' }
+AllyCardTest >> testWithAllyRequiresSpaceshipInstance [
+    self
+        should: [ AllyCard withAlly: 'not a ship' ]
+        raise: Error
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: 'Ally must be a Spaceship instance' ].
+]

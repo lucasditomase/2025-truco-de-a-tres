@@ -9,9 +9,17 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
+{ #category : 'validation' }
+AllyCard class >> ensureAllyFrom: aShip [
+    (aShip isKindOf: Spaceship) ifFalse: [
+        self error: 'Ally must be a Spaceship instance'
+    ].
+    ^ aShip
+]
+
 { #category : 'initialization' }
 AllyCard class >> withAlly: aShip [
-    ^ self new initializeWithAlly: aShip
+    ^ self new initializeWithAlly: (self ensureAllyFrom: aShip)
 ]
 
 { #category : 'playing' }
@@ -30,7 +38,7 @@ AllyCard >> allyFor: aShip [
 
 { #category : 'initialization' }
 AllyCard >> initializeWithAlly: aShip [
-    allyShip := aShip.
+    allyShip := self class ensureAllyFrom: aShip.
     ^ self
 ]
 
