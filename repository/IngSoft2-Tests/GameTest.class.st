@@ -225,14 +225,13 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
 GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Almost' 'Filler');
-        boardWithCells: 10;
-        diceWithSides: 1;
+        withShipNames: #('Almost');
+        boardWithCells: 3;
+        diceCup: [ DiceCup with: { MockDie value: 3 sides: 6 } ];
         laps: 2;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Almost'.
-    game board moveShip: ship to: 9.
 
     game playTurn.
 
@@ -243,14 +242,13 @@ GameTest >> testHasWonByLapsReturnsFalseIfNotEnoughLaps [
 GameTest >> testHasWonByLapsReturnsTrueWhenEnoughLaps [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Winner' 'Loser');
-        boardWithCells: 10;
-        diceWithSides: 1;
+        withShipNames: #('Winner');
+        boardWithCells: 3;
+        diceCup: [ DiceCup with: { MockDie value: 3 sides: 6 } ];
         laps: 1;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Winner'.
-    game board moveShip: ship to: 9.
 
     game playTurn.
 
@@ -678,14 +676,13 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
 GameTest >> testRegisterLapWhenCrossesFinishLine [
     | scenario game ship |
     scenario := self builder
-        withShipNames: #('Runner' 'Other');
-        boardWithCells: 10;
-        diceWithSides: 2;
+        withShipNames: #('Runner');
+        boardWithCells: 3;
+        diceCup: [ DiceCup with: { MockDie value: 3 sides: 6 } ];
         laps: 1;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Runner'.
-    game board moveShip: ship to: 9.
 
     game playTurn.
 
@@ -905,21 +902,23 @@ GameTest >> testSpaceshipPositionsReturnsCorrectMapping [
     | scenario game positions mapOne mapTwo pos1 pos2 |
     scenario := self builder
         withShipNames: #('MapOne' 'MapTwo');
-        boardWithCells: 10;
-        diceWithSides: 1;
+        boardWithCells: 20;
+        diceCup: [ DiceCup with: { MockDie value: 2 sides: 6 } ];
         build.
     game := scenario game.
     mapOne := scenario shipNamed: 'MapOne'.
     mapTwo := scenario shipNamed: 'MapTwo'.
-    game board moveShip: mapOne to: 3.
-    game board moveShip: mapTwo to: 7.
+
+    game playTurn. "MapOne to 2"
+    game playTurn. "MapTwo to 2"
+    game playTurn. "MapOne to 4"
 
     positions := game spaceshipPositions.
     pos1 := positions detect: [ :each | each ship = mapOne ].
     pos2 := positions detect: [ :each | each ship = mapTwo ].
 
-    self assert: pos1 position equals: 3.
-    self assert: pos2 position equals: 7.
+    self assert: pos1 position equals: mapOne position.
+    self assert: pos2 position equals: mapTwo position.
 ]
 
 { #category : 'tests' }
