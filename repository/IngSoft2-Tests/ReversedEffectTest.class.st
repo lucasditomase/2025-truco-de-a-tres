@@ -10,41 +10,45 @@ ReversedEffectTest >> testInitializationStoresOriginalAndDecorates [
     | baseEffect reversed |
     baseEffect := BlackHoleEffect new.
     reversed := ReversedEffect of: baseEffect.
-    self assert: (reversed perform: #original) equals: baseEffect.
-    self assert: (reversed perform: #wrapped) equals: baseEffect.
+    self assert: reversed original equals: baseEffect.
+    self assert: reversed wrapped equals: baseEffect.
 ]
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToReversesBlackHole [
-    | ship effect reversed |
-    ship := Spaceship withName: 'BH'.
+    | scenario board ship effect reversed |
+    scenario := (GameTestBuilder new boardWithCells: 10) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
-    ship moveTo: 0.
-    reversed applyEffectTo: ship inBoard: NullBoard new.
+    board moveShip: ship to: 0.
+    reversed applyEffectTo: ship inBoard: board.
     self assert: ship position equals: 4.
 ]
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToReversesHyperGravity [
-    | ship effect reversed |
-    ship := Spaceship withName: 'HG'.
+    | scenario board ship effect reversed |
+    scenario := (GameTestBuilder new boardWithCells: 8) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
     effect := HyperGravityEffect new.
     reversed := ReversedEffect of: effect.
-    ship moveTo: 2.
-    reversed applyEffectTo: ship inBoard: NullBoard new.
+    board moveShip: ship to: 2.
+    reversed applyEffectTo: ship inBoard: board.
     self assert: ship position equals: 2.
 ]
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToReversesHyperJump [
-    | board ship effect reversed steps |
-    board := Board of: 10 length: 10 andWormholeAt: #().
-    ship := Spaceship withName: 'HJ'.
-    board registerShips: { ship }.
+    | scenario board ship effect reversed steps |
+    scenario := (GameTestBuilder new boardWithCells: 10) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
     effect := HyperJumpEffect withValues: #(2).
     reversed := ReversedEffect of: effect.
-    ship moveTo: 5.
+    board moveShip: ship to: 5.
     steps := (2 / board totalLengthInParsecs * board cellCount) rounded.
     reversed applyEffectTo: ship inBoard: board.
     self assert: ship position equals: 5 - steps.
@@ -52,40 +56,43 @@ ReversedEffectTest >> testApplyEffectToReversesHyperJump [
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToReversesMoonWalk [
-    | board ship1 ship2 effect reversed |
-    board := Board of: 10 andWormholeAt: {}.
-    ship1 := Spaceship withName: 'S1'.
-    ship2 := Spaceship withName: 'S2'.
-    ship1 moveTo: 3.
-    ship2 moveTo: 3.
-    board registerShips: { ship1. ship2 }.
+    | scenario board alpha beta effect reversed |
+    scenario := (GameTestBuilder new boardWithCells: 10) build.
+    board := scenario game board.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     effect := MoonWalkEffect withSteps: 3.
     reversed := ReversedEffect of: effect.
-    reversed applyEffectTo: ship1 inBoard: board.
-    self assert: ship1 position equals: 3.
-    self assert: ship2 position equals: 6.
+    board moveShip: alpha to: 3.
+    board moveShip: beta to: 3.
+    reversed applyEffectTo: alpha inBoard: board.
+    self assert: alpha position equals: 3.
+    self assert: beta position equals: 6.
 ]
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToReversesCardEffect [
-    | ship card effect reversed |
-    ship := Spaceship withName: 'Carded'.
+    | scenario ship card effect reversed |
+    scenario := GameTestBuilder new build.
+    ship := scenario shipNamed: 'Alpha'.
     card := AccelerationCard new.
     ship addCard: card.
     effect := CardEffect new.
     reversed := ReversedEffect of: effect.
-    reversed applyEffectTo: ship inBoard: NullBoard new.
+    reversed applyEffectTo: ship inBoard: scenario game board.
     self assert: ship cards isEmpty.
 ]
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToOtherEffectDoesNothing [
-    | ship effect reversed |
-    ship := Spaceship withName: 'None'.
-    ship moveTo: 4.
+    | scenario board ship effect reversed |
+    scenario := (GameTestBuilder new boardWithCells: 10) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
     effect := NoEffect new.
     reversed := ReversedEffect of: effect.
-    reversed applyEffectTo: ship inBoard: NullBoard new.
+    board moveShip: ship to: 4.
+    reversed applyEffectTo: ship inBoard: board.
     self assert: ship position equals: 4.
 ]
 
@@ -109,11 +116,11 @@ ReversedEffectTest >> testReversedReturnsOriginal [
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyToInBoardAppliesEffect [
-    | board ship effect reversed |
-    board := Board of: 5 andWormholeAt: {}.
-    ship := Spaceship withName: 'Ship'.
-    board registerShips: { ship }.
-    ship moveTo: 0.
+    | scenario board ship effect reversed |
+    scenario := (GameTestBuilder new boardWithCells: 5) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
+    board moveShip: ship to: 0.
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
     reversed applyTo: ship inBoard: board.
