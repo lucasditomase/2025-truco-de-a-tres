@@ -26,9 +26,9 @@ MovementReport >> addDelta: aDelta [
     delta := delta + aDelta
 ]
 
-{ #category : 'accessing' }
+{ #category : 'copying' }
 MovementReport >> copy [
-    ^ MovementReport startingAt: startPosition delta: delta
+    ^ self class startingAt: startPosition delta: delta
 ]
 
 { #category : 'accessing' }
