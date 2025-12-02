@@ -10,7 +10,15 @@ Class {
 
 { #category : 'initialization' }
 MoonWalkEffect class >> withSteps: aNumber [
-    ^ self new initializeWithSteps: aNumber
+    ^ self new initializeWithSteps: (self ensureStepsFrom: aNumber)
+]
+
+{ #category : 'validation' }
+MoonWalkEffect class >> ensureStepsFrom: aNumber [
+    (aNumber isInteger and: [ aNumber > 0 ]) ifFalse: [
+        self error: 'Steps must be a positive integer'
+    ].
+    ^ aNumber
 ]
 
 { #category : 'operations' }
@@ -28,7 +36,7 @@ MoonWalkEffect >> initialize [
 { #category : 'initialization' }
 MoonWalkEffect >> initializeWithSteps: aNumber [
     self initialize.
-    steps := aNumber.
+    steps := self class ensureStepsFrom: aNumber.
     ^ self
 ]
 
@@ -39,7 +47,7 @@ MoonWalkEffect >> steps [
 
 { #category : 'accessing' }
 MoonWalkEffect >> steps: aNumber [
-    steps := aNumber
+    steps := self class ensureStepsFrom: aNumber
 ]
 
 { #category : 'operations' }
