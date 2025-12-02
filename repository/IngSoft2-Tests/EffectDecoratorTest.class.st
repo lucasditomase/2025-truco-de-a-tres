@@ -5,15 +5,22 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+EffectDecoratorTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'tests' }
 EffectDecoratorTest >> testApplyToWithoutWrappedEffectDoesNothing [
-    | decorator ship originalPosition |
-
+    | scenario ship decorator originalPosition |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceWithSides: 6;
+        build.
+    ship := scenario shipNamed: 'Alpha'.
     decorator := EffectDecorator new.
 
-    ship := Spaceship withName: 'SoloShip'.
-    ship moveTo: 3.
-
+    ship moveForward: 3.
     originalPosition := ship position.
 
     decorator applyTo: ship.
