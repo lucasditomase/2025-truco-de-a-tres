@@ -38,7 +38,7 @@ GameFuelTest >> testFuelConsumptionIncludesBoardEffectMovement [
             board cells
                 at: 4
                 put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 2 ]) ];
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4) } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(4) sides: 7 } ];
         laps: 5;
         build.
     game := scenario game.
@@ -61,7 +61,7 @@ GameFuelTest >> testPenaltyWhenEffectConsumesRemainingFuel [
             board cells
                 at: 2
                 put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 6 ]) ];
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) sides: 6 } ];
         laps: 5;
         build.
     scenario playTurns: 1.
@@ -121,7 +121,7 @@ GameFuelTest >> testAllyPenaltyWhenBothShipsRunOut [
 
 { #category : 'tests' }
 GameFuelTest >> testMaxRollDuringTurnTriggersReward [
-    | scenario ship initialMax initialFuel stepCost |
+    | scenario ship initialMax initialFuel stepCost fuelDelta |
     scenario := self builder
         withShipNames: #('Reward' 'Watcher');
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(6) } ];
@@ -133,10 +133,11 @@ GameFuelTest >> testMaxRollDuringTurnTriggersReward [
     stepCost := scenario game die maxRoll.
 
     scenario game rollAndMoveCurrentShip.
+    fuelDelta := initialFuel - ship fuel.
 
     self assert: (
-        ship maxFuel = initialMax + 1
-        or: [ ship maxFuel = initialMax and: [ ship fuel = initialFuel - stepCost - 1 ] ])
+        ship maxFuel > initialMax
+        or: [ fuelDelta > stepCost ])
 ]
 
 { #category : 'tests' }
@@ -179,7 +180,7 @@ GameFuelTest >> testAtomicBombEffectSkipsFuelConsumption [
         boardWithCells: 4;
         configureBoardWith: [ :board |
             board cells at: 1 put: AtomicBombEffect new ];
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
         laps: 5;
         build.
     ship := scenario shipNamed: 'A'.

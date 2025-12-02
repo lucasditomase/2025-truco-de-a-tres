@@ -17,11 +17,22 @@ DeterministicDie class >> withValues: aCollection [
     ^ self new initializeWithValues: aCollection
 ]
 
+{ #category : 'instance creation' }
+DeterministicDie class >> withValues: aCollection sides: aMaxSide [
+    ^ (self withValues: aCollection) sides: aMaxSide
+]
+
 { #category : 'initialization' }
 DeterministicDie >> initializeWithValues: aCollection [
     rollValues := aCollection asOrderedCollection.
     nextIndex := 1.
     sides := rollValues max.
+    ^ self
+]
+
+{ #category : 'configuration' }
+DeterministicDie >> sides: aNumber [
+    sides := aNumber.
     ^ self
 ]
 

@@ -16,7 +16,7 @@ GamePenaltyTest >> scenarioWithPenalizedFirstShipFor: turns [
     scenario := self builder
         withShipNames: #('Penalized' 'Other');
         boardWithCells: 6;
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
         laps: 5;
         build.
     scenario game penalize: (scenario shipNamed: 'Penalized') forTurns: turns.
@@ -74,7 +74,7 @@ GamePenaltyTest >> testPassingTurnRestoresFuelAndSkips [
     scenario := self builder
         withShipNames: #('Passing' 'Follower');
         boardWithCells: 8;
-        diceCup: [ DiceCup with: { DeterministicDie withValues: #(3) } ];
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(3) sides: 6 } ];
         laps: 5;
         build.
     game := scenario game.
