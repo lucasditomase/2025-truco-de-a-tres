@@ -5,6 +5,11 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+HyperJumpEffectTest >> builder [
+    ^ GameTestBuilder new
+]
+
 { #category : 'asserting' }
 HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -26,15 +31,14 @@ HyperJumpEffectTest >> testAllowsEntryWithRollAlwaysTrue [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testApplyEffectToMovesShipForward [
-    | effect ship board expected initial |
-    board := Board of: 10 length: 10 andWormholeAt: #().
+    | scenario board ship effect expected initial |
+    scenario := (self builder boardWithCells: 10) build.
+    board := scenario game board.
+    ship := scenario shipNamed: 'Alpha'.
     effect := HyperJumpEffect withValues: #(2 4).
     expected := effect peekJumpValue.
-    ship := Spaceship withName: 'Direct'.
     initial := 1.
-    ship moveTo: initial.
-
-    board registerShips: { ship }.
+    board moveShip: ship to: initial.
 
     effect applyEffectTo: ship inBoard: board.
 
@@ -43,17 +47,16 @@ HyperJumpEffectTest >> testApplyEffectToMovesShipForward [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testApplyToMovesShipForwardByCurrentJumpValue [
-    | ship effect expected initialPosition board |
+    | scenario board ship effect expected initialPosition |
 
-    board := Board of: 10 length: 10 andWormholeAt: #().
+    scenario := (self builder boardWithCells: 10) build.
+    board := scenario game board.
     effect := HyperJumpEffect withValues: #(3 5 2 4).
     expected := effect peekJumpValue.
 
-    ship := Spaceship withName: 'Jumper'.
+    ship := scenario shipNamed: 'Alpha'.
     initialPosition := 2.
-    ship moveTo: initialPosition.
-
-    board registerShips: { ship }.
+    board moveShip: ship to: initialPosition.
 
     effect applyTo: ship inBoard: board.
 
@@ -74,16 +77,15 @@ HyperJumpEffectTest >> testApplyToWithoutBoardRaisesError [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testHyperJumpCyclesThroughAllJumpValues [
-    | ship effect positions initialPosition board |
+    | scenario board ship effect positions initialPosition |
 
-    board := Board of: 10 length: 10 andWormholeAt: #().
+    scenario := (self builder boardWithCells: 10) build.
+    board := scenario game board.
     effect := HyperJumpEffect withValues: #(3 5 2 4).
 
-    ship := Spaceship withName: 'Cycler'.
+    ship := scenario shipNamed: 'Alpha'.
     initialPosition := 0.
-    ship moveTo: initialPosition.
-
-    board registerShips: { ship }.
+    board moveShip: ship to: initialPosition.
 
     positions := OrderedCollection new.
     4 timesRepeat: [
@@ -100,7 +102,7 @@ HyperJumpEffectTest >> testHyperJumpEffectWithValuesInitializesCorrectly [
     values := #(1 3 5).
     effect := HyperJumpEffect withValues: values.
 
-    self assert: (effect perform: #values) equals: #(5 3 1).
+    self assert: effect values equals: #(5 3 1).
 ]
 
 { #category : 'tests' }
@@ -181,12 +183,12 @@ HyperJumpEffectTest >> testResetJumpIndexSetsIndexBackToOne [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testWithLightYearValuesConvertsProperly [
-    | effect board ship |
-    board := Board of: 10 length: 10 andWormholeAt: #().
+    | scenario board ship effect |
+    scenario := (self builder boardWithCells: 10) build.
+    board := scenario game board.
     effect := HyperJumpEffect withLightYearValues: #(3 6).
-    ship := Spaceship withName: 'LY'.
-    ship moveTo: 0.
-    board registerShips: { ship }.
+    ship := scenario shipNamed: 'Alpha'.
+    board moveShip: ship to: 0.
     effect applyTo: ship inBoard: board.
     self assert: ship position equals: (board stepsFromParsecs: 2).
 ]
