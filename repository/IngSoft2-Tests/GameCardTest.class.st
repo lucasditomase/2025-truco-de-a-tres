@@ -72,7 +72,7 @@ GameCardTest >> testRepeatCardDoesNotReplaceEffectiveCard [
     repeat := RepeatCard targeting: alpha.
     alpha addCard: repeat.
 
-    beta playCard: self advanceCardTargeting: beta inGame: game.
+    beta playCard: (self advanceCardTargeting: beta) inGame: game.
     alpha playCard: advance inGame: game.
     alpha playCard: repeat inGame: game.
 
@@ -121,7 +121,8 @@ GameCardTest >> testRedoCardReplaysLastEffectiveCard [
     beta playCard: advance inGame: game.
     alpha playCard: redo inGame: game.
 
-    self assert: beta position equals: 2.
+    self assert: alpha position equals: 1.
+    self assert: beta position equals: 1.
     self assert: game lastCardPlayed equals: redo.
     self assert: game lastEffectiveCard equals: advance
 ]
