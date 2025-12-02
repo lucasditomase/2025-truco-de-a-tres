@@ -99,8 +99,12 @@ ReversedEffectTest >> testApplyEffectToOtherEffectDoesNothing [
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyToUsesNullBoard [
-    | ship effect reversed |
-    ship := Spaceship withName: 'Null'.
+    | scenario ship effect reversed |
+    scenario := GameTestBuilder new
+        withShipNames: #('Alpha' 'Beta');
+        diceWithSides: 6;
+        build.
+    ship := scenario shipNamed: 'Alpha'.
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
     reversed applyTo: ship.

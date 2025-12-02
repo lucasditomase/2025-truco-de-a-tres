@@ -24,8 +24,14 @@ AccelerationCardTest >> testActivateForAddsCardToShipActiveCards [
 
 { #category : 'tests' }
 AccelerationCardTest >> testModifyRollAddsOne [
-    | card result |
+    | scenario game ship card result |
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceWithSides: 6;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
     card := AccelerationCard new.
-    result := card modifyRoll: 3 forShip: (Spaceship withName: 'Pilot') inGame: nil.
+    result := card modifyRoll: 3 forShip: ship inGame: game.
     self assert: result equals: 4.
 ]
