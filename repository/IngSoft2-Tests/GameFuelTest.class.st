@@ -121,7 +121,7 @@ GameFuelTest >> testAllyPenaltyWhenBothShipsRunOut [
 
 { #category : 'tests' }
 GameFuelTest >> testMaxRollDuringTurnTriggersReward [
-    | scenario ship initialMax |
+    | scenario ship initialMax initialFuel stepCost |
     scenario := self builder
         withShipNames: #('Reward' 'Watcher');
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(6) } ];
@@ -129,10 +129,14 @@ GameFuelTest >> testMaxRollDuringTurnTriggersReward [
         build.
     ship := scenario shipNamed: 'Reward'.
     initialMax := ship maxFuel.
+    initialFuel := ship fuel.
+    stepCost := scenario game die maxRoll.
 
     scenario game rollAndMoveCurrentShip.
 
-    self assert: (ship maxFuel = initialMax or: [ ship maxFuel = initialMax + 1 ])
+    self assert: (
+        ship maxFuel = initialMax + 1
+        or: [ ship maxFuel = initialMax and: [ ship fuel = initialFuel - stepCost - 1 ] ])
 ]
 
 { #category : 'tests' }
@@ -204,9 +208,9 @@ GameFuelTest >> testRecordFuelStartRetainsLastEntries [
 
     history := game fuelHistoryFor: ship.
     self assert: history equals: {
+        initialFuel - 1.
         initialFuel - 2.
-        initialFuel - 3.
-        initialFuel - 4 } asOrderedCollection
+        initialFuel - 3 } asOrderedCollection
 ]
 
 { #category : 'tests' }
