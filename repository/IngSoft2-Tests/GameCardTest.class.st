@@ -59,20 +59,22 @@ GameCardTest >> testRedoCardDoesNotReplaceEffectiveCard [
 
 { #category : 'tests' }
 GameCardTest >> testRepeatCardDoesNotReplaceEffectiveCard [
-    | scenario game ship advance repeat |
+    | scenario game alpha beta advance repeat |
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         diceWithSides: 4;
         laps: 5;
         build.
     game := scenario game.
-    ship := scenario shipNamed: 'Alpha'.
-    advance := self advanceCardTargeting: ship.
-    repeat := RepeatCard targeting: ship.
-    ship addCard: repeat.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    advance := self advanceCardTargeting: alpha.
+    repeat := RepeatCard targeting: alpha.
+    alpha addCard: repeat.
 
-    ship playCard: advance inGame: game.
-    ship playCard: repeat inGame: game.
+    beta playCard: self advanceCardTargeting: beta inGame: game.
+    alpha playCard: advance inGame: game.
+    alpha playCard: repeat inGame: game.
 
     self assert: game lastCardPlayed equals: repeat.
     self assert: game lastEffectiveCard equals: advance

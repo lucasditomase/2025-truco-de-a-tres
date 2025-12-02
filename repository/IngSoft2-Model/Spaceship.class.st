@@ -155,8 +155,7 @@ Spaceship >> playCard: aCard inGame: aGame [
     (cards includes: aCard) ifFalse: [ self error: 'Card not in hand' ].
     aCard playOn: self inGame: aGame.
     self removeCard: aCard.
-    aGame lastCardPlayed: aCard.
-    aCard class = RedoCard ifFalse: [ aGame lastEffectiveCard: aCard ]
+    aGame lastCardPlayed: aCard
 ]
 
 { #category : 'initialize' }
