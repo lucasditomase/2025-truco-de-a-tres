@@ -5,6 +5,26 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+CancellationCardTest >> builder [
+    ^ GameTestBuilder new
+]
+
+{ #category : 'support' }
+CancellationCardTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
+]
+
+{ #category : 'support' }
+CancellationCardTest >> activate: aCard for: aShip inGame: aGame [
+    (aCard isKindOf: PermanentCard)
+        ifTrue: [
+            aShip addCard: aCard.
+            self ensureTurnOf: aShip inGame: aGame.
+            aShip playCard: aCard inGame: aGame ]
+        ifFalse: [ aShip addActiveCard: aCard ]
+]
+
 { #category : 'asserting' }
 CancellationCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -15,154 +35,134 @@ CancellationCardTest >> should: anErrorBlock raise: anErrorClass withMessageText
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAccelerationCard [
-    | target card ship1 ship2 board dice game |
-
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     target := AccelerationCard new.
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAdvanceCard [
-    | target card ship1 ship2 board dice game |
-
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     target := AdvanceCard new.
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsAllyCard [
-    | target card ship1 ship2 board dice game |
-
-    target := AllyCard withAlly: (Spaceship withName: 'Ally').
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game owner ally player target card |
+    scenario := self builder
+        withShipNames: #('Owner' 'Ally' 'Player');
+        build.
+    game := scenario game.
+    owner := scenario shipNamed: 'Owner'.
+    ally := scenario shipNamed: 'Ally'.
+    player := scenario shipNamed: 'Player'.
+    target := AllyCard withAlly: ally.
+    self activate: target for: owner inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: player inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (owner activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsCancellationCard [
-    | target card ship1 ship2 board dice game |
-
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     target := CancellationCard cancelling: (AdvanceCard new).
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsOverloadCard [
-    | target card ship1 ship2 board dice game |
-
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    target := OverloadCard forShip: ship1.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    target := OverloadCard forShip: alpha.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsRedoCard [
-    | target card ship1 ship2 board dice game |
-
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     target := RedoCard new.
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToCancelsShieldCard [
-    | target card ship1 ship2 board dice game |
-
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     target := ShieldCard new.
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
 ]
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testApplyEffectToRemovesCardFromGame [
-    | target card ship1 ship2 board dice game |
-
+    | scenario game alpha beta target card |
+    scenario := self builder build.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
     target := RepeatCard new.
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
-    ship1 addActiveCard: target.
-
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
+    self activate: target for: alpha inGame: game.
 
     card := CancellationCard cancelling: target.
-    card applyEffectTo: ship2 inGame: game.
+    card applyEffectTo: beta inGame: game.
 
-    self deny: (ship1 activeCards includes: target).
+    self deny: (alpha activeCards includes: target).
+    self deny: (game activeCards includes: target).
 ]
 
 { #category : 'tests - class' }
@@ -190,19 +190,17 @@ CancellationCardTest >> testInitializeCancellingSetsCardToCancel [
 
 { #category : 'tests - instance' }
 CancellationCardTest >> testPlayOnRaisesErrorWhenNoActiveCards [
-    | card ship1 ship2 board dice game |
+    | scenario game ship card |
 
+    scenario := self builder build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
     card := CancellationCard cancelling: (AccelerationCard new).
-    ship1 := Spaceship withName: 'One'.
-    ship2 := Spaceship withName: 'Two'.
+    ship addCard: card.
 
-    board := Board of: 5 andWormholeAt: {}.
-    dice := DiceCup with: { Die withSides: 1 }.
-    game := Game startWithShips: { ship1. ship2 } board: board dice: dice laps: 1.
-
-    ship1 addCard: card.
+    self ensureTurnOf: ship inGame: game.
     self
-        should: [ ship1 playCard: card inGame: game ]
+        should: [ ship playCard: card inGame: game ]
         raise: Error
         withMessageText: 'No active cards to cancel'.
 ]
