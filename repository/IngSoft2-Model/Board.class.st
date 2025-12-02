@@ -197,6 +197,11 @@ Board >> useCardDealer: aCallable [
 ]
 
 { #category : 'deck' }
+Board >> useCardDealerCyclingThrough: cardClasses [
+    self useCardDealer: (CardDeck cyclingThrough: cardClasses)
+]
+
+{ #category : 'deck' }
 Board >> defaultCardDealer [
     ^ [ CardDeck randomCard ]
 ]

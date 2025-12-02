@@ -693,6 +693,18 @@ BoardTest >> testDrawCardUsesInjectedDealer [
 ]
 
 { #category : 'tests - instance' }
+BoardTest >> testUseCardDealerCyclingThroughReturnsCardsInSequence [
+    | board |
+    board := Board of: 5 andWormholeAt: {}.
+
+    board useCardDealerCyclingThrough: { AdvanceCard. ShieldCard }.
+
+    self assert: board drawCard class equals: AdvanceCard.
+    self assert: board drawCard class equals: ShieldCard.
+    self assert: board drawCard class equals: AdvanceCard.
+]
+
+{ #category : 'tests - instance' }
 BoardTest >> testUseCardDealerRequiresCallableObject [
     | board |
     board := Board of: 5 andWormholeAt: {}.
