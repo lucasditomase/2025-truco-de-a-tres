@@ -183,13 +183,6 @@ HyperJumpEffectTest >> testResetJumpIndexSetsIndexBackToOne [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testWithLightYearValuesConvertsProperly [
-    { #category : 'tests' }
-    HyperJumpEffectTest >> testWithValuesRequiresNonEmptyCollection [
-        self
-            should: [ HyperJumpEffect withValues: #() ]
-            raise: Error
-            withMessageText: 'Hyper jump values must be a non-empty collection'.
-    ]
     | scenario board ship effect |
     scenario := (self builder boardWithCells: 10) build.
     board := scenario game board.
@@ -198,4 +191,12 @@ HyperJumpEffectTest >> testWithLightYearValuesConvertsProperly [
     board moveShip: ship to: 0.
     effect applyTo: ship inBoard: board.
     self assert: ship position equals: (board stepsFromParsecs: 2).
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testWithValuesRequiresNonEmptyCollection [
+    self
+        should: [ HyperJumpEffect withValues: #() ]
+        raise: Error
+        withMessageText: 'Hyper jump values must be a non-empty collection'.
 ]
