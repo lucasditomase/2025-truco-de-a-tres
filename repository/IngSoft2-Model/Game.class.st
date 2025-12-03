@@ -6,6 +6,7 @@ Class {
         'board',
         'dice',
         'coordinator',
+        'turnManager',
         'wantsToPassTurn',
         'totalLaps',
         'state',
