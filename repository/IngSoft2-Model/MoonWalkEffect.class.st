@@ -57,12 +57,12 @@ MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships [
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    | originalPosition otherShips |
+    | originalPosition |
     originalPosition := self originalPositionFor: aSpaceship on: aBoard.
-    otherShips := allSpaceships asArray
-        select: [ :ship | ship ~~ aSpaceship ].
-    otherShips do: [ :ship |
-        aBoard moveShip: ship backward: steps
+    allSpaceships do: [ :ship |
+        ship == aSpaceship ifFalse: [
+            aBoard moveShip: ship backward: steps
+        ]
     ].
     self restore: aSpaceship to: originalPosition on: aBoard
 ]
