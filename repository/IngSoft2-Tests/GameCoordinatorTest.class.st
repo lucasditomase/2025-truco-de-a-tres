@@ -11,7 +11,7 @@ GameCoordinatorTest >> testCoordinatorCreation [
     | ships board dice statuses coordinator |
     
     ships := { Spaceship withName: 'Apollo' . Spaceship withName: 'Discovery' }.
-    board := Board of: 20.
+    board := Board of: 20 andWormholeAt: #().
     dice := DiceCup with: { Die of: 6 }.
     
     statuses := Dictionary new.
@@ -34,7 +34,7 @@ GameCoordinatorTest >> testTurnAdvancement [
     | ships board dice statuses coordinator |
     
     ships := { Spaceship withName: 'Apollo' . Spaceship withName: 'Discovery' }.
-    board := Board of: 20.
+    board := Board of: 20 andWormholeAt: #().
     dice := DiceCup with: { Die of: 6 }.
     
     statuses := Dictionary new.
@@ -60,7 +60,7 @@ GameCoordinatorTest >> testLapRegistration [
     | ships board dice statuses coordinator ship status |
     
     ships := { Spaceship withName: 'Apollo' }.
-    board := Board of: 10.
+    board := Board of: 10 andWormholeAt: #().
     dice := DiceCup with: { Die of: 6 }.
     
     ship := ships first.
