@@ -82,6 +82,9 @@ MoonWalkEffect >> originalPositionFor: aSpaceship on: aBoard [
 
 { #category : 'private' }
 MoonWalkEffect >> restore: aSpaceship to: aPosition on: aBoard [
+    (aBoard respondsTo: #positionOf:) ifTrue: [
+        (aBoard positionOf: aSpaceship) = aPosition ifTrue: [ ^ self ]
+    ].
     (aBoard respondsTo: #moveShip:to:) ifTrue: [
         ^ aBoard moveShip: aSpaceship to: aPosition
     ].
