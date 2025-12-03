@@ -96,5 +96,6 @@ MoonWalkEffect >> shouldUseBoardMoveFor: aPosition on: aBoard [
     | count |
     count := aBoard cellCount.
     (count isNil or: [ count <= 0 ]) ifTrue: [ ^ false ].
-    ^ (aPosition >= 0) and: [ aPosition < count ]
+    ^ (aPosition >= 0) and: [ aPosition < count ].
+
 ]
