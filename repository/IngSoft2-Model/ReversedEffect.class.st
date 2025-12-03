@@ -25,16 +25,15 @@ ReversedEffect >> original [
 
 { #category : 'operations' }
 ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
-    | reversed |
-    reversed := original reversedVersion.
-    reversed applyEffectTo: aShip inBoard: aBoard.
     ^ self
 ]
 
 { #category : 'operations' }
 ReversedEffect >> applyTo: aShip inContextOf: ships inBoard: aBoard [
-    self applyEffectTo: aShip inBoard: aBoard.
     ^ self
+        applyReversedTo: aShip
+        inContextOf: ships
+        inBoard: aBoard
 ]
 
 { #category : 'instance creation' }
@@ -44,7 +43,21 @@ ReversedEffect >> applyTo: aShip [
 
 { #category : 'instance creation' }
 ReversedEffect >> applyTo: aShip inBoard: aBoard [
-    self applyEffectTo: aShip inBoard: aBoard.
+    | participants |
+    participants := (aBoard respondsTo: #ships)
+        ifTrue: [ aBoard ships ]
+        ifFalse: [ { aShip } ].
+    ^ self
+        applyReversedTo: aShip
+        inContextOf: participants
+        inBoard: aBoard
+]
+
+{ #category : 'private' }
+ReversedEffect >> applyReversedTo: aShip inContextOf: ships inBoard: aBoard [
+    | reversed |
+    reversed := original reversedVersion.
+    reversed applyTo: aShip inContextOf: ships inBoard: aBoard.
     ^ self
 ]
 
