@@ -91,11 +91,13 @@ MoonWalkEffect >> restore: aSpaceship to: aPosition on: aBoard [
 
 { #category : 'private' }
 MoonWalkEffect >> shouldUseBoardMoveFor: aPosition on: aBoard [
+    | count |
     (aBoard respondsTo: #moveShip:to:) ifFalse: [ ^ false ].
     (aBoard respondsTo: #cellCount) ifFalse: [ ^ true ].
-    | count |
     count := aBoard cellCount.
-    (count isNil or: [ count <= 0 ]) ifTrue: [ ^ false ].
-    ^ (aPosition >= 0) and: [ aPosition < count ].
+    count isNil ifTrue: [ ^ false ].
+    count <= 0 ifTrue: [ ^ false ].
+    (aPosition >= 0 and: [ aPosition < count ]) ifFalse: [ ^ false ].
+    ^ true.
 
 ]
