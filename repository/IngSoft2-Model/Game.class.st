@@ -180,7 +180,6 @@ Game >> hasWonByLaps: aShip [
 ]
 
 { #category : 'initialization' }
-{ #category : 'initialization' }
 Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
     
     
@@ -459,7 +458,6 @@ Game >> applyEffectOfCurrentCell [
         during: [ board applyEffectTo: self currentShip ]
 ]
 
-{ #category : 'process actions' }
 { #category : 'private' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
     
