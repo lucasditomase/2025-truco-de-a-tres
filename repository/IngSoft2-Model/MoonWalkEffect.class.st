@@ -57,7 +57,7 @@ MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships [
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    allSpaceships do: [:ship | ship = aSpaceship ifFalse: [
+    allSpaceships do: [:ship | ship ~= aSpaceship ifTrue: [
         aBoard moveShip: ship backward: steps
     ]].
 ]
