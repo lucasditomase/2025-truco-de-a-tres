@@ -188,7 +188,7 @@ Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
         direction > 0 ifTrue: [
             effect := self effectAt: pos.
             (effect allowsEntryWithRoll: aRoll)
-                ifFalse: [ ^ self applyWormholeIfPresentAt: pos ].
+                ifFalse: [ ^ self applyWormholeIfPresentAt: (pos - direction) \\ cellCount ].
         ].
     ].
     ^ self applyWormholeIfPresentAt: pos

@@ -59,13 +59,14 @@ GameCoordinatorTest >> testLapRegistration [
     
     | ships board dice statuses coordinator ship status |
     
-    ships := { Spaceship withName: 'Apollo' }.
+    ships := { Spaceship withName: 'Apollo' . Spaceship withName: 'Discovery' }.
     board := Board of: 10 andWormholeAt: #().
     dice := DiceCup with: { Die of: 6 }.
     
     ship := ships first.
     statuses := Dictionary new.
-    statuses at: ship put: (ShipStatus for: ship position: 0 laps: 0 penalized: false).
+    ships do: [ :each |
+        statuses at: each put: (ShipStatus for: each position: 0 laps: 0 penalized: false) ].
     
     coordinator := GameCoordinator
         forBoard: board
