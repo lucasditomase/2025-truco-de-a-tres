@@ -57,9 +57,14 @@ MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships [
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    allSpaceships asArray do: [:ship | ship ~= aSpaceship ifTrue: [
-        aBoard moveShip: ship backward: steps
-    ]].
+    | originalPosition |
+    originalPosition := self originalPositionFor: aSpaceship on: aBoard.
+    allSpaceships asArray do: [ :ship |
+        (ship == aSpaceship) ifFalse: [
+            aBoard moveShip: ship backward: steps
+        ]
+    ].
+    self restore: aSpaceship to: originalPosition on: aBoard
 ]
 
 { #category : 'operations' }
@@ -71,4 +76,20 @@ MoonWalkEffect >> reversedVersion [
             each = ship ifFalse: [ board moveShip: each forward: stepsToMove ]
         ]
     ]
+]
+
+{ #category : 'private' }
+MoonWalkEffect >> originalPositionFor: aSpaceship on: aBoard [
+    (aBoard respondsTo: #positionOf:) ifTrue: [
+        ^ aBoard positionOf: aSpaceship
+    ].
+    ^ aSpaceship position
+]
+
+{ #category : 'private' }
+MoonWalkEffect >> restore: aSpaceship to: aPosition on: aBoard [
+    (aBoard respondsTo: #moveShip:to:) ifTrue: [
+        ^ aBoard moveShip: aSpaceship to: aPosition
+    ].
+    aSpaceship moveTo: aPosition
 ]
