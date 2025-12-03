@@ -20,7 +20,8 @@ ReversedEffectTest >> testReversedBlackHoleMovesShipForward [
     | scenario game ship deterministicDie effect reversed |
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
-    deterministicDie := DeterministicDie withValues: #(4).
+    "Use a die with more sides than the rolled value so max-roll rewards don't randomly penalize fuel."
+    deterministicDie := DeterministicDie withValues: #(4) sides: 6.
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
