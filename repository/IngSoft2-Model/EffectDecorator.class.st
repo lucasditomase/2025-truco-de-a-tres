@@ -26,7 +26,10 @@ EffectDecorator >> applyEffectTo: aShip inBoard: aBoard [
 
 { #category : 'operations' }
 EffectDecorator >> applyTo: aShip inContextOf: ships inBoard: aBoard [
-    self applyTo: aShip inBoard: aBoard
+    | targetBoard |
+    targetBoard := aBoard.
+    self applyEffectTo: aShip inBoard: targetBoard.
+    wrapped applyTo: aShip inContextOf: ships inBoard: targetBoard
 ]
 
 { #category : 'instance creation' }

@@ -57,7 +57,7 @@ MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships [
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    allSpaceships do: [:ship | ship ~= aSpaceship ifTrue: [
+    allSpaceships asArray do: [:ship | ship ~= aSpaceship ifTrue: [
         aBoard moveShip: ship backward: steps
     ]].
 ]
@@ -67,7 +67,7 @@ MoonWalkEffect >> reversedVersion [
     | stepsToMove |
     stepsToMove := self steps.
     ^ BlockEffect on: [ :ship :board |
-        board ships do: [ :each |
+        board ships asArray do: [ :each |
             each = ship ifFalse: [ board moveShip: each forward: stepsToMove ]
         ]
     ]

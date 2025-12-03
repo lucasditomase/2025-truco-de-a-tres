@@ -327,7 +327,6 @@ GameTest >> testModifyRollAppliesActiveCardEffect [
 GameTest >> testHyperGravityRequirementsConfiguredWithDiceMaxRoll [
     | scenario game effect |
     effect := HyperGravityEffect new.
-    effect requiredRoll: 4.
     scenario := self builder
         withShipNames: #('H1' 'H2');
         boardWithCells: 5;
