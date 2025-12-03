@@ -31,6 +31,12 @@ ReversedEffect >> applyEffectTo: aShip inBoard: aBoard [
     ^ self
 ]
 
+{ #category : 'operations' }
+ReversedEffect >> applyTo: aShip inContextOf: ships inBoard: aBoard [
+    self applyEffectTo: aShip inBoard: aBoard.
+    ^ self
+]
+
 { #category : 'instance creation' }
 ReversedEffect >> applyTo: aShip [
     self applyTo: aShip inBoard: NullBehavior temporaryBoard
