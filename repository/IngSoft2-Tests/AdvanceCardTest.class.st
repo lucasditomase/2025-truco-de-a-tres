@@ -20,15 +20,18 @@ AdvanceCardTest >> should: anErrorBlock raise: anErrorClass withMessageText: err
 ]
 
 { #category : 'tests' }
-AdvanceCardTest >> testApplyEffectMovesShipForward [
-    | scenario game ship card |
+AdvanceCardTest >> testAdvanceCardMovesShipForwardDuringGamePlay [
+    | scenario game ship card initialPosition |
     scenario := (self builder boardWithCells: 10) build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
     card := AdvanceCard new.
-    scenario game board moveShip: ship to: 2.
-    card applyEffectTo: ship inGame: game.
-    self assert: ship position equals: 3.
+    
+    initialPosition := ship position.
+    ship addCard: card.
+    ship playCard: card inGame: game.
+    
+    self assert: ship position equals: initialPosition + 1.
 ]
 
 { #category : 'tests' }

@@ -5,15 +5,12 @@ Class {
         'spaceShips',
         'board',
         'dice',
-        'turnManager',
+        'coordinator',
         'wantsToPassTurn',
         'totalLaps',
         'state',
         'shipStatuses',
         'turnData',
-        'fuelManager',
-        'lapTracker',
-        'penaltyPolicy',
         'rankingService'
         ],
     #category : 'IngSoft2-Model',
@@ -38,7 +35,7 @@ Game class >> startWithShips: someShips board: aBoard dice: someDices laps: aNum
 
 { #category : 'probabilities' }
 Game class >> maxRollRewardIncreaseChance [
-    ^ 80
+    ^ GameRules maxRollRewardProbability
 ]
 
 { #category : 'initialize' }
@@ -110,7 +107,7 @@ Game >> activeCards [
 
 { #category : 'process actions' }
 Game >> advanceTurn [
-    turnManager advanceTurn
+    coordinator advanceTurn
 ]
 
 { #category : 'process actions' }
@@ -136,12 +133,12 @@ Game >> currentPlayerIndex [
 
 { #category : 'accessing' }
 Game >> currentShip [
-    ^ turnManager currentShip
+    ^ coordinator currentShip
 ]
 
 { #category : 'accessing' }
 Game >> currentTurnIndex [
-    ^ turnManager currentTurnIndex
+    ^ coordinator currentTurnIndex
 ]
 
 { #category : 'accessing' }
@@ -162,7 +159,7 @@ Game >> handlePenaltyOrPassIfNeeded [
     ship := self currentShip.
 
     (self isPenalized: ship) ifTrue: [
-        penaltyPolicy reducePenaltyFor: ship.
+        coordinator reducePenaltyFor: ship.
         self advanceTurn.
         ^ true ].
 
@@ -177,11 +174,19 @@ Game >> handlePenaltyOrPassIfNeeded [
 
 { #category : 'testing' }
 Game >> hasWonByLaps: aShip [
-    ^ (self lapTrackerFor: aShip) hasWonWithTotalLaps: totalLaps
+    | shipStatus |
+    shipStatus := self lapTrackerFor: aShip.
+    ^ shipStatus hasWonWithTotalLaps: totalLaps
 ]
 
 { #category : 'initialization' }
+{ #category : 'initialization' }
 Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps [
+    
+    
+    
+    
+    
     self
         initializeBasicDataWithShips: someShips board: aBoard dice: someDices laps: aNumberLaps;
         initializeFuelForShips;
@@ -195,15 +200,11 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
 
 { #category : 'initialization' }
 Game >> initializeManagers [
-    lapTracker := LapTracker
+    coordinator := GameCoordinator
         forBoard: board
-        statuses: shipStatuses.
-    penaltyPolicy := PenaltyPolicy
-        withStatuses: shipStatuses
-        restoreFuelWith: [ :ship | ship restoreFuel ].
-    fuelManager := FuelManager
-        forBoard: board
-        penalizeWith: [ :ship :turns | penaltyPolicy penalize: ship forTurns: turns ].
+        withShips: spaceShips
+        statuses: shipStatuses
+        andDice: dice.
     rankingService := RankingService new
 ]
 
@@ -224,7 +225,7 @@ Game >> initializeBasicDataWithShips: someShips board: aBoard dice: someDices la
 { #category : 'initialization' }
 Game >> initializeFuelForShips [
     | initialFuel |
-    initialFuel := dice maxRoll * 2.
+    initialFuel := dice maxRoll * GameRules initialFuelMultiplier.
 
     spaceShips do: [ :ship |
         ship maxFuel: initialFuel.
@@ -233,7 +234,6 @@ Game >> initializeFuelForShips [
 
 { #category : 'initialization' }
 Game >> initializeTurnManager [
-    turnManager := TurnManager withShips: spaceShips.
     wantsToPassTurn := Dictionary new
 ]
 
@@ -311,12 +311,12 @@ Game >> passTurn [
 
 { #category : 'process actions' }
 Game >> penalize: aShip forTurns: turns [
-    penaltyPolicy penalize: aShip forTurns: turns
+    coordinator penalize: aShip forTurns: turns
 ]
 
 { #category : 'process actions' }
 Game >> penalizeAndResetIfNoFuel: aShip [
-    fuelManager penalizeIfDepleted: aShip
+    coordinator penalizeIfDepleted: aShip
 ]
 
 { #category : 'testing' }
@@ -331,6 +331,8 @@ Game >> penaltyShip [
 
 { #category : 'process actions' }
 Game >> playTurn [
+    
+    
     self recordFuelStartFor: self currentShip.
     self ensureGameIsNotOver.
     self handlePenaltyOrPassIfNeeded ifTrue: [ ^ self ].
@@ -365,12 +367,12 @@ Game >> redoLastCardOn: aShip [
 
 { #category : 'testing' }
 Game >> reducePenaltyFor: aShip [
-    penaltyPolicy reducePenaltyFor: aShip
+    coordinator reducePenaltyFor: aShip
 ]
 
 { #category : 'testing' }
 Game >> registerLapFor: aShip from: oldPosition after: someSteps [
-    lapTracker registerLapFor: aShip from: oldPosition after: someSteps
+    coordinator registerLapFor: aShip from: oldPosition after: someSteps
 ]
 
 { #category : 'process actions' }
@@ -384,7 +386,7 @@ Game >> repeatLastEffectOn: aShip [
     | position effect card skipFuel |
     turnData lastEffectWasCard ifTrue: [
         card := turnData lastEffectiveCard.
-        card class = NullCard ifTrue: [ ^ self ].
+        card isNull ifTrue: [ ^ self ].
         card playOn: aShip inGame: self.
         ^ self
     ].
@@ -401,7 +403,7 @@ Game >> repeatLastEffectOn: aShip [
 
 { #category : 'process actions' }
 Game >> consumeFuel: aNumber forShip: aShip [
-    fuelManager consumeFuel: aNumber forShip: aShip
+    coordinator consumeFuel: aNumber forShip: aShip
 ]
 
 { #category : 'process actions' }
@@ -444,7 +446,7 @@ Game >> rollAndMoveCurrentShip [
         after: modified.
     board moveShip: self currentShip to: newPosition.
     turnData lastSteps: modified.
-    fuelManager consumeMovement: modified forShip: self currentShip
+    coordinator consumeMovement: modified forShip: self currentShip
 ]
 
 { #category : 'process actions' }
@@ -458,7 +460,13 @@ Game >> applyEffectOfCurrentCell [
 ]
 
 { #category : 'process actions' }
+{ #category : 'private' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
+    
+    
+    
+    
+    
     | movementRecords movementOccurred |
     movementRecords := board recordMovesDuring: effectBlock.
     movementOccurred := false.
@@ -468,8 +476,8 @@ Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
         delta := report delta.
         delta ~= 0 ifTrue: [
             movementOccurred := true.
-            skipFuel ifFalse: [ fuelManager consumeMovement: delta forShip: ship ].
-            lapTracker registerLapFor: ship from: start after: delta
+            skipFuel ifFalse: [ coordinator consumeMovement: delta forShip: ship ].
+            coordinator registerLapFor: ship from: start after: delta
         ]
     ].
     movementOccurred ifTrue: [ turnData lastEffectWasCard: false ]

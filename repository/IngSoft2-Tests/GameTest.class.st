@@ -1021,9 +1021,9 @@ GameTest >> testSpaceshipPositionsReturnsCorrectMapping [
     mapOne := scenario shipNamed: 'MapOne'.
     mapTwo := scenario shipNamed: 'MapTwo'.
 
-    game playTurn. "MapOne to 2"
-    game playTurn. "MapTwo to 2"
-    game playTurn. "MapOne to 4"
+    game playTurn.
+    game playTurn.
+    game playTurn.
 
     positions := game spaceshipPositions.
     pos1 := positions detect: [ :each | each ship = mapOne ].
@@ -1242,8 +1242,6 @@ GameTest >> testWinnerReturnsShipWhenGameFinishes [
 
     self assert: game winner equals: ship.
 ]
-
-
 
 { #category : 'tests' }
 GameTest >> testValidateIsCurrentPlayerRaisesError [

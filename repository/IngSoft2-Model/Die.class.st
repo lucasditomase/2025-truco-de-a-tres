@@ -8,6 +8,11 @@ Class {
     #package : 'IngSoft2-Model'
 }
 
+{ #category : 'instance creation' }
+Die class >> of: aNumberOfSides [
+    ^ self withSides: aNumberOfSides
+]
+
 { #category : 'initialize' }
 Die class >> validateMinimumSides: aNumberOfSides [
     (aNumberOfSides isInteger and: [ aNumberOfSides >= 1 ]) ifFalse: [

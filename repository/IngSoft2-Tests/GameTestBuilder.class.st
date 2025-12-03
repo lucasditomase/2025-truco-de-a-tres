@@ -52,7 +52,6 @@ GameTestBuilder >> boardFactory: aBlock [
 
 { #category : 'configuration' }
 GameTestBuilder >> configureBoardWith: aBlock [
-    "Allows composing multiple board tweaks; executes in the same order they were declared."
     boardConfigurators add: aBlock.
     ^ self
 ]
@@ -91,6 +90,5 @@ GameTestBuilder >> withCardDealer: aCallable [
 
 { #category : 'configuration' }
 GameTestBuilder >> withDeckCyclingThrough: cardClasses [
-    "Convenience for deterministic tests that need a predictable draw order."
     ^ self configureBoardWith: [ :board | board useCardDealerCyclingThrough: cardClasses ]
 ]

@@ -38,15 +38,11 @@ Board class >> invalidDistanceMessage [
 
 { #category : 'effects' }
 Board class >> effectDistributionWeights [
-    ^ {
-        [ NoEffect new ] -> 38.
-        [ CardEffect new ] -> 10.
-        [ BlackHoleEffect new ] -> 20.
-        [ HyperGravityEffect new ] -> 20.
-        [ MoonWalkEffect new ] -> 10.
-        [ HyperJumpEffect withValues: #(1 2 3) ] -> 8.
-        [ AtomicBombEffect new ] -> 2
-    }
+    
+    
+    
+    
+    ^ EffectRegistry effectDistribution
 ]
 
 { #category : 'initialize' }
@@ -178,6 +174,10 @@ Board >> determineNewPositionFrom: aPosition after: steps [
 
 { #category : 'moves' }
 Board >> determineNewPositionFrom: aPosition after: steps withRoll: aRoll [
+    
+    
+    
+    
     | pos direction effect |
     steps = 0 ifTrue: [ ^ self applyWormholeIfPresentAt: aPosition ].
     pos := aPosition.
@@ -356,7 +356,7 @@ Board >> reverseAt: aPosition [
 Board >> reverseEffectAt: aPosition [
     | effect |
     effect := self effectAt: aPosition.
-    effect class = AtomicBombEffect ifTrue: [ ^ self ].
+    effect canBeReversed ifFalse: [ ^ self ].
     cells at: aPosition put: effect reversed
 ]
 
@@ -396,11 +396,11 @@ Board >> randomEffectForRoll: aNumber [
 { #category : 'effects' }
 Board >> configureHyperGravityRequirementsWithMaxRoll: maxRoll [
     | safeMax |
-    safeMax := (maxRoll isInteger and: [ maxRoll > 0 ]) ifTrue: [ maxRoll ] ifFalse: [ 6 ].
+    safeMax := (maxRoll isInteger and: [ maxRoll > 0 ]) 
+        ifTrue: [ maxRoll ] 
+        ifFalse: [ GameRules defaultMaxDiceRoll ].
     cells valuesDo: [ :effect |
-        effect class = HyperGravityEffect ifTrue: [
-            effect requiredRoll: safeMax
-        ]
+        effect configureWithMaxRoll: safeMax
     ]
 ]
 

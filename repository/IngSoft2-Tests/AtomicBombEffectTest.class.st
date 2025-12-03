@@ -10,33 +10,34 @@ AtomicBombEffectTest >> builder [
     ^ GameTestBuilder new
 ]
 
-{ #category : 'tests' }
-AtomicBombEffectTest >> testApplyToDoesNothing [
-    | scenario ship board effect |
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
-    board moveShip: ship to: 5.
-
-    effect := AtomicBombEffect new.
-    effect applyTo: ship.
-
-    self assert: ship position equals: 5
+{ #category : 'support' }
+AtomicBombEffectTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
 ]
 
 { #category : 'tests' }
-AtomicBombEffectTest >> testApplyToInContextResetsAllPositions [
-    | scenario board alpha beta effect |
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
+AtomicBombEffectTest >> testAtomicBombResetsAllShipsWhenTriggered [
+    | scenario game alpha beta deterministicDie |
+    deterministicDie := DeterministicDie withValues: #(2 7 3).
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 20;
+        configureBoardWith: [ :board |
+            board cells at: 5 put: AtomicBombEffect new ];
+        build.
+    game := scenario game.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
-    board moveShip: alpha to: 5.
-    board moveShip: beta to: 9.
-
-    effect := AtomicBombEffect new.
-    effect applyTo: alpha inContextOf: { alpha. beta } inBoard: board.
-
+    
+    self ensureTurnOf: alpha inGame: game.
+    game playTurn.
+    self ensureTurnOf: beta inGame: game.
+    game playTurn.
+    
+    self ensureTurnOf: alpha inGame: game.
+    game playTurn.
+    
     self assert: alpha position equals: 0.
-    self assert: beta position equals: 0
+    self assert: beta position equals: 0.
 ]

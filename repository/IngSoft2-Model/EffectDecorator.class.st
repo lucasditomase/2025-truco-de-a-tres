@@ -74,7 +74,16 @@ EffectDecorator >> consumesFuel [
     ^ true
 ]
 
+{ #category : 'querying' }
+EffectDecorator >> canBeReversed [
+    ^ true
+]
+
 { #category : 'converting' }
 EffectDecorator >> asBoardEffect [
     ^ self
+]
+
+{ #category : 'configuration' }
+EffectDecorator >> configureWithMaxRoll: maxRoll [
 ]

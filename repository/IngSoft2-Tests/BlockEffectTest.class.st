@@ -5,6 +5,16 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'support' }
+BlockEffectTest >> builder [
+    ^ GameTestBuilder new
+]
+
+{ #category : 'support' }
+BlockEffectTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
+]
+
 { #category : 'asserting' }
 BlockEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -15,17 +25,24 @@ BlockEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: err
 ]
 
 { #category : 'tests' }
-BlockEffectTest >> testOnCreatesEffectThatRunsAction [
-    | effect ship board |
+BlockEffectTest >> testBlockEffectExecutesActionWhenShipLandsOnCell [
+    | scenario game ship deterministicDie effect |
     effect := BlockEffect on: [ :aShip :aBoard | aBoard moveShip: aShip forward: 2 ].
-    ship := Spaceship withName: 'Runner'.
-    board := Board of: 5 andWormholeAt: {}.
-    board registerShips: { ship }.
-    board moveShip: ship to: 1.
-
-    effect applyEffectTo: ship inBoard: board.
-
-    self assert: ship position equals: 3.
+    deterministicDie := DeterministicDie withValues: #(4).
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 20;
+        configureBoardWith: [ :board |
+            board cells at: 4 put: effect ];
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    
+    self ensureTurnOf: ship inGame: game.
+    game playTurn.
+    
+    self assert: ship position equals: 6.
 ]
 
 { #category : 'tests' }

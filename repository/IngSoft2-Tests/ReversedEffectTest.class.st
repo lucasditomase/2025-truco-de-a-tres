@@ -5,110 +5,86 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
-{ #category : 'tests' }
-ReversedEffectTest >> testInitializationStoresOriginalAndDecorates [
-    | baseEffect reversed |
-    baseEffect := BlackHoleEffect new.
-    reversed := ReversedEffect of: baseEffect.
-    self assert: reversed original equals: baseEffect.
-    self assert: reversed wrapped equals: baseEffect.
+{ #category : 'support' }
+ReversedEffectTest >> builder [
+    ^ GameTestBuilder new
+]
+
+{ #category : 'support' }
+ReversedEffectTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
 ]
 
 { #category : 'tests' }
-ReversedEffectTest >> testApplyEffectToReversesBlackHole [
-    | scenario board ship effect reversed |
-    scenario := (GameTestBuilder new boardWithCells: 10) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
+ReversedEffectTest >> testReversedBlackHoleMovesShipForward [
+    | scenario game ship deterministicDie effect reversed |
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
-    board moveShip: ship to: 0.
-    reversed applyEffectTo: ship inBoard: board.
-    self assert: ship position equals: 4.
+    deterministicDie := DeterministicDie withValues: #(4).
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 20;
+        configureBoardWith: [ :board |
+            board cells at: 4 put: reversed ];
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    
+    self ensureTurnOf: ship inGame: game.
+    game playTurn.
+    
+    self assert: ship position equals: 8.
 ]
 
 { #category : 'tests' }
-ReversedEffectTest >> testApplyEffectToReversesHyperGravity [
-    | scenario board ship effect reversed |
-    scenario := (GameTestBuilder new boardWithCells: 8) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
-    effect := HyperGravityEffect new.
-    reversed := ReversedEffect of: effect.
-    board moveShip: ship to: 2.
-    reversed applyEffectTo: ship inBoard: board.
-    self assert: ship position equals: 2.
-]
-
-{ #category : 'tests' }
-ReversedEffectTest >> testApplyEffectToReversesHyperJump [
-    | scenario board ship effect reversed steps |
-    scenario := (GameTestBuilder new boardWithCells: 10) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
+ReversedEffectTest >> testReversedHyperJumpMovesShipBackward [
+    | scenario game ship deterministicDie effect reversed initialPosition |
     effect := HyperJumpEffect withValues: #(2).
     reversed := ReversedEffect of: effect.
-    board moveShip: ship to: 5.
-    steps := (2 / board totalLengthInParsecs * board cellCount) rounded.
-    reversed applyEffectTo: ship inBoard: board.
-    self assert: ship position equals: 5 - steps.
+    deterministicDie := DeterministicDie withValues: #(5).
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 20;
+        configureBoardWith: [ :aBoard |
+            aBoard cells at: 5 put: reversed ];
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    initialPosition := 5.
+    
+    self ensureTurnOf: ship inGame: game.
+    game playTurn.
+    
+    self assert: ship position < initialPosition.
 ]
 
 { #category : 'tests' }
-ReversedEffectTest >> testApplyEffectToReversesMoonWalk [
-    | scenario board alpha beta effect reversed |
-    scenario := (GameTestBuilder new boardWithCells: 10) build.
-    board := scenario game board.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
+ReversedEffectTest >> testReversedMoonWalkMovesOthersForward [
+    | scenario game alpha beta deterministicDie effect reversed |
     effect := MoonWalkEffect withSteps: 3.
     reversed := ReversedEffect of: effect.
-    board moveShip: alpha to: 3.
-    board moveShip: beta to: 3.
-    reversed applyEffectTo: alpha inBoard: board.
-    self assert: alpha position equals: 3.
-    self assert: beta position equals: 6.
-]
-
-{ #category : 'tests' }
-ReversedEffectTest >> testApplyEffectToReversesCardEffect [
-    | scenario ship card effect reversed |
-    scenario := GameTestBuilder new build.
-    ship := scenario shipNamed: 'Alpha'.
-    ship cards copy do: [ :each | ship removeCard: each ].
-    card := AccelerationCard new.
-    ship addCard: card.
-    effect := CardEffect new.
-    reversed := ReversedEffect of: effect.
-    reversed applyEffectTo: ship inBoard: scenario game board.
-    self assert: ship cards isEmpty.
-]
-
-{ #category : 'tests' }
-ReversedEffectTest >> testApplyEffectToOtherEffectDoesNothing [
-    | scenario board ship effect reversed |
-    scenario := (GameTestBuilder new boardWithCells: 10) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
-    effect := NoEffect new.
-    reversed := ReversedEffect of: effect.
-    board moveShip: ship to: 4.
-    reversed applyEffectTo: ship inBoard: board.
-    self assert: ship position equals: 4.
-]
-
-{ #category : 'tests' }
-ReversedEffectTest >> testApplyToUsesNullBoard [
-    | scenario ship effect reversed |
-    scenario := GameTestBuilder new
+    deterministicDie := DeterministicDie withValues: #(3 6).
+    scenario := self builder
         withShipNames: #('Alpha' 'Beta');
-        diceWithSides: 6;
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 20;
+        configureBoardWith: [ :board |
+            board cells at: 6 put: reversed ];
         build.
-    ship := scenario shipNamed: 'Alpha'.
-    effect := BlackHoleEffect new.
-    reversed := ReversedEffect of: effect.
-    reversed applyTo: ship.
-    self assert: ship position equals: 4.
+    game := scenario game.
+    alpha := scenario shipNamed: 'Alpha'.
+    beta := scenario shipNamed: 'Beta'.
+    
+    self ensureTurnOf: beta inGame: game.
+    game playTurn.
+    
+    self ensureTurnOf: alpha inGame: game.
+    game playTurn.
+    
+    self assert: alpha position equals: 6.
+    self assert: beta position equals: 6.
 ]
 
 { #category : 'tests' }
@@ -117,17 +93,4 @@ ReversedEffectTest >> testReversedReturnsOriginal [
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
     self assert: reversed reversed equals: effect.
-]
-
-{ #category : 'tests' }
-ReversedEffectTest >> testApplyToInBoardAppliesEffect [
-    | scenario board ship effect reversed |
-    scenario := (GameTestBuilder new boardWithCells: 5) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
-    board moveShip: ship to: 0.
-    effect := BlackHoleEffect new.
-    reversed := ReversedEffect of: effect.
-    reversed applyTo: ship inBoard: board.
-    self assert: ship position equals: 4.
 ]

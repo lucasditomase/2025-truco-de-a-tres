@@ -34,6 +34,8 @@ HyperJumpEffect class >> ensureValuesFrom: aCollection [
 
 { #category : 'operations' }
 HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
+    
+    
     | parsecs steps |
     aBoard withMovementTrackingDuring: [
         parsecs := self nextJumpValue.

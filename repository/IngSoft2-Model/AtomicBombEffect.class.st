@@ -21,3 +21,8 @@ AtomicBombEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoa
 AtomicBombEffect >> consumesFuel [
     ^ false
 ]
+
+{ #category : 'querying' }
+AtomicBombEffect >> canBeReversed [
+    ^ false
+]
