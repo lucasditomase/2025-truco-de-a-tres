@@ -108,7 +108,9 @@ HyperJumpEffect >> resetJumpIndex [
 
 { #category : 'private' }
 HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
-    ^ aCollection sort: [ :a :b | a asParsecs > b asParsecs ]
+    ^ aCollection sort: [ :a :b |
+        (Distance parsecValueOf: a) > (Distance parsecValueOf: b)
+    ]
 ]
 
 { #category : 'private' }

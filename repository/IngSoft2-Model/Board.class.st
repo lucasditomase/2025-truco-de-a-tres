@@ -422,10 +422,11 @@ Board >> stepsFromLightYears: someLightYears [
 
 { #category : 'initialize' }
 Board >> stepsFromParsecs: someParsecs [
-    | ratio |
-    ratio := someParsecs / totalLengthInParsecs.
-
-    ^ (ratio * cellCount) rounded
+    | length parsecValue |
+    length := totalLengthInParsecs ifNil: [ 0 ].
+    length isZero ifTrue: [ ^ 0 ].
+    parsecValue := Distance parsecValueOf: someParsecs.
+    ^ ((parsecValue / length) * cellCount) rounded
 ]
 
 { #category : 'accessing' }
