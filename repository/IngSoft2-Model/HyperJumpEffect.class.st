@@ -72,11 +72,9 @@ HyperJumpEffect >> applyTo: aSpaceship inBoard: aBoard [
 { #category : 'private' }
 HyperJumpEffect >> convertAndSortValues: aCollection [
     | convertedValues |
-
     convertedValues := aCollection collect: [ :each |
-        Distance parsecValueOf: each
+        each asBoardDistance
     ].
-
     ^ self sortDescendingPreservingOrder: convertedValues
 ]
 
@@ -111,7 +109,7 @@ HyperJumpEffect >> resetJumpIndex [
 
 { #category : 'private' }
 HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
-    ^ aCollection sort: [ :a :b | a > b ]
+    ^ aCollection sort: [ :a :b | a asParsecs > b asParsecs ]
 ]
 
 { #category : 'operations' }

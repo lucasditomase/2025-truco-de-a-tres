@@ -23,6 +23,7 @@ AtomicBombEffectTest >> testApplyEffectToDelegatesToApplyToInContextOf [
     board := Board of: 10 andWormholeAt: #().
     
     ship moveTo: 5.
+    board registerShips: { ship }.
     
     effect applyEffectTo: ship inBoard: board.
     

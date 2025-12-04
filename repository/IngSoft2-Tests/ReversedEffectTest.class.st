@@ -80,31 +80,22 @@ ReversedEffectTest >> testOriginalReturnsTheOriginalEffect [
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyEffectToInBoardReturnsSelf [
-    | effect reversed scenario game ship |
+    | effect reversed board ship |
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
-    scenario := self builder
-        withShipNames: #('Alpha');
-        boardWithCells: 10;
-        diceWithSides: 6;
-        build.
-    game := scenario game.
-    ship := scenario shipNamed: 'Alpha'.
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Alpha'.
+    board registerShips: { ship }.
     
-    self assert: (reversed applyEffectTo: ship inBoard: game board) equals: reversed.
+    self assert: (reversed applyEffectTo: ship inBoard: board) equals: reversed.
 ]
 
 { #category : 'tests' }
 ReversedEffectTest >> testApplyToWithShipCallsApplyToInBoard [
-    | effect reversed scenario ship |
+    | effect reversed ship |
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
-    scenario := self builder
-        withShipNames: #('Alpha');
-        boardWithCells: 10;
-        diceWithSides: 6;
-        build.
-    ship := scenario shipNamed: 'Alpha'.
+    ship := Spaceship withName: 'Alpha'.
     
     self shouldnt: [ reversed applyTo: ship ] raise: Error.
 ]
