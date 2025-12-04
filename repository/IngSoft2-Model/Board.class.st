@@ -18,6 +18,7 @@ Class {
 { #category : 'initialization' }
 Board >> initialize [
     super initialize.
+    totalLengthInParsecs := 0.
     movementService := NullShipMovementService new.
 ]
 
@@ -436,7 +437,7 @@ Board >> totalLengthInParsecs [
 
 { #category : 'accessing' }
 Board >> totalLengthInParsecsOrZero [
-    ^ totalLengthInParsecs ifNil: [ 0 ]
+    ^ totalLengthInParsecs
 ]
 
 { #category : 'converting' }
