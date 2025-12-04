@@ -61,7 +61,7 @@ MoonWalkEffectTest >> testApplyToWithoutBoardUsesNullBoard [
     
     effect applyTo: ship1 inContextOf: allShips.
     
-    "Ship1 should stay at position 5, ship2 should move back 2 steps"
+    
     self assert: ship1 position equals: 5.
     self assert: ship2 position equals: 3.
 ]
@@ -87,5 +87,24 @@ MoonWalkEffectTest >> testShouldUseBoardMoveReturnsTrueWhenBoardDoesNotRespondTo
     
     result := effect shouldUseBoardMoveFor: position on: board.
     
+    self assert: result.
+]
+
+{ #category : 'tests' }
+MoonWalkEffectTest >> testShouldUseBoardMoveReturnsTrueForValidPosition [
+    | effect board result |
+    effect := MoonWalkEffect withSteps: 2.
+    board := Board of: 10 andWormholeAt: #().
+    
+    
+    result := effect shouldUseBoardMoveFor: 5 on: board.
+    self assert: result.
+    
+    
+    result := effect shouldUseBoardMoveFor: 0 on: board.
+    self assert: result.
+    
+    
+    result := effect shouldUseBoardMoveFor: 9 on: board.
     self assert: result.
 ]

@@ -26,7 +26,29 @@ AtomicBombEffectTest >> testApplyEffectToDelegatesToApplyToInContextOf [
     
     effect applyEffectTo: ship inBoard: board.
     
-    "All ships should be moved to position 0"
+    
     self assert: ship position equals: 0.
+]
+
+{ #category : 'tests' }
+AtomicBombEffectTest >> testApplyEffectToMovesAllShipsToZero [
+    | effect ship1 ship2 board |
+    effect := AtomicBombEffect new.
+    ship1 := Spaceship withName: 'Ship1'.
+    ship2 := Spaceship withName: 'Ship2'.
+    board := Board of: 10 andWormholeAt: #().
+    
+    
+    board registerShips: { ship1 . ship2 }.
+    
+    
+    board moveShip: ship1 to: 5.
+    board moveShip: ship2 to: 7.
+    
+    effect applyEffectTo: ship1 inBoard: board.
+    
+    
+    self assert: (board positionOf: ship1) equals: 0.
+    self assert: (board positionOf: ship2) equals: 0.
 ]
 
