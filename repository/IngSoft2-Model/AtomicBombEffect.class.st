@@ -7,17 +7,22 @@ Class {
 
 { #category : 'operations' }
 AtomicBombEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
-    ^ self
+    self applyTo: aSpaceship inContextOf: aBoard ships inBoard: aBoard
 ]
 
 { #category : 'operations' }
 AtomicBombEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    allSpaceships do: [:ship |
+    allSpaceships asArray do: [:ship |
         aBoard moveShip: ship to: 0
     ].
 ]
 
 { #category : 'querying' }
 AtomicBombEffect >> consumesFuel [
+    ^ false
+]
+
+{ #category : 'querying' }
+AtomicBombEffect >> canBeReversed [
     ^ false
 ]

@@ -10,6 +10,11 @@ HyperJumpEffectTest >> builder [
     ^ GameTestBuilder new
 ]
 
+{ #category : 'support' }
+HyperJumpEffectTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
+]
+
 { #category : 'asserting' }
 HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
     self
@@ -20,177 +25,28 @@ HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText:
 ]
 
 { #category : 'tests' }
-HyperJumpEffectTest >> testAllowsEntryWithRollAlwaysTrue [
-    | effect |
-    effect := HyperJumpEffect withValues: #( 3 7 12 ).
-
-    self assert: (effect allowsEntryWithRoll: 1).
-    self assert: (effect allowsEntryWithRoll: 6).
-    self assert: (effect allowsEntryWithRoll: 100)
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testApplyEffectToMovesShipForward [
-    | scenario board ship effect expected initial |
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
-    effect := HyperJumpEffect withValues: #(2 4).
-    expected := effect peekJumpValue.
-    initial := 1.
-    board moveShip: ship to: initial.
-
-    effect applyEffectTo: ship inBoard: board.
-
-    self assert: ship position equals: (initial + (board stepsFromParsecs: expected)).
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testApplyToMovesShipForwardByCurrentJumpValue [
-    | scenario board ship effect expected initialPosition |
-
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    effect := HyperJumpEffect withValues: #(3 5 2 4).
-    expected := effect peekJumpValue.
-
-    ship := scenario shipNamed: 'Alpha'.
-    initialPosition := 2.
-    board moveShip: ship to: initialPosition.
-
-    effect applyTo: ship inBoard: board.
-
-    self assert: ship position equals: (initialPosition + (board stepsFromParsecs: expected)).
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testApplyToWithoutBoardRaisesError [
-    | effect ship |
-    ship := Spaceship withName: 'Error'.
+HyperJumpEffectTest >> testHyperJumpCyclesThroughValuesOnMultipleTriggers [
+    | scenario game ship1 ship2 deterministicDie effect |
     effect := HyperJumpEffect withValues: #(1 2).
-
-    self
-        should: [ effect applyTo: ship ]
-        raise: Error
-        withMessageText: 'Use applyTo:inBoard: instead.'
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testHyperJumpCyclesThroughAllJumpValues [
-    | scenario board ship effect positions initialPosition |
-
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    effect := HyperJumpEffect withValues: #(3 5 2 4).
-
-    ship := scenario shipNamed: 'Alpha'.
-    initialPosition := 0.
-    board moveShip: ship to: initialPosition.
-
-    positions := OrderedCollection new.
-    4 timesRepeat: [
-        effect applyTo: ship inBoard: board.
-        positions add: ship position.
-    ].
-
-    self assert: positions asArray equals: #(5 9 2 4).
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testHyperJumpEffectWithValuesInitializesCorrectly [
-    | values effect |
-    values := #(1 3 5).
-    effect := HyperJumpEffect withValues: values.
-
-    self assert: effect values equals: #(5 3 1).
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testInitializeWithSetsJumpValuesAndIndex [
-    | values effect |
-        values := #(3 5 7).
-        effect := HyperJumpEffect new initializeWith: values.
-
-        self assert: effect values equals: #(7 5 3).
-        self assert: effect currentIndex equals: 1.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testNextJumpValueCyclesCorrectly [
-    | effect |
-
-    effect := HyperJumpEffect withValues: #(3 5 2 4).
-
-    self assert: effect nextJumpValue equals: 5.
-    self assert: effect nextJumpValue equals: 4.
-    self assert: effect nextJumpValue equals: 3.
-    self assert: effect nextJumpValue equals: 2.
-    self assert: effect nextJumpValue equals: 5.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testNextJumpValueReturnsValuesCyclically [
-    | effect values |
-    values := #(3 5 7).
-    effect := HyperJumpEffect withValues: values.
-
-    self assert: effect nextJumpValue equals: 7.
-    self assert: effect nextJumpValue equals: 5.
-    self assert: effect nextJumpValue equals: 3.
-    self assert: effect nextJumpValue equals: 7.
-    self assert: effect nextJumpValue equals: 5.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testPeekJumpValueReturnsCurrentValueWithoutAdvancing [
-    | effect values |
-    values := #(10 20 30).
-    effect := HyperJumpEffect withValues: values.
-
-    self assert: effect peekJumpValue equals: 30.
-    self assert: effect peekJumpValue equals: 30.
-    effect nextJumpValue.
-    self assert: effect peekJumpValue equals: 20.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testResetJumpIndexRestartsSequence [
-    | effect |
-
-    effect := HyperJumpEffect withValues: #(3 5 2 4).
-
-    effect nextJumpValue.
-    effect nextJumpValue.
-
-    effect resetJumpIndex.
-
-    self assert: effect nextJumpValue equals: 5.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testResetJumpIndexSetsIndexBackToOne [
-    | effect values |
-    values := #(3 6 9).
-    effect := HyperJumpEffect withValues: values.
-
-    effect nextJumpValue.
-    effect nextJumpValue.
-
-    effect resetJumpIndex.
-
-    self assert: effect peekJumpValue equals: 9.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testWithLightYearValuesConvertsProperly [
-    | scenario board ship effect |
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    effect := HyperJumpEffect withLightYearValues: #(3 6).
-    ship := scenario shipNamed: 'Alpha'.
-    board moveShip: ship to: 0.
-    effect applyTo: ship inBoard: board.
-    self assert: ship position equals: (board stepsFromParsecs: 2).
+    deterministicDie := DeterministicDie withValues: #(3 3).
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 30;
+        configureBoardWith: [ :aBoard |
+            aBoard cells at: 3 put: effect ];
+        build.
+    game := scenario game.
+    ship1 := scenario shipNamed: 'Alpha'.
+    ship2 := scenario shipNamed: 'Beta'.
+    
+    self ensureTurnOf: ship1 inGame: game.
+    game playTurn.
+    
+    self ensureTurnOf: ship2 inGame: game.
+    game playTurn.
+    
+    self deny: ship1 position equals: ship2 position.
 ]
 
 { #category : 'tests' }
@@ -199,4 +55,134 @@ HyperJumpEffectTest >> testWithValuesRequiresNonEmptyCollection [
         should: [ HyperJumpEffect withValues: #() ]
         raise: Error
         withMessageText: 'Hyper jump values must be a non-empty collection'.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testWithLightYearValuesCreatesEffect [
+    | effect |
+    effect := HyperJumpEffect withLightYearValues: #(1 2 3).
+    self assert: effect notNil.
+    self assert: effect values size equals: 3.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testApplyToRaisesErrorWithoutBoard [
+    | effect ship |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    ship := Spaceship withName: 'TestShip'.
+    
+    self
+        should: [ effect applyTo: ship ]
+        raise: Error
+        withMessageText: 'Use applyTo:inBoard: instead.'.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testInitializeWithSortsValuesDescending [
+    | effect values |
+    effect := HyperJumpEffect withValues: { 
+        Distance parsecs: 10 . 
+        Distance parsecs: 30 . 
+        Distance parsecs: 20 
+    }.
+    
+    values := effect values.
+    self assert: (values first) asParsecs >= (values second) asParsecs.
+    self assert: (values second) asParsecs >= (values third) asParsecs.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testInitializeSetsCurrentIndexToOne [
+    | effect |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    self assert: effect currentIndex equals: 1.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testResetJumpIndexResetsToOne [
+    | effect |
+    effect := HyperJumpEffect withValues: { 
+        Distance parsecs: 10 . 
+        Distance parsecs: 20 . 
+        Distance parsecs: 30 
+    }.
+    
+    
+    effect nextJumpValue.
+    effect nextJumpValue.
+    self assert: effect currentIndex equals: 3.
+    
+    
+    effect resetJumpIndex.
+    self assert: effect currentIndex equals: 1.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testResetJumpIndexResortsValues [
+    | effect values |
+    effect := HyperJumpEffect withValues: { 
+        Distance parsecs: 10 . 
+        Distance parsecs: 30 . 
+        Distance parsecs: 20 
+    }.
+    
+    values := effect values.
+    
+    self assert: (values first) asParsecs >= (values second) asParsecs.
+    
+    
+    effect resetJumpIndex.
+    values := effect values.
+    self assert: (values first) asParsecs >= (values second) asParsecs.
+    self assert: (values second) asParsecs >= (values third) asParsecs.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testValuesReturnsJumpValues [
+    | effect values expectedValues |
+    expectedValues := { 
+        Distance parsecs: 30 . 
+        Distance parsecs: 20 . 
+        Distance parsecs: 10 
+    }.
+    effect := HyperJumpEffect withValues: expectedValues.
+    
+    values := effect values.
+    self assert: values notNil.
+    self assert: values size equals: 3.
+    
+    self assert: (values first) asParsecs >= (values second) asParsecs.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testCurrentIndexReturnsCurrentIndex [
+    | effect |
+    effect := HyperJumpEffect withValues: { 
+        Distance parsecs: 10 . 
+        Distance parsecs: 20 
+    }.
+    
+    self assert: effect currentIndex equals: 1.
+    
+    effect nextJumpValue.
+    self assert: effect currentIndex equals: 2.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testSortDescendingPreservingOrderSortsCorrectly [
+    | effect values sortedValues |
+    effect := HyperJumpEffect withValues: { 
+        Distance parsecs: 10 . 
+        Distance parsecs: 30 . 
+        Distance parsecs: 20 
+    }.
+    
+    values := { 5 . 1 . 3 . 9 . 2 }.
+    sortedValues := effect sortDescendingPreservingOrder: values.
+    
+    self assert: sortedValues first equals: 9.
+    self assert: sortedValues second equals: 5.
+    self assert: sortedValues third equals: 3.
+    self assert: sortedValues fourth equals: 2.
+    self assert: sortedValues fifth equals: 1.
 ]

@@ -9,3 +9,8 @@ Class {
 NullCard >> playOn: aShip inGame: aGame [
     NullBehavior doNothing
 ]
+
+{ #category : 'querying' }
+NullCard >> isNull [
+    ^ true
+]

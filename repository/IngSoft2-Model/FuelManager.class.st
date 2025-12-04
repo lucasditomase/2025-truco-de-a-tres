@@ -58,5 +58,5 @@ FuelManager >> penalizeForNoFuel: aShip [
 { #category : 'private' }
 FuelManager >> applyPenaltyTo: aShip [
     board moveShip: aShip to: 0.
-    penaltyAction value: aShip value: 2
+    penaltyAction value: aShip value: GameRules fuelExhaustionPenaltyTurns
 ]

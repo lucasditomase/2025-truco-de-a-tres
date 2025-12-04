@@ -10,23 +10,22 @@ Class {
 
 { #category : 'operations' }
 HyperGravityEffect >> allowsEntryWithRoll: aNumber [
-    ^ aNumber >= requiredRoll
+    ^ aNumber >= self requiredRoll
 ]
 
 { #category : 'operations' }
 HyperGravityEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
-    ^ aSpaceship.
 ]
 
 { #category : 'initialization' }
 HyperGravityEffect >> initialize [
     super initialize.
-    requiredRoll := 4.
+    requiredRoll := NullRequiredRoll new.
 ]
 
 { #category : 'initialization' }
 HyperGravityEffect >> requiredRoll [
-    ^ requiredRoll
+    ^ requiredRoll value
 ]
 
 { #category : 'initialization' }
@@ -34,5 +33,10 @@ HyperGravityEffect >> requiredRoll: aNumber [
     (aNumber isInteger and: [ aNumber > 0 ]) ifFalse: [
         self error: 'Required roll must be a positive integer'.
     ].
-    requiredRoll := aNumber.
+    requiredRoll := RequiredRoll withValue: aNumber.
+]
+
+{ #category : 'configuration' }
+HyperGravityEffect >> configureWithMaxRoll: maxRoll [
+    requiredRoll isNullRequired ifTrue: [ self requiredRoll: maxRoll ]
 ]

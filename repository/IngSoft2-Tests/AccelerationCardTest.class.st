@@ -23,15 +23,21 @@ AccelerationCardTest >> testActivateForAddsCardToShipActiveCards [
 ]
 
 { #category : 'tests' }
-AccelerationCardTest >> testModifyRollAddsOne [
-    | scenario game ship card result |
+AccelerationCardTest >> testAccelerationCardIncreasesMovementDuringGamePlay [
+    | scenario game ship card deterministicDie |
+    deterministicDie := DeterministicDie withValues: #(3).
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
-        diceWithSides: 6;
+        diceCup: [ DiceCup with: { deterministicDie } ];
+        boardWithCells: 20;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
     card := AccelerationCard new.
-    result := card modifyRoll: 3 forShip: ship inGame: game.
-    self assert: result equals: 4.
+    
+    ship addCard: card.
+    ship playCard: card inGame: game.
+    game playTurn.
+    
+    self assert: ship position equals: 4.
 ]

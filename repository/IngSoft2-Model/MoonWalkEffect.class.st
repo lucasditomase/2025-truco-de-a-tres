@@ -57,16 +57,47 @@ MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships [
 
 { #category : 'operations' }
 MoonWalkEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    allSpaceships do: [:ship | ship = aSpaceship ifFalse: [
-        aBoard moveShip: ship backward: steps
-    ]].
+    | originalPosition |
+    originalPosition := self originalPositionFor: aSpaceship on: aBoard.
+    allSpaceships do: [ :ship |
+        ship == aSpaceship ifFalse: [
+            aBoard moveShip: ship backward: steps
+        ]
+    ].
+    self restore: aSpaceship to: originalPosition on: aBoard
 ]
 
 { #category : 'operations' }
 MoonWalkEffect >> reversedVersion [
-    ^ BlockEffect on: [ :ship :board |
-        board ships do: [ :each |
-            each = ship ifFalse: [ board moveShip: each forward: self steps ]
-        ]
-    ]
+    ^ MoonWalkForwardEffect withSteps: self steps
+]
+
+{ #category : 'private' }
+MoonWalkEffect >> originalPositionFor: aSpaceship on: aBoard [
+    (aBoard respondsTo: #positionOf:) ifTrue: [
+        ^ aBoard positionOf: aSpaceship
+    ].
+    ^ aSpaceship position
+]
+
+{ #category : 'private' }
+MoonWalkEffect >> restore: aSpaceship to: aPosition on: aBoard [
+    (aSpaceship position = aPosition) ifTrue: [ ^ self ].
+    (self shouldUseBoardMoveFor: aPosition on: aBoard) ifTrue: [
+        ^ aBoard moveShip: aSpaceship to: aPosition
+    ].
+    aSpaceship moveTo: aPosition
+]
+
+{ #category : 'private' }
+MoonWalkEffect >> shouldUseBoardMoveFor: aPosition on: aBoard [
+    | count |
+    (aBoard respondsTo: #moveShip:to:) ifFalse: [ ^ false ].
+    (aBoard respondsTo: #cellCount) ifFalse: [ ^ true ].
+    count := aBoard cellCount.
+    count isNil ifTrue: [ ^ false ].
+    count <= 0 ifTrue: [ ^ false ].
+    (aPosition >= 0 and: [ aPosition < count ]) ifFalse: [ ^ false ].
+    ^ true.
+
 ]

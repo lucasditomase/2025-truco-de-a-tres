@@ -10,33 +10,46 @@ AtomicBombEffectTest >> builder [
     ^ GameTestBuilder new
 ]
 
-{ #category : 'tests' }
-AtomicBombEffectTest >> testApplyToDoesNothing [
-    | scenario ship board effect |
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    ship := scenario shipNamed: 'Alpha'.
-    board moveShip: ship to: 5.
-
-    effect := AtomicBombEffect new.
-    effect applyTo: ship.
-
-    self assert: ship position equals: 5
+{ #category : 'support' }
+AtomicBombEffectTest >> ensureTurnOf: aShip inGame: aGame [
+    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
 ]
 
 { #category : 'tests' }
-AtomicBombEffectTest >> testApplyToInContextResetsAllPositions [
-    | scenario board alpha beta effect |
-    scenario := (self builder boardWithCells: 10) build.
-    board := scenario game board.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    board moveShip: alpha to: 5.
-    board moveShip: beta to: 9.
-
+AtomicBombEffectTest >> testApplyEffectToDelegatesToApplyToInContextOf [
+    | effect ship board |
     effect := AtomicBombEffect new.
-    effect applyTo: alpha inContextOf: { alpha. beta } inBoard: board.
-
-    self assert: alpha position equals: 0.
-    self assert: beta position equals: 0
+    ship := Spaceship withName: 'TestShip'.
+    board := Board of: 10 andWormholeAt: #().
+    
+    ship moveTo: 5.
+    board registerShips: { ship }.
+    
+    effect applyEffectTo: ship inBoard: board.
+    
+    
+    self assert: ship position equals: 0.
 ]
+
+{ #category : 'tests' }
+AtomicBombEffectTest >> testApplyEffectToMovesAllShipsToZero [
+    | effect ship1 ship2 board |
+    effect := AtomicBombEffect new.
+    ship1 := Spaceship withName: 'Ship1'.
+    ship2 := Spaceship withName: 'Ship2'.
+    board := Board of: 10 andWormholeAt: #().
+    
+    
+    board registerShips: { ship1 . ship2 }.
+    
+    
+    board moveShip: ship1 to: 5.
+    board moveShip: ship2 to: 7.
+    
+    effect applyEffectTo: ship1 inBoard: board.
+    
+    
+    self assert: (board positionOf: ship1) equals: 0.
+    self assert: (board positionOf: ship2) equals: 0.
+]
+

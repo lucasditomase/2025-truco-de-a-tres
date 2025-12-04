@@ -63,3 +63,40 @@ CardTest >> testInstantCardDoesNotRequireTurnToActivate [
     card := AdvanceCard new.
     self deny: card requiresTurnToActivate.
 ]
+
+{ #category : 'tests' }
+CardTest >> testInstantCardTypesReturnsOnlyInstantCards [
+    | instantCardTypes |
+    instantCardTypes := Card instantCardTypes.
+    
+    self assert: instantCardTypes isCollection.
+    instantCardTypes do: [ :cardClass |
+        self assert: (cardClass inheritsFrom: InstantCard) ].
+]
+
+{ #category : 'tests' }
+CardTest >> testPermanentCardTypesReturnsOnlyPermanentCards [
+    | permanentCardTypes |
+    permanentCardTypes := Card permanentCardTypes.
+    
+    self assert: permanentCardTypes isCollection.
+    permanentCardTypes do: [ :cardClass |
+        self assert: (cardClass inheritsFrom: PermanentCard) ].
+]
+
+{ #category : 'tests' }
+CardTest >> testRandomCardReturnsACardInstance [
+    | randomCard |
+    randomCard := Card randomCard.
+    
+    self shouldnt: [ randomCard requiresTurnToActivate ] raise: Error.
+]
+
+{ #category : 'tests' }
+CardTest >> testRandomCardReturnsInstanceFromAllCardTypes [
+    | cardTypes randomCard |
+    cardTypes := Card allCardTypes.
+    randomCard := Card randomCard.
+    
+    self assert: (cardTypes includes: randomCard class).
+]
