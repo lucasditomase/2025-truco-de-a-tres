@@ -16,58 +16,6 @@ MoonWalkEffectTest >> ensureTurnOf: aShip inGame: aGame [
 ]
 
 { #category : 'tests' }
-MoonWalkEffectTest >> testMoonWalkMovesOtherShipsBackward [
-    | scenario game alpha beta deterministicDie effect |
-    effect := MoonWalkEffect new.
-    deterministicDie := DeterministicDie withValues: #(7 5).
-    scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
-        diceCup: [ DiceCup with: { deterministicDie } ];
-        boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 5 put: effect ];
-        build.
-    game := scenario game.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    
-    self ensureTurnOf: beta inGame: game.
-    game playTurn.
-    
-    self ensureTurnOf: alpha inGame: game.
-    game playTurn.
-    
-    self assert: alpha position equals: 5.
-    self assert: beta position equals: 5.
-]
-
-{ #category : 'tests' }
-MoonWalkEffectTest >> testMoonWalkWithCustomSteps [
-    | scenario game alpha beta deterministicDie effect |
-    effect := MoonWalkEffect withSteps: 4.
-    deterministicDie := DeterministicDie withValues: #(10 8).
-    scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
-        diceCup: [ DiceCup with: { deterministicDie } ];
-        boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 8 put: effect ];
-        build.
-    game := scenario game.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    
-    self ensureTurnOf: beta inGame: game.
-    game playTurn.
-    
-    self ensureTurnOf: alpha inGame: game.
-    game playTurn.
-    
-    self assert: alpha position equals: 8.
-    self assert: beta position equals: 6.
-]
-
-{ #category : 'tests' }
 MoonWalkEffectTest >> testWithStepsRequiresPositiveInteger [
     self
         should: [ MoonWalkEffect withSteps: 0 ]

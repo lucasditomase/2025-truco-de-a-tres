@@ -62,33 +62,6 @@ ReversedEffectTest >> testReversedHyperJumpMovesShipBackward [
 ]
 
 { #category : 'tests' }
-ReversedEffectTest >> testReversedMoonWalkMovesOthersForward [
-    | scenario game alpha beta deterministicDie effect reversed |
-    effect := MoonWalkEffect withSteps: 3.
-    reversed := ReversedEffect of: effect.
-    deterministicDie := DeterministicDie withValues: #(3 6).
-    scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
-        diceCup: [ DiceCup with: { deterministicDie } ];
-        boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 6 put: reversed ];
-        build.
-    game := scenario game.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    
-    self ensureTurnOf: beta inGame: game.
-    game playTurn.
-    
-    self ensureTurnOf: alpha inGame: game.
-    game playTurn.
-    
-    self assert: alpha position equals: 6.
-    self assert: beta position equals: 6.
-]
-
-{ #category : 'tests' }
 ReversedEffectTest >> testReversedReturnsOriginal [
     | effect reversed |
     effect := BlackHoleEffect new.

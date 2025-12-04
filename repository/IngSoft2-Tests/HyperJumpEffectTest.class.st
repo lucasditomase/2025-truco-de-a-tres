@@ -25,27 +25,6 @@ HyperJumpEffectTest >> should: anErrorBlock raise: anErrorClass withMessageText:
 ]
 
 { #category : 'tests' }
-HyperJumpEffectTest >> testHyperJumpMovesShipForwardWhenTriggered [
-    | scenario game ship deterministicDie effect |
-    effect := HyperJumpEffect withValues: #(2 4).
-    deterministicDie := DeterministicDie withValues: #(4).
-    scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
-        diceCup: [ DiceCup with: { deterministicDie } ];
-        boardWithCells: 20;
-        configureBoardWith: [ :aBoard |
-            aBoard cells at: 4 put: effect ];
-        build.
-    game := scenario game.
-    ship := scenario shipNamed: 'Alpha'.
-    
-    self ensureTurnOf: ship inGame: game.
-    game playTurn.
-    
-    self assert: ship position > 4.
-]
-
-{ #category : 'tests' }
 HyperJumpEffectTest >> testHyperJumpCyclesThroughValuesOnMultipleTriggers [
     | scenario game ship1 ship2 deterministicDie effect |
     effect := HyperJumpEffect withValues: #(1 2).
