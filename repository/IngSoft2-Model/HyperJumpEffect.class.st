@@ -39,8 +39,7 @@ HyperJumpEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
     | parsecs steps |
     aBoard withMovementTrackingDuring: [
         parsecs := self nextJumpValue.
-        steps := (parsecs / aBoard totalLengthInParsecs * aBoard cellCount)
-            rounded.
+        steps := self stepsFor: parsecs onBoard: aBoard.
         aBoard moveShip: aSpaceship forward: steps
     ]
 ]
@@ -53,7 +52,7 @@ HyperJumpEffect >> reversedVersion [
         | steps |
         board withMovementTrackingDuring: [
             board moveShip: ship to: ship position.
-            steps := (jumpValue / board totalLengthInParsecs * board cellCount) rounded.
+            steps := self stepsFor: jumpValue onBoard: board.
             board moveShip: ship backward: steps
         ]
     ]
@@ -110,6 +109,14 @@ HyperJumpEffect >> resetJumpIndex [
 { #category : 'private' }
 HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
     ^ aCollection sort: [ :a :b | a asParsecs > b asParsecs ]
+]
+
+{ #category : 'private' }
+HyperJumpEffect >> stepsFor: aDistance onBoard: aBoard [
+    | boardLength |
+    boardLength := aBoard totalLengthInParsecs ifNil: [ 0 ].
+    (boardLength isZero) ifTrue: [ ^ 0 ].
+    ^ ((aDistance asParsecs / boardLength) * aBoard cellCount) rounded
 ]
 
 { #category : 'operations' }
