@@ -81,3 +81,25 @@ GameCoordinatorTest >> testLapRegistration [
     
     self assert: status lapCount equals: 1
 ]
+
+{ #category : 'tests' }
+GameCoordinatorTest >> testLapTrackerAccessor [
+    
+    | ships board dice statuses coordinator |
+    
+    ships := { Spaceship withName: 'Apollo' . Spaceship withName: 'Discovery' }.
+    board := Board of: 10 andWormholeAt: #().
+    dice := DiceCup with: { Die of: 6 }.
+    
+    statuses := Dictionary new.
+    ships do: [ :ship |
+        statuses at: ship put: (ShipStatus for: ship position: 0 laps: 0 penalized: false) ].
+    
+    coordinator := GameCoordinator
+        forBoard: board
+        withShips: ships
+        statuses: statuses
+        andDice: dice.
+    
+    self assert: coordinator lapTracker notNil
+]

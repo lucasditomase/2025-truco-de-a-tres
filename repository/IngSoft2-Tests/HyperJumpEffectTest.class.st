@@ -56,3 +56,44 @@ HyperJumpEffectTest >> testWithValuesRequiresNonEmptyCollection [
         raise: Error
         withMessageText: 'Hyper jump values must be a non-empty collection'.
 ]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testWithLightYearValuesCreatesEffect [
+    | effect |
+    effect := HyperJumpEffect withLightYearValues: #(1 2 3).
+    self assert: effect notNil.
+    self assert: effect values size equals: 3.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testApplyToRaisesErrorWithoutBoard [
+    | effect ship |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    ship := Spaceship withName: 'TestShip'.
+    
+    self
+        should: [ effect applyTo: ship ]
+        raise: Error
+        withMessageText: 'Use applyTo:inBoard: instead.'.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testInitializeWithSortsValuesDescending [
+    | effect values |
+    effect := HyperJumpEffect withValues: { 
+        Distance parsecs: 10 . 
+        Distance parsecs: 30 . 
+        Distance parsecs: 20 
+    }.
+    
+    values := effect values.
+    self assert: (values first) asParsecs >= (values second) asParsecs.
+    self assert: (values second) asParsecs >= (values third) asParsecs.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testInitializeSetsCurrentIndexToOne [
+    | effect |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    self assert: effect currentIndex equals: 1.
+]

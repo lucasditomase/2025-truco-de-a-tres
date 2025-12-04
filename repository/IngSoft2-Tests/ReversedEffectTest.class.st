@@ -68,3 +68,59 @@ ReversedEffectTest >> testReversedReturnsOriginal [
     reversed := ReversedEffect of: effect.
     self assert: reversed reversed equals: effect.
 ]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testOriginalReturnsTheOriginalEffect [
+    | effect reversed |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    
+    self assert: reversed original equals: effect.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyEffectToInBoardReturnsSelf [
+    | effect reversed scenario game ship |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    scenario := self builder
+        withShipNames: #('Alpha');
+        boardWithCells: 10;
+        diceWithSides: 6;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    
+    self assert: (reversed applyEffectTo: ship inBoard: game board) equals: reversed.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyToWithShipCallsApplyToInBoard [
+    | effect reversed scenario ship |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    scenario := self builder
+        withShipNames: #('Alpha');
+        boardWithCells: 10;
+        diceWithSides: 6;
+        build.
+    ship := scenario shipNamed: 'Alpha'.
+    
+    self shouldnt: [ reversed applyTo: ship ] raise: Error.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyToInBoardCreatesParticipants [
+    | effect reversed scenario game ship |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    scenario := self builder
+        withShipNames: #('Alpha' 'Beta');
+        boardWithCells: 10;
+        diceWithSides: 6;
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    
+    self shouldnt: [ reversed applyTo: ship inBoard: game board ] raise: Error.
+]
