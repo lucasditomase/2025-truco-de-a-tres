@@ -7,9 +7,12 @@ Class {
 
 { #category : 'operations' }
 MoonWalkForwardEffect >> applyTo: aSpaceship inContextOf: allSpaceships inBoard: aBoard [
-    allSpaceships asArray do: [ :ship |
+    | originalPosition |
+    originalPosition := self originalPositionFor: aSpaceship on: aBoard.
+    allSpaceships do: [ :ship |
         ship == aSpaceship ifFalse: [
             aBoard moveShip: ship forward: self steps
         ]
     ].
+    self restore: aSpaceship to: originalPosition on: aBoard
 ]
