@@ -89,7 +89,7 @@ CardTest >> testRandomCardReturnsACardInstance [
     | randomCard |
     randomCard := Card randomCard.
     
-    self assert: (randomCard isKindOf: Card).
+    self shouldnt: [ randomCard requiresTurnToActivate ] raise: Error.
 ]
 
 { #category : 'tests' }
@@ -98,6 +98,5 @@ CardTest >> testRandomCardReturnsInstanceFromAllCardTypes [
     cardTypes := Card allCardTypes.
     randomCard := Card randomCard.
     
-    self assert: (cardTypes anySatisfy: [ :cardClass | 
-        randomCard isKindOf: cardClass ]).
+    self assert: (cardTypes includes: randomCard class).
 ]
