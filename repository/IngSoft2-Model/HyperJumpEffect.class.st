@@ -116,7 +116,7 @@ HyperJumpEffect >> sortDescendingPreservingOrder: aCollection [
 { #category : 'private' }
 HyperJumpEffect >> stepsFor: aDistance onBoard: aBoard [
     | boardLength |
-    boardLength := aBoard totalLengthInParsecs ifNil: [ 0 ].
+    boardLength := aBoard totalLengthInParsecsOrZero.
     (boardLength isZero) ifTrue: [ ^ 0 ].
     ^ ((aDistance asParsecs / boardLength) * aBoard cellCount) rounded
 ]

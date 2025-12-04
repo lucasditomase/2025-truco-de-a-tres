@@ -20,12 +20,12 @@ HyperGravityEffect >> applyEffectTo: aSpaceship inBoard: aBoard [
 { #category : 'initialization' }
 HyperGravityEffect >> initialize [
     super initialize.
-    requiredRoll := nil.
+    requiredRoll := NullRequiredRoll new.
 ]
 
 { #category : 'initialization' }
 HyperGravityEffect >> requiredRoll [
-    ^ requiredRoll ifNil: [ 4 ]
+    ^ requiredRoll value
 ]
 
 { #category : 'initialization' }
@@ -33,10 +33,10 @@ HyperGravityEffect >> requiredRoll: aNumber [
     (aNumber isInteger and: [ aNumber > 0 ]) ifFalse: [
         self error: 'Required roll must be a positive integer'.
     ].
-    requiredRoll := aNumber.
+    requiredRoll := RequiredRoll withValue: aNumber.
 ]
 
 { #category : 'configuration' }
 HyperGravityEffect >> configureWithMaxRoll: maxRoll [
-    requiredRoll ifNil: [ self requiredRoll: maxRoll ]
+    requiredRoll isNullRequired ifTrue: [ self requiredRoll: maxRoll ]
 ]
