@@ -13,6 +13,13 @@ Class {
 }
 
 { #category : 'initialization' }
+ShipStatus class >> for: aShip position: aPosition laps: aLapCount penalized: isPenalized [
+    | fuel |
+    fuel := (aShip respondsTo: #fuel) ifTrue: [ aShip fuel ] ifFalse: [ 0 ].
+    ^ self for: aShip position: aPosition laps: aLapCount penalized: isPenalized fuel: fuel
+]
+
+{ #category : 'initialization' }
 ShipStatus class >> for: aShip position: aPosition laps: aLapCount penalized: isPenalized fuel: aFuelAmount [
     ^ self new
         initializeWith: (self ensureShipFrom: aShip)
