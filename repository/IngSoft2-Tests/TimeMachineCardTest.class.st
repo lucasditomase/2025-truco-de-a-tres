@@ -82,7 +82,7 @@ TimeMachineCardTest >> testTimeMachineRestoresAllies [
     ship1 addCard: card.
     ship1 playCard: card inGame: game.
     
-    ship1 playCard: card inGame: game.
+
     
     self assert: ship1 fuel equals: ship1Initial.
     self assert: ship2 fuel equals: ship2Initial.
