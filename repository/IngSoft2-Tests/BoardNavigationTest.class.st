@@ -16,19 +16,16 @@ BoardNavigationTest >> should: anErrorBlock raise: anErrorClass withMessageText:
 
 { #category : 'helpers - board setup' }
 BoardNavigationTest >> placeEffect: anEffect atPosition: position inBoard: board [
-    
     board cells at: position put: anEffect
 ]
 
 { #category : 'helpers - board setup' }
 BoardNavigationTest >> placeCells: cellArray inBoard: board [
-    
     board cells: cellArray asArray
 ]
 
 { #category : 'helpers - board setup' }
 BoardNavigationTest >> createEmptyCellsOfSize: size [
-    
     ^ (1 to: size) collect: [ :i | nil ]
 ]
 

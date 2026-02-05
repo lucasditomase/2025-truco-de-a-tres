@@ -43,7 +43,7 @@ HyperGravityEffectTest >> testHyperGravityBlocksEntryWithLowRoll [
     game playTurn.
     
     self deny: (game board positionOf: ship) equals: 5.
-    self assert: (game board positionOf: ship) equals: 0. 
+    self assert: (game board positionOf: ship) equals: 0.
 ]
 
 { #category : 'tests' }

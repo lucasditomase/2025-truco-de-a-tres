@@ -29,7 +29,6 @@ TimeMachineEffect >> restoredFuelFor: aShip inGame: aGame [
 
 { #category : 'private' }
 TimeMachineEffect >> restoreFuelFor: targets inGame: aGame [
-	
 	targets do: [ :ship |
 		ship restoreFuelTo: (aGame antepenultimateFuelFor: ship)
 	]

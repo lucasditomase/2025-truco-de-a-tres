@@ -46,7 +46,6 @@ TurnData >> fuelHistoryFor: aShip [
 
 { #category : 'documentation' }
 TurnData >> fuelHistorySemantics [
-    
     ^ 'fuelHistory: oldest..newest; first is antepenultimate when size=3.'
 ]
 
@@ -118,7 +117,6 @@ TurnData >> antepenultimateFuelFor: aShip [
 ]
 { #category : 'accessing' }
 TurnData >> fuelAtStartOfPenultimateTurnFor: aShip [
-    
     | history |
     history := self fuelHistoryFor: aShip.
     history size < 2

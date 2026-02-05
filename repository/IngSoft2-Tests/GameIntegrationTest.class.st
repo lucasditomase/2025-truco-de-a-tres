@@ -7,12 +7,10 @@ Class {
 
 { #category : 'support' }
 GameIntegrationTest >> builder [
-	
 	^ GameTestBuilder new
 ]
 
 { #category : 'support' }
 GameIntegrationTest >> ensureTurnOf: aShip inGame: aGame [
-	
 	[ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
 ]
