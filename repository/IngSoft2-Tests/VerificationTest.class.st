@@ -22,7 +22,7 @@ VerificationTest >> testWormholeReversalAdjustsLapsCorrectly [
     wormhole := Wormhole from: 3 to: 8.
     
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         boardFactory: [ Board of: 10 andWormholeAt: { wormhole } ];
         build.
     game := scenario game.
@@ -53,7 +53,7 @@ VerificationTest >> testDoubleReversalCancelsOut [
     
     wormhole := Wormhole from: 3 to: 8.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         boardFactory: [ Board of: 10 andWormholeAt: { wormhole } ];
         build.
     game := scenario game.
@@ -78,7 +78,7 @@ VerificationTest >> testTimeMachineInProductionScenario [
     
     deterministicDie := DeterministicDie withValues: #(10) sides: 10.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         laps: 3;
         boardWithCells: 100;

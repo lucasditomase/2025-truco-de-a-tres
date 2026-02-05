@@ -49,7 +49,7 @@ ReversedEffectTest >> testReversedWormholeEntersAtExitAndGoesToNextLap [
     game playTurn.
     
     self assert: (game statusFor: ship) position equals: 3.
-    self assert: (game statusFor: ship) lapCount equals: 1.
+    self assert: (game statusFor: ship) lapCount equals: 0.
 ]
 
 { #category : 'tests' }

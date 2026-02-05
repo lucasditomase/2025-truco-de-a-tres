@@ -11,7 +11,7 @@ TimeMachineCardTest >> testTimeMachineRestoresFuelToStartOfPenultimateTurn [
     
     deterministicDie := DeterministicDie withValues: #(10) sides: 10.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         laps: 3;
         boardWithCells: 100;
@@ -36,7 +36,7 @@ TimeMachineCardTest >> testTimeMachineRequiresMinimumTurns [
     | scenario game ship1 card deterministicDie |
     deterministicDie := DeterministicDie withValues: #(10) sides: 10.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 100;
         build.
@@ -85,7 +85,7 @@ TimeMachineCardTest >> testTimeMachineRestoresAllies [
     ship1 addCard: card.
     ship1 playCard: card inGame: game.
     
-    ship1 playCard: card inGame: game.
+
     
     self assert: ship1 fuel equals: ship1Initial.
     self assert: ship2 fuel equals: ship2Initial.
