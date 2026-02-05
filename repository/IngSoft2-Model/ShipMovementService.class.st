@@ -103,7 +103,7 @@ ShipMovementService >> moveShip: aShip to: aPosition [
         moveShip: aShip
         from: oldPos
         toPosition: aPosition
-        delta: [ :new :previous | new - previous ]
+        delta: [ :new :previous | aPosition - previous ]
 ]
 
 { #category : 'movement' }
