@@ -82,6 +82,16 @@ GameTestScenario >> playUntilFinish [
 
 { #category : 'controlling' }
 GameTestScenario >> moveShip: aShip to: aPosition [
+    | resolvedPosition |
     game board moveShip: aShip to: aPosition.
+    resolvedPosition := game board applyWormholeIfPresentAt: aPosition.
+    resolvedPosition ~= aPosition ifTrue: [
+        game board moveShip: aShip to: resolvedPosition ].
+    ^ self
+]
+
+{ #category : 'controlling' }
+GameTestScenario >> withCard: aCard for: aShip [
+    aShip addCard: aCard.
     ^ self
 ]
