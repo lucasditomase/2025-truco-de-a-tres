@@ -79,3 +79,9 @@ GameTestScenario >> playUntilFinish [
     game playUntilFinish.
     ^ self
 ]
+
+{ #category : 'controlling' }
+GameTestScenario >> moveShip: aShip to: aPosition [
+    game board moveShip: aShip to: aPosition.
+    ^ self
+]

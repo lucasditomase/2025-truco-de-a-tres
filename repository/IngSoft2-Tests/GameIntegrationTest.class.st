@@ -14,3 +14,12 @@ GameIntegrationTest >> builder [
 GameIntegrationTest >> ensureTurnOf: aShip inGame: aGame [
 	[ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
 ]
+
+{ #category : 'asserting' }
+GameIntegrationTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: errorMessage ]
+]

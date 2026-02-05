@@ -5,19 +5,21 @@ Class {
         'ship',
         'position',
         'lapCount',
-        'penalized'
+        'penalized',
+        'fuel'
     ],
     #category : 'IngSoft2-Model',
     #package : 'IngSoft2-Model'
 }
 
 { #category : 'initialization' }
-ShipStatus class >> for: aShip position: aPosition laps: aLapCount penalized: isPenalized [
+ShipStatus class >> for: aShip position: aPosition laps: aLapCount penalized: isPenalized fuel: aFuelAmount [
     ^ self new
         initializeWith: (self ensureShipFrom: aShip)
         position: (self ensurePositionFrom: aPosition)
         laps: (self ensureLapCountFrom: aLapCount)
-        penalized: (self ensurePenaltyFlagFrom: isPenalized).
+        penalized: (self ensurePenaltyFlagFrom: isPenalized)
+        fuel: (self ensureFuelFrom: aFuelAmount)
 ]
 
 { #category : 'validation' }
@@ -44,6 +46,14 @@ ShipStatus class >> ensurePositionFrom: aPosition [
 { #category : 'validation' }
 ShipStatus class >> ensureShipFrom: aShip [
     ^ Spaceship ensureSpaceship: aShip errorMessage: self invalidShipMessage
+]
+
+{ #category : 'validation' }
+ShipStatus class >> ensureFuelFrom: aFuelAmount [
+    (aFuelAmount isInteger and: [ aFuelAmount >= 0 ]) ifFalse: [
+        self error: 'Fuel must be a non-negative integer'
+    ].
+    ^ aFuelAmount
 ]
 
 { #category : 'validation' }
@@ -77,11 +87,12 @@ ShipStatus >> hasWonWithTotalLaps: aNumber [
 ]
 
 { #category : 'initialization' }
-ShipStatus >> initializeWith: aShip position: aPosition laps: aLapCount penalized: isPenalized [
+ShipStatus >> initializeWith: aShip position: aPosition laps: aLapCount penalized: isPenalized fuel: aFuelAmount [
     ship := self class ensureShipFrom: aShip.
     position := self class ensurePositionFrom: aPosition.
     lapCount := self class ensureLapCountFrom: aLapCount.
-    penalized := self class ensurePenaltyFlagFrom: isPenalized
+    penalized := self class ensurePenaltyFlagFrom: isPenalized.
+    fuel := self class ensureFuelFrom: aFuelAmount
 ]
 
 { #category : 'accessing' }
@@ -97,6 +108,16 @@ ShipStatus >> lapCount [
 { #category : 'accessing' }
 ShipStatus >> penalized: aBoolean [
     penalized := aBoolean
+]
+
+{ #category : 'accessing' }
+ShipStatus >> fuel [
+    ^ fuel
+]
+
+{ #category : 'accessing' }
+ShipStatus >> fuel: aFuelAmount [
+    fuel := aFuelAmount
 ]
 
 { #category : 'accessing' }

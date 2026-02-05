@@ -245,7 +245,8 @@ Game >> initializeShipStatuses [
             for: ship
             position: 0
             laps: 0
-            penalized: false).
+            penalized: false
+            fuel: ship fuel).
         2 timesRepeat: [ ship addCard: board drawCard ] ]
 ]
 
@@ -498,7 +499,8 @@ Game >> allShipStatuses [
             for: ship
             position: ship position
             laps: tracker lapCount
-            penalized: tracker isPenalized ]
+            penalized: tracker isPenalized
+            fuel: ship fuel ]
 ]
 
 { #category : 'testing' }
@@ -513,6 +515,7 @@ Game >> statusFor: aShip [
 
     status position: (board positionOf: aShip).
     status penalized: (self isPenalized: aShip).
+    status fuel: aShip fuel.
     ^ status
 ]
 
