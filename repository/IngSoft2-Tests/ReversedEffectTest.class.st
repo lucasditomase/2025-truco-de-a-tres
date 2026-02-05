@@ -37,7 +37,7 @@ ReversedEffectTest >> testReversedWormholeEntersAtExitAndGoesToNextLap [
     
     deterministicDie := DeterministicDie withValues: #(9) sides: 10.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
         configureBoardWith: [ :board |
@@ -62,7 +62,7 @@ ReversedEffectTest >> testReversedWormholeEntersAtEntryAndGoesToPreviousLap [
     
     deterministicDie := DeterministicDie withValues: #(3) sides: 6.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
         configureBoardWith: [ :board |
@@ -136,7 +136,7 @@ ReversedEffectTest >> testReversedCardGiverDiscardsCard [
     
     deterministicDie := DeterministicDie withValues: #(3) sides: 6.
     scenario := self builder
-        withShipNames: #('Alpha');
+        withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
         configureBoardWith: [ :board |
