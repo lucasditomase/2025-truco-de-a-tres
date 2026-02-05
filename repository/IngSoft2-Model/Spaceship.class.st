@@ -195,11 +195,6 @@ Spaceship >> restoreFuel [
     fuel := maxFuel.
 ]
 
-{ #category : 'fuel' }
-Spaceship >> restoreFuelTo: aNumber [
-    fuel := aNumber
-]
-
 { #category : 'state' }
 Spaceship >> state [
     ^ state
