@@ -7,6 +7,6 @@ Class {
 
 { #category : 'playing' }
 TimeMachineCard >> applyEffectTo: aShip inGame: aGame [
-    aGame applyTimeMachineTo: aShip
+    TimeMachineEffect new applyTo: aShip inGame: aGame
 ]
 
