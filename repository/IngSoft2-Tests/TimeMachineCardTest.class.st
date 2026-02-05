@@ -20,6 +20,8 @@ TimeMachineCardTest >> testTimeMachineRestoresFuelToStartOfPenultimateTurn [
     ship1 := scenario shipNamed: 'Alpha'.
     
     
+    initialFuel := ship1 fuel.
+    
     game playTurn.
     game playTurn.
     
@@ -77,8 +79,6 @@ TimeMachineCardTest >> testTimeMachineRestoresAllies [
     
     card := TimeMachineCard new.
     ship1 addCard: card.
-    ship1 playCard: card inGame: game.
-    
     ship1 playCard: card inGame: game.
     
     self assert: ship1 fuel equals: ship1Initial.
