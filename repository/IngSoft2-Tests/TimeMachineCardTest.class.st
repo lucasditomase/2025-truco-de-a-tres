@@ -9,11 +9,6 @@ Class {
 TimeMachineCardTest >> testTimeMachineRestoresFuelToStartOfPenultimateTurn [
     | scenario game ship1 card deterministicDie initialFuel |
     
-    
-    
-    
-    
-    
     deterministicDie := DeterministicDie withValues: #(10) sides: 10.
     scenario := self builder
         withShipNames: #('Alpha');
@@ -25,40 +20,13 @@ TimeMachineCardTest >> testTimeMachineRestoresFuelToStartOfPenultimateTurn [
     ship1 := scenario shipNamed: 'Alpha'.
     
     
-    initialFuel := (game statusFor: ship1) fuel. 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    initialFuel := (game statusFor: ship1) fuel.
     game playTurn.
-    
-    
-    
     game playTurn.
-    
-    
-    
-    
-    
     
     card := TimeMachineCard new.
-    scenario withCard: card for: ship1. 
-    
-    
-    
-    
+    scenario withCard: card for: ship1.
     ship1 playCard: card inGame: game.
-    
-    
     
     self assert: ship1 fuel equals: initialFuel.
 ]
@@ -76,18 +44,11 @@ TimeMachineCardTest >> testTimeMachineRequiresMinimumTurns [
     ship1 := scenario shipNamed: 'Alpha'.
     card := TimeMachineCard new.
     
-    
-    
-    
-    
-    self
+        self
         should: [ ship1 playCard: card inGame: game ]
         raise: Error
         withMessageText: 'Card not in hand'. 
-        
-    
-    ship1 addCard: card. 
-    
+    ship1 addCard: card.
     
     self
         should: [ ship1 playCard: card inGame: game ]
@@ -113,25 +74,18 @@ TimeMachineCardTest >> testTimeMachineRestoresAllies [
     
     
     ally := AllyCard withAlly: ship2.
-    ship1 addCard: ally. 
+    ship1 addCard: ally.
     ship1 playCard: ally inGame: game.
-    
     
     4 timesRepeat: [ game playTurn ].
     
-    
-    
-    
-    
-    
-    
-    
+    4 timesRepeat: [ game playTurn ].
     
     card := TimeMachineCard new.
     ship1 addCard: card.
     ship1 playCard: card inGame: game.
     
-    
+    ship1 playCard: card inGame: game.
     
     self assert: ship1 fuel equals: ship1Initial.
     self assert: ship2 fuel equals: ship2Initial.

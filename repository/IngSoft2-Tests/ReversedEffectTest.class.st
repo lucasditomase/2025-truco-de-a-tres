@@ -11,8 +11,6 @@ ReversedEffectTest >> testReversedBlackHoleMovesShipForward [
     effect := BlackHoleEffect new.
     reversed := ReversedEffect of: effect.
     
-    
-    
     deterministicDie := DeterministicDie withValues: #(4) sides: 6.
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
@@ -27,7 +25,6 @@ ReversedEffectTest >> testReversedBlackHoleMovesShipForward [
     self ensureTurnOf: ship inGame: game.
     game playTurn.
     
-    
     status := game statusFor: ship.
     self assert: status position equals: 8.
 ]
@@ -37,8 +34,6 @@ ReversedEffectTest >> testReversedWormholeEntersAtExitAndGoesToNextLap [
     | scenario game ship deterministicDie wormhole reversed |
     wormhole := Wormhole from: 3 to: 9.
     reversed := wormhole reversed.
-    
-    
     
     deterministicDie := DeterministicDie withValues: #(9) sides: 10.
     scenario := self builder
@@ -53,9 +48,6 @@ ReversedEffectTest >> testReversedWormholeEntersAtExitAndGoesToNextLap [
     
     game playTurn.
     
-    
-    
-    
     self assert: (game statusFor: ship) position equals: 3.
     self assert: (game statusFor: ship) lapCount equals: 1.
 ]
@@ -65,10 +57,6 @@ ReversedEffectTest >> testReversedWormholeEntersAtEntryAndGoesToPreviousLap [
     | scenario game ship deterministicDie wormhole reversed |
     wormhole := Wormhole from: 3 to: 9.
     reversed := wormhole reversed.
-    
-    
-    
-    
     
     
     
@@ -85,10 +73,7 @@ ReversedEffectTest >> testReversedWormholeEntersAtEntryAndGoesToPreviousLap [
     
     game playTurn.
     
-    
-    
     self assert: (game statusFor: ship) position equals: 9.
-    
 ]
 
 { #category : 'tests' }
@@ -111,14 +96,7 @@ ReversedEffectTest >> testReversedMoonWalkMovesOthersForward [
     
     
     
-    
-    
-    
-    
-    
-    
-    game playTurn. 
-    
+    game playTurn.
     
     self assert: (game statusFor: ship1) position equals: 3.
     self assert: (game statusFor: ship2) position equals: 2.
@@ -144,11 +122,10 @@ ReversedEffectTest >> testReversedAtomicBombDoesNothing [
     
     
     
-    
     game playTurn.
     
     self assert: (game statusFor: ship1) position equals: 3.
-    self assert: (game statusFor: ship2) position equals: 0. 
+    self assert: (game statusFor: ship2) position equals: 0.
 ]
 
 { #category : 'tests' }
@@ -169,30 +146,6 @@ ReversedEffectTest >> testReversedCardGiverDiscardsCard [
     ship := scenario shipNamed: 'Alpha'.
     
     
-    initialCardCount := (game activeCards select: [:c | true]) size. 
-    
-    
-    
-    
-    
-    
-    
-    
-    initialCardCount := (game activeCards) size. 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    initialCardCount := (game activeCards select: [:c | true]) size.
+    initialCardCount := (game activeCards) size.
 ]

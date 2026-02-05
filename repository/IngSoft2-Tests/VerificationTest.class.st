@@ -28,34 +28,22 @@ VerificationTest >> testWormholeReversalAdjustsLapsCorrectly [
     game := scenario game.
     ship1 := scenario shipNamed: 'Alpha'.
     
-    
     (game lapTrackerFor: ship1) addLap.
     self assert: (game lapTrackerFor: ship1) lapCount equals: 1.
     
-    
     scenario moveShip: ship1 to: 8.
-    
-    
     self playReversalFor: ship1 inGame: game.
-    
-    
     
     scenario moveShip: ship1 to: 3.
     game applyEffectOfCurrentCell.
     
-    
     self assert: ship1 position equals: 8.
-    
     self assert: (game lapTrackerFor: ship1) lapCount equals: 0.
-    
-    
-    
     
     scenario moveShip: ship1 to: 8.
     game applyEffectOfCurrentCell.
     
     self assert: ship1 position equals: 3.
-    
     self assert: (game lapTrackerFor: ship1) lapCount equals: 1.
 ]
 
@@ -71,21 +59,15 @@ VerificationTest >> testDoubleReversalCancelsOut [
     game := scenario game.
     ship1 := scenario shipNamed: 'Alpha'.
     
-    
     scenario moveShip: ship1 to: 8.
     self playReversalFor: ship1 inGame: game.
-    
-    
     self playReversalFor: ship1 inGame: game.
-    
-    
     
     scenario moveShip: ship1 to: 3.
     
     game applyEffectOfCurrentCell.
     
     self assert: ship1 position equals: 8.
-    
     self assert: (game lapTrackerFor: ship1) lapCount equals: 0.
 ]
 
@@ -106,14 +88,8 @@ VerificationTest >> testTimeMachineInProductionScenario [
     
     initialFuel := ship1 fuel.
     
-    
     game playTurn.
-    
     game playTurn.
-    
-    
-    
-    
     
     tmCard := TimeMachineCard new.
     ship1 addCard: tmCard.
