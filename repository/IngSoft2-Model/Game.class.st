@@ -459,19 +459,7 @@ Game >> applyEffectOfCurrentCell [
         during: [ board applyEffectTo: self currentShip ]
 ]
 
-{ #category : 'process actions' }
-Game >> applyTimeMachineTo: aShip [
-    | targets |
-    targets := OrderedCollection with: aShip.
-    targets addAll: aShip allies.
 
-    targets do: [ :ship |
-        (self fuelHistoryFor: ship) size >= 2
-            ifFalse: [ self error: 'Not enough turns to use Time Machine' ] ].
-
-    targets do: [ :ship |
-        ship fuel: ((self fuelHistoryFor: ship) first) ]
-]
 
 { #category : 'private' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
@@ -549,4 +537,14 @@ Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
 { #category : 'accessing' }
 Game >> winner [
     ^ state whenFinishedDo: [ :w | w ] whenInProgressDo: [ NullSpaceship new ]
+]
+
+{ #category : 'time machine' }
+Game >> canUseTimeMachine: aShip [
+    ^ turnData hasHistoryForTimeMachine: aShip
+]
+
+{ #category : 'time machine' }
+Game >> antepenultimateFuelFor: aShip [
+    ^ turnData antepenultimateFuelFor: aShip
 ]

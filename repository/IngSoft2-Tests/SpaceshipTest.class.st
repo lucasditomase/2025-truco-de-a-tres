@@ -242,6 +242,16 @@ SpaceshipTest >> testRestoreFuelRestoresToMax [
 ]
 
 { #category : 'tests - instance' }
+SpaceshipTest >> testRestoreFuelToSetsFuel [
+    | ship |
+
+    ship := Spaceship withName: 'Tank2'.
+    ship restoreFuelTo: 7.
+
+    self assert: ship fuel equals: 7.
+]
+
+{ #category : 'tests - instance' }
 SpaceshipTest >> testStateSetterChangesState [
     | ship newState |
 
