@@ -1,19 +1,9 @@
 Class {
     #name : 'ReversedEffectTest',
-    #superclass : 'TestCase',
+    #superclass : 'GameIntegrationTest',
     #category : 'IngSoft2-Tests',
     #package : 'IngSoft2-Tests'
 }
-
-{ #category : 'support' }
-ReversedEffectTest >> builder [
-    ^ GameTestBuilder new
-]
-
-{ #category : 'support' }
-ReversedEffectTest >> ensureTurnOf: aShip inGame: aGame [
-    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
-]
 
 { #category : 'tests' }
 ReversedEffectTest >> testReversedBlackHoleMovesShipForward [

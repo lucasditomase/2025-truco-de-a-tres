@@ -14,6 +14,24 @@ BoardNavigationTest >> should: anErrorBlock raise: anErrorClass withMessageText:
             self assert: error messageText equals: errorMessage ]
 ]
 
+{ #category : 'helpers - board setup' }
+BoardNavigationTest >> placeEffect: anEffect atPosition: position inBoard: board [
+    "Helper method for semantic board state setup"
+    board cells at: position put: anEffect
+]
+
+{ #category : 'helpers - board setup' }
+BoardNavigationTest >> placeCells: cellArray inBoard: board [
+    "Helper method to set all cells at once"
+    board cells: cellArray asArray
+]
+
+{ #category : 'helpers - board setup' }
+BoardNavigationTest >> createEmptyCellsOfSize: size [
+    "Helper method to create empty board cells"
+    ^ (1 to: size) collect: [ :i | nil ]
+]
+
 { #category : 'tests - instance' }
 BoardNavigationTest >> testApplyEffectToDoesNothingIfNoEffect [
     | board ship cells |

@@ -1,19 +1,9 @@
 Class {
     #name : 'TimeMachineCardTest',
-    #superclass : 'TestCase',
+    #superclass : 'GameIntegrationTest',
     #category : 'IngSoft2-Tests',
     #package : 'IngSoft2-Tests'
 }
-
-{ #category : 'support' }
-TimeMachineCardTest >> builder [
-    ^ GameTestBuilder new
-]
-
-{ #category : 'support' }
-TimeMachineCardTest >> ensureTurnOf: aShip inGame: aGame [
-    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
-]
 
 { #category : 'tests' }
 TimeMachineCardTest >> testTimeMachineRestoresFuelToStartOfPenultimateTurn [
