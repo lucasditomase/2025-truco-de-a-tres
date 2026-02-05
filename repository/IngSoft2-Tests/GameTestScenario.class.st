@@ -82,11 +82,19 @@ GameTestScenario >> playUntilFinish [
 
 { #category : 'controlling' }
 GameTestScenario >> moveShip: aShip to: aPosition [
-    | resolvedPosition |
+    | start delta resolvedPosition intermediate |
+    start := game board positionOf: aShip.
+    
     game board moveShip: aShip to: aPosition.
+    delta := aPosition - start.
+    game registerLapFor: aShip from: start after: delta.
+    
+    intermediate := aPosition.
     resolvedPosition := game board applyWormholeIfPresentAt: aPosition.
     resolvedPosition ~= aPosition ifTrue: [
-        game board moveShip: aShip to: resolvedPosition ].
+        game board moveShip: aShip to: resolvedPosition.
+        delta := resolvedPosition - intermediate.
+        game registerLapFor: aShip from: intermediate after: delta ].
     ^ self
 ]
 
