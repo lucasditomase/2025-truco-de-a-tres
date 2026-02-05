@@ -28,7 +28,8 @@ HyperGravityEffectTest >> should: anErrorBlock raise: anErrorClass withMessageTe
 HyperGravityEffectTest >> testHyperGravityBlocksEntryWithLowRoll [
     | scenario game ship deterministicDie effect |
     effect := HyperGravityEffect new.
-    deterministicDie := DeterministicDie withValues: #(5) sides: 6.
+    effect requiredRoll: 6.
+    deterministicDie := DeterministicDie withValues: #(5).
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
@@ -42,15 +43,15 @@ HyperGravityEffectTest >> testHyperGravityBlocksEntryWithLowRoll [
     self ensureTurnOf: ship inGame: game.
     game playTurn.
     
-    self deny: (game board positionOf: ship) equals: 5.
-    self assert: (game board positionOf: ship) equals: 0. "Stays at start because movement was blocked? Or stops before? existing test said deny 5."
+    self deny: ship position equals: 5.
 ]
 
 { #category : 'tests' }
 HyperGravityEffectTest >> testHyperGravityAllowsEntryWithSufficientRoll [
     | scenario game ship deterministicDie effect |
     effect := HyperGravityEffect new.
-    deterministicDie := DeterministicDie withValues: #(6) sides: 6.
+    effect requiredRoll: 4.
+    deterministicDie := DeterministicDie withValues: #(6).
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
@@ -64,5 +65,21 @@ HyperGravityEffectTest >> testHyperGravityAllowsEntryWithSufficientRoll [
     self ensureTurnOf: ship inGame: game.
     game playTurn.
     
-    self assert: (game board positionOf: ship) equals: 6.
+    self assert: ship position equals: 6.
+]
+
+{ #category : 'tests' }
+HyperGravityEffectTest >> testRequiredRollMustBePositiveInteger [
+    | effect |
+    effect := HyperGravityEffect new.
+    self
+        should: [ effect requiredRoll: 0 ]
+        raise: Error
+        withMessageText: 'Required roll must be a positive integer'.
+    self
+        should: [ effect requiredRoll: -1 ]
+        raise: Error
+        withMessageText: 'Required roll must be a positive integer'.
+    effect requiredRoll: 7.
+    self assert: effect requiredRoll equals: 7.
 ]

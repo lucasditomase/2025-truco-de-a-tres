@@ -29,9 +29,14 @@ HyperGravityEffect >> requiredRoll [
 ]
 
 { #category : 'initialization' }
-
+HyperGravityEffect >> requiredRoll: aNumber [
+    (aNumber isInteger and: [ aNumber > 0 ]) ifFalse: [
+        self error: 'Required roll must be a positive integer'.
+    ].
+    requiredRoll := RequiredRoll withValue: aNumber.
+]
 
 { #category : 'configuration' }
 HyperGravityEffect >> configureWithMaxRoll: maxRoll [
-    requiredRoll isNullRequired ifTrue: [ requiredRoll := RequiredRoll withValue: maxRoll ]
+    requiredRoll isNullRequired ifTrue: [ self requiredRoll: maxRoll ]
 ]
