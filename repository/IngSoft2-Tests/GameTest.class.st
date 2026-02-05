@@ -213,7 +213,7 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
 
     game playUntilFinish.
 
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     pos1 := positions detect: [ :each | each ship = ship1 ].
     pos2 := positions detect: [ :each | each ship = ship2 ].
 
@@ -887,7 +887,7 @@ GameTest >> testShipPositionsReflectCurrentPositionsOfAllShips [
         diceWithSides: 1;
         build.
     game := scenario game.
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
 
@@ -1024,7 +1024,7 @@ GameTest >> testSpaceshipPositionsReturnsCorrectMapping [
     game playTurn.
     game playTurn.
 
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     pos1 := positions detect: [ :each | each ship = mapOne ].
     pos2 := positions detect: [ :each | each ship = mapTwo ].
 
@@ -1047,7 +1047,7 @@ GameTest >> testSpaceshipPositionsReturnsCorrectPositions [
 
     game playTurn.
 
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     pos1 := positions detect: [ :each | each ship = ship1 ].
     pos2 := positions detect: [ :each | each ship = ship2 ].
 

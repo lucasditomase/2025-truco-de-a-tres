@@ -502,7 +502,7 @@ Game >> spaceShips [
 ]
 
 { #category : 'process actions' }
-Game >> spaceshipPositions [
+Game >> allShipStatuses [
     ^ spaceShips collect: [ :ship |
         | tracker |
         tracker := self lapTrackerFor: ship.

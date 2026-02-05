@@ -53,7 +53,7 @@ GameTestScenario >> ships [
 
 { #category : 'accessing' }
 GameTestScenario >> statusForShipNamed: aName [
-    ^ game spaceshipPositions
+    ^ game allShipStatuses
         detect: [ :status | status ship name = aName ]
         ifNone: [ self error: 'No status recorded for ', aName ]
 ]
