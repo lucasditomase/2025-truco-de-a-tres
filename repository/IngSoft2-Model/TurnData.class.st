@@ -44,11 +44,6 @@ TurnData >> fuelHistoryFor: aShip [
     ^ fuelHistory at: aShip ifAbsent: [ OrderedCollection new ]
 ]
 
-{ #category : 'documentation' }
-TurnData >> fuelHistorySemantics [
-    ^ 'fuelHistory: oldest..newest; first is antepenultimate when size=3.'
-]
-
 { #category : 'accessing' }
 TurnData >> fuelHistory: aDictionary [
     fuelHistory := aDictionary
@@ -105,21 +100,4 @@ TurnData >> lastEffectiveCard [
 { #category : 'accessing' }
 TurnData >> lastEffectiveCard: aCard [
     lastEffectiveCard := aCard
-]
-{ #category : 'accessing' }
-TurnData >> hasHistoryForTimeMachine: aShip [
-    ^ (self fuelHistoryFor: aShip) size >= 2
-]
-
-{ #category : 'accessing' }
-TurnData >> antepenultimateFuelFor: aShip [
-    ^ (self fuelHistoryFor: aShip) first
-]
-{ #category : 'accessing' }
-TurnData >> fuelAtStartOfPenultimateTurnFor: aShip [
-    | history |
-    history := self fuelHistoryFor: aShip.
-    history size < 2
-        ifTrue: [ self error: 'Insufficient fuel history for Time Machine' ].
-    ^ history first
 ]
