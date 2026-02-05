@@ -46,12 +46,6 @@ TurnData >> fuelHistoryFor: aShip [
 
 { #category : 'documentation' }
 TurnData >> fuelHistorySemantics [
-    "Returns a short explanation of the `fuelHistory` ordering semantics.
-
-    The implementation stores recent fuel snapshots in an OrderedCollection
-    where new samples are added to the end. When the collection is trimmed to
-    three entries the `first` element corresponds to the antepenultimate
-    recorded value used by Time Machine logic."
     ^ 'fuelHistory: oldest..newest; first is antepenultimate when size=3.'
 ]
 
@@ -123,10 +117,6 @@ TurnData >> antepenultimateFuelFor: aShip [
 ]
 { #category : 'accessing' }
 TurnData >> fuelAtStartOfPenultimateTurnFor: aShip [
-    "Returns the fuel value at the start of the penultimate turn (antepenultimate snapshot).
-    Semantics: fuelHistory stores start-of-turn snapshots in order oldest → newest.
-    When size >= 2, `first` is the antepenultimate (the start of two turns ago).
-    Raises an error if insufficient history (< 2 entries)."
     | history |
     history := self fuelHistoryFor: aShip.
     history size < 2

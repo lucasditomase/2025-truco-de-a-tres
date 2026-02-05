@@ -1125,9 +1125,7 @@ GameTest >> testWhenShipDecidesToPassTurnThenSkipTurn [
     game playUntilFinish.
 ]
 
-
-{ #category : 'tests' }
-GameTest >> testWhenShipReachesGoalThenGameEnds [
+           whenInProgressDo: [ self fail: 'Expected game to be finished' ].
     | scenario game |
     scenario := self builder
         withShipNames: #('Ship Num1' 'Ship Num2');
