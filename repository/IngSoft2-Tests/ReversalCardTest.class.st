@@ -1,19 +1,9 @@
 Class {
     #name : 'ReversalCardTest',
-    #superclass : 'TestCase',
+    #superclass : 'GameIntegrationTest',
     #category : 'IngSoft2-Tests',
     #package : 'IngSoft2-Tests'
 }
-
-{ #category : 'support' }
-ReversalCardTest >> builder [
-    ^ GameTestBuilder new
-]
-
-{ #category : 'support' }
-ReversalCardTest >> ensureTurnOf: aShip inGame: aGame [
-    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
-]
 
 { #category : 'support' }
 ReversalCardTest >> playReversalFor: aShip inGame: aGame [

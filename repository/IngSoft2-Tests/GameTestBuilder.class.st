@@ -3,6 +3,7 @@ Class {
     #superclass : 'Object',
     #instVars : [
         'shipNames',
+        'ships',
         'boardFactory',
         'boardConfigurators',
         'diceFactory',
@@ -29,6 +30,12 @@ GameTestBuilder class >> withShipNames: aCollection [
 { #category : 'configuration' }
 GameTestBuilder >> withShipNames: aCollection [
     shipNames := aCollection.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withShips: aCollection [
+    ships := aCollection.
     ^ self
 ]
 
@@ -70,17 +77,17 @@ GameTestBuilder >> diceCup: aBlock [
 
 { #category : 'instance creation' }
 GameTestBuilder >> build [
-    | ships board dice game |
-    ships := shipNames collect: [ :each | Spaceship withName: each ].
+    | theShips board dice game |
+    theShips := ships ifNil: [ shipNames collect: [ :each | Spaceship withName: each ] ].
     board := boardFactory value.
     boardConfigurators do: [ :config | config value: board ].
     dice := diceFactory value.
     game := Game
-        startWithShips: ships
+        startWithShips: theShips
         board: board
         dice: dice
         laps: laps.
-    ^ GameTestScenario withGame: game ships: ships
+    ^ GameTestScenario withGame: game ships: theShips
 ]
 
 { #category : 'configuration' }

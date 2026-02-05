@@ -459,6 +459,8 @@ Game >> applyEffectOfCurrentCell [
         during: [ board applyEffectTo: self currentShip ]
 ]
 
+
+
 { #category : 'private' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
     
@@ -488,7 +490,7 @@ Game >> spaceShips [
 ]
 
 { #category : 'process actions' }
-Game >> spaceshipPositions [
+Game >> allShipStatuses [
     ^ spaceShips collect: [ :ship |
         | tracker |
         tracker := self lapTrackerFor: ship.
@@ -535,4 +537,14 @@ Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
 { #category : 'accessing' }
 Game >> winner [
     ^ state whenFinishedDo: [ :w | w ] whenInProgressDo: [ NullSpaceship new ]
+]
+
+{ #category : 'time machine' }
+Game >> canUseTimeMachine: aShip [
+    ^ turnData hasHistoryForTimeMachine: aShip
+]
+
+{ #category : 'time machine' }
+Game >> antepenultimateFuelFor: aShip [
+    ^ turnData antepenultimateFuelFor: aShip
 ]
