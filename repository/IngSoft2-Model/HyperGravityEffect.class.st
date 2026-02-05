@@ -28,9 +28,6 @@ HyperGravityEffect >> requiredRoll [
     ^ requiredRoll value
 ]
 
-{ #category : 'initialization' }
-
-
 { #category : 'configuration' }
 HyperGravityEffect >> configureWithMaxRoll: maxRoll [
     requiredRoll isNullRequired ifTrue: [ requiredRoll := RequiredRoll withValue: maxRoll ]
