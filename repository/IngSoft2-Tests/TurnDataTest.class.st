@@ -109,7 +109,7 @@ TurnDataTest >> testFuelAtStartOfPenultimateTurnWithInsufficientHistory [
     data := TurnData new.
     ship := self shipNamed: 'Empty' withFuel: 10.
     data initializeFuelHistoryForShips: { ship }.
-    "After init, history size = 1."
+    
 
     self
         should: [ data fuelAtStartOfPenultimateTurnFor: ship ]
@@ -125,7 +125,7 @@ TurnDataTest >> testFuelAtStartOfPenultimateTurnWithExactlyTwoEntries [
     data initializeFuelHistoryForShips: { ship }.
     ship fuel: 3.
     data recordFuelFor: ship.
-    "Now history = [5, 3]. Size = 2."
+    
 
     self assert: (data fuelAtStartOfPenultimateTurnFor: ship) equals: 5.
 ]
@@ -140,7 +140,7 @@ TurnDataTest >> testFuelAtStartOfPenultimateTurnWithThreeEntries [
     data recordFuelFor: ship.
     ship fuel: 6.
     data recordFuelFor: ship.
-    "Now history = [10, 8, 6]. Size = 3. First (antepenultimate) = 10."
+    
 
     self assert: (data fuelAtStartOfPenultimateTurnFor: ship) equals: 10.
 ]

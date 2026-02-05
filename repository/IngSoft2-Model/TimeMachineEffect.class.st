@@ -10,9 +10,6 @@ TimeMachineEffect >> applyTo: aShip inGame: aGame [
 	| targets restoredFuel |
 	targets := self targetsFor: aShip.
 
-	"Single-pass: validate each target and collect the fuel values to restore,
-	then apply the restoration. This avoids iterating targets twice and
-	keeps validation declarative via `canBeAppliedTo:inGame:`."
 	restoredFuel := Dictionary new.
 	targets do: [ :ship |
 		(self canBeAppliedTo: ship inGame: aGame)
@@ -32,8 +29,7 @@ TimeMachineEffect >> restoredFuelFor: aShip inGame: aGame [
 
 { #category : 'private' }
 TimeMachineEffect >> restoreFuelFor: targets inGame: aGame [
-	"Deprecated: use `applyTo:inGame:` for single-pass validate+apply behavior.
-	This helper retained for backward compatibility; delegates to new API."
+	
 	targets do: [ :ship |
 		ship restoreFuelTo: (aGame antepenultimateFuelFor: ship)
 	]

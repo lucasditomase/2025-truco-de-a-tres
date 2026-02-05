@@ -43,7 +43,7 @@ HyperGravityEffectTest >> testHyperGravityBlocksEntryWithLowRoll [
     game playTurn.
     
     self deny: (game board positionOf: ship) equals: 5.
-    self assert: (game board positionOf: ship) equals: 0. "Stays at start because movement was blocked? Or stops before? existing test said deny 5."
+    self assert: (game board positionOf: ship) equals: 0. 
 ]
 
 { #category : 'tests' }
