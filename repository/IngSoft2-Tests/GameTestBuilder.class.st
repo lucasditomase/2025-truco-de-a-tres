@@ -102,7 +102,7 @@ GameTestBuilder >> build [
     board registerShips: theShips.
     
     shipPositions keysAndValuesDo: [ :name :pos |
-        (theShips detect: [ :s | s name = name ]) moveTo: pos ].
+        board moveShip: (theShips detect: [ :s | s name = name ]) to: pos ].
 
     boardConfigurators do: [ :config | config value: board ].
     dice := diceFactory value.
