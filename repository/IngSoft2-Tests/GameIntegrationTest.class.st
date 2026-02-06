@@ -33,7 +33,7 @@ GameIntegrationTest >> testAtomicBombEffectResetsPositionsButKeepsLaps [
         withShipNamed: 'Blue' at: 3;
         withShipNamed: 'Green' at: 9;
         withEffect: AtomicBombEffect new at: 5;
-        withDice: (DeterministicDie withValue: 2); "Blue will land on 5"
+        withDice: (DeterministicDie withValues: { 2 }); "Blue will land on 5"
         build.
     
     game := scenario game.
@@ -54,7 +54,7 @@ GameIntegrationTest >> testBlackHoleEffectMovesSpaceshipBackwards [
         boardWithCells: 10;
         withShipNamed: 'Lucas' at: 2;
         withEffect: BlackHoleEffect new at: 4;
-        withDice: (DeterministicDie withValue: 2);
+        withDice: (DeterministicDie withValues: { 2 });
         build.
     
     game := scenario game.
@@ -73,8 +73,8 @@ GameIntegrationTest >> testMoonWalkEffectMovesOtherSpaceshipsBackwards [
         withShipNamed: 'P1' at: 5;
         withShipNamed: 'P2' at: 2;
         withShipNamed: 'P3' at: 8;
-        withEffect: (MoonWalkEffect withAmount: 3) at: 4;
-        withDice: (DeterministicDie withValue: 2); "P2 will move 2->4"
+        withEffect: (MoonWalkEffect withSteps: 3) at: 4;
+        withDice: (DeterministicDie withValues: { 2 }); "P2 will move 2->4"
         build.
     
     game := scenario game.
@@ -93,7 +93,7 @@ GameIntegrationTest >> testHyperJumpEffectJumpsShipForward [
         boardWithCells: 10;
         withShipNamed: 'Apollo' at: 5;
         withEffect: (HyperJumpEffect withValues: #(3)) at: 6;
-        withDice: (DeterministicDie withValue: 1);
+        withDice: (DeterministicDie withValues: { 1 });
         build.
     
     game := scenario game.
@@ -109,8 +109,8 @@ GameIntegrationTest >> testHyperGravityPreventsMovementWhenRollIsInsufficient [
     scenario := self builder
         boardWithCells: 10;
         withShipNamed: 'Lucas' at: 2;
-        withEffect: (HyperGravityEffect withRequiredRoll: 5) at: 4;
-        withDice: (DeterministicDie withValue: 2);
+        withEffect: (HyperGravityEffect new requiredRoll: 5) at: 4;
+        withDice: (DeterministicDie withValues: { 2 });
         build.
     
     game := scenario game.
@@ -129,7 +129,7 @@ GameIntegrationTest >> testLapIncrementsWhenPassingLastCell [
     scenario := self builder
         boardWithCells: 10;
         withShipNamed: 'Lucas' at: 8;
-        withDice: (DeterministicDie withValue: 3);
+        withDice: (DeterministicDie withValues: { 3 });
         build.
     
     game := scenario game.
@@ -149,7 +149,7 @@ GameIntegrationTest >> testWormholeTransportsCorrectly [
         withShipNamed: 'Solo' at: 1;
         configureBoardWith: [ :board | 
             board addWormhole: (Wormhole from: 3 to: 7) ];
-        withDice: (DeterministicDie withValue: 2);
+        withDice: (DeterministicDie withValues: { 2 });
         build.
     
     game := scenario game.
