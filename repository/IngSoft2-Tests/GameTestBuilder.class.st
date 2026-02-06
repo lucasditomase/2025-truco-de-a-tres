@@ -85,6 +85,12 @@ GameTestBuilder >> diceCup: aBlock [
     ^ self
 ]
 
+{ #category : 'configuration' }
+GameTestBuilder >> withDice: aDie [
+    diceFactory := [ DiceCup with: { aDie } ].
+    ^ self
+]
+
 { #category : 'instance creation' }
 GameTestBuilder >> build [
     | theShips board dice game |
