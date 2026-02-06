@@ -7,9 +7,7 @@ Class {
 
 { #category : 'deck' }
 CardDeck class >> availableCards [
-    
-    
-    ^ Card allCardTypes
+    ^ CardRegistry allCardTypes
 ]
 
 { #category : 'deck' }

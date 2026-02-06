@@ -73,7 +73,7 @@ Wormhole >> exit [
 
 { #category : 'validation' }
 Wormhole >> hasEntryAt: aPosition [
-    ^ entry = aPosition
+    ^ entry = aPosition or: [ exit = aPosition ]
 ]
 
 { #category : 'initialize' }
@@ -99,7 +99,9 @@ Wormhole >> isValid [
 
 { #category : 'operations' }
 Wormhole >> exitFrom: aPosition [
-    ^ self exit
+    aPosition = entry ifTrue: [ ^ exit ].
+    aPosition = exit ifTrue: [ ^ entry ].
+    self error: 'Invalid entry'
 ]
 
 { #category : 'operations' }
@@ -116,5 +118,6 @@ Wormhole >> reversed [
 Wormhole >> reverseOnBoard: aBoard at: aPosition [
     aBoard removeWormhole: self.
     aBoard addWormhole: self reversed.
+    aBoard reverseEffectAt: aPosition
 ]
 

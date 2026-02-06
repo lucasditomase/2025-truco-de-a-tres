@@ -108,7 +108,7 @@ TurnData >> lastEffectiveCard: aCard [
 ]
 { #category : 'accessing' }
 TurnData >> hasHistoryForTimeMachine: aShip [
-    ^ (self fuelHistoryFor: aShip) size >= 2
+    ^ (self fuelHistoryFor: aShip) size >= 3
 ]
 
 { #category : 'accessing' }
