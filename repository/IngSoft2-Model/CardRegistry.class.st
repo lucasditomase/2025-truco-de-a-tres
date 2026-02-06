@@ -19,6 +19,8 @@ CardRegistry class >> allCardTypes [
 		add: RepeatCard;
 		add: ReversalCard;
 		add: TimeMachineCard;
+		add: AdvanceCard;
+		add: ShieldCard;
 		yourself
 ]
 
