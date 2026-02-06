@@ -194,7 +194,7 @@ GameTest >> testGameReturnsAllStatuses [
         build.
     game := scenario game.
 
-    statuses := game allStatuses.
+    statuses := game allShipStatuses.
 
     self assert: statuses size equals: 2.
     self assert: (statuses allSatisfy: [ :status | status ship isNotNil ]).

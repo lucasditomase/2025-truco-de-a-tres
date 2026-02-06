@@ -10,7 +10,7 @@ Class {
         'wantsToPassTurn',
         'totalLaps',
         'state',
-        'shipStatuses',
+        'allShipStatuses',
         'turnData',
         'rankingService'
         ],
@@ -112,7 +112,7 @@ Game >> advanceTurn [
 ]
 
 { #category : 'process actions' }
-Game >> allStatuses [
+Game >> allShipStatuses [
     ^ self spaceShips collect: [ :ship | self statusFor: ship ]
 ]
 
@@ -197,7 +197,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         initializeFuelForShips;
         initializeHyperGravityRequirements;
         initializeTurnManager;
-        initializeShipStatuses;
+        initializeAllShipStatuses;
         initializeManagers;
         initializeTurnData.
     ^ self
@@ -208,7 +208,7 @@ Game >> initializeManagers [
     coordinator := GameCoordinator
         forBoard: board
         withShips: spaceShips
-        statuses: shipStatuses
+        statuses: allShipStatuses
         andDice: dice.
     rankingService := RankingService new
 ]
@@ -243,10 +243,10 @@ Game >> initializeTurnManager [
 ]
 
 { #category : 'initialization' }
-Game >> initializeShipStatuses [
-    shipStatuses := Dictionary new.
+Game >> initializeAllShipStatuses [
+    allShipStatuses := Dictionary new.
     spaceShips do: [ :ship |
-        shipStatuses at: ship put: (ShipStatus
+        allShipStatuses at: ship put: (ShipStatus
             for: ship
             position: 0
             laps: 0
@@ -269,7 +269,7 @@ Game >> isPenalized: aShip [
 
 { #category : 'testing' }
 Game >> lapTrackerFor: aShip [
-    ^ shipStatuses at: aShip
+    ^ allShipStatuses at: aShip
 ]
 
 { #category : 'accessing' }
@@ -363,7 +363,7 @@ Game >> playUntilFinish [
 
 { #category : 'process actions' }
 Game >> ranking [
-    ^ rankingService rankingFor: self allStatuses
+    ^ rankingService rankingFor: self allShipStatuses
 ]
 
 { #category : 'process actions' }
@@ -493,19 +493,6 @@ Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
 { #category : 'accessing' }
 Game >> spaceShips [
     ^ spaceShips asOrderedCollection
-]
-
-{ #category : 'process actions' }
-Game >> allShipStatuses [
-    ^ spaceShips collect: [ :ship |
-        | tracker |
-        tracker := self lapTrackerFor: ship.
-        ShipStatus
-            for: ship
-            position: ship position
-            laps: tracker lapCount
-            penalized: tracker isPenalized
-            fuel: ship fuel ]
 ]
 
 { #category : 'testing' }
