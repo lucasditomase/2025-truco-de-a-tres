@@ -79,8 +79,6 @@ TimeMachineCardTest >> testTimeMachineRestoresAllies [
     
     4 timesRepeat: [ game playTurn ].
     
-    4 timesRepeat: [ game playTurn ].
-    
     card := TimeMachineCard new.
     ship1 addCard: card.
     ship1 playCard: card inGame: game.
