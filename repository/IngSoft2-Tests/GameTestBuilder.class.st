@@ -95,6 +95,7 @@ GameTestBuilder >> build [
     | theShips board dice game |
     theShips := ships ifNil: [ 
         shipNames ifEmpty: [ shipNames addAll: #('Alpha' 'Beta') ].
+        shipNames size = 1 ifTrue: [ shipNames add: 'Beta' ].
         shipNames collect: [ :each | Spaceship withName: each ] ].
     
     board := boardFactory value.
