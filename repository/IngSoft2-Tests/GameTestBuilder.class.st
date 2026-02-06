@@ -7,6 +7,7 @@ Class {
         'boardFactory',
         'boardConfigurators',
         'diceFactory',
+        'shipPositions',
         'laps'
     ],
     #category : 'IngSoft2-Tests',
@@ -15,10 +16,11 @@ Class {
 
 { #category : 'initialization' }
 GameTestBuilder >> initialize [
-    shipNames := #('Alpha' 'Beta').
+    shipNames := OrderedCollection new.
     boardFactory := [ Board of: 10 andWormholeAt: #() ].
     boardConfigurators := OrderedCollection new.
     diceFactory := [ DiceCup with: { Die withSides: 1 } ].
+    shipPositions := Dictionary new.
     laps := 1.
 ]
 
@@ -47,12 +49,9 @@ GameTestBuilder >> laps: aNumber [
 
 { #category : 'configuration' }
 GameTestBuilder >> withShipNamed: aName at: aPosition [
-    ^ self configureBoardWith: [ :board | | ship |
-        ship := board ships detect: [ :s | s name = aName ] ifNone: [ 
-            ship := Spaceship withName: aName.
-            board registerShips: { ship }.
-            ship ].
-        ship moveTo: aPosition ]
+    (shipNames includes: aName) ifFalse: [ shipNames add: aName ].
+    shipPositions at: aName put: aPosition.
+    ^ self
 ]
 
 { #category : 'configuration' }
@@ -94,8 +93,16 @@ GameTestBuilder >> withDice: aDie [
 { #category : 'instance creation' }
 GameTestBuilder >> build [
     | theShips board dice game |
-    theShips := ships ifNil: [ shipNames collect: [ :each | Spaceship withName: each ] ].
+    theShips := ships ifNil: [ 
+        shipNames ifEmpty: [ shipNames addAll: #('Alpha' 'Beta') ].
+        shipNames collect: [ :each | Spaceship withName: each ] ].
+    
     board := boardFactory value.
+    board registerShips: theShips.
+    
+    shipPositions keysAndValuesDo: [ :name :pos |
+        (theShips detect: [ :s | s name = name ]) moveTo: pos ].
+
     boardConfigurators do: [ :config | config value: board ].
     dice := diceFactory value.
     game := Game

@@ -121,6 +121,11 @@ Game >> board [
     ^ board
 ]
 
+{ #category : 'accessing' }
+Game >> positionOf: aSpaceship [
+    ^ board positionOf: aSpaceship
+]
+
 { #category : 'validation' }
 Game >> checkWinCondition [
     (self hasWonByLaps: self currentShip) ifFalse: [ ^ self ].
