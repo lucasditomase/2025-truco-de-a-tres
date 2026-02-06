@@ -46,6 +46,16 @@ GameTestBuilder >> laps: aNumber [
 ]
 
 { #category : 'configuration' }
+GameTestBuilder >> withShipNamed: aName at: aPosition [
+    ^ self configureBoardWith: [ :board | | ship |
+        ship := board ships detect: [ :s | s name = aName ] ifNone: [ 
+            ship := Spaceship withName: aName.
+            board registerShips: { ship }.
+            ship ].
+        ship moveTo: aPosition ]
+]
+
+{ #category : 'configuration' }
 GameTestBuilder >> boardWithCells: aNumber [
     boardFactory := [ Board of: aNumber andWormholeAt: #() ].
     ^ self
@@ -98,4 +108,9 @@ GameTestBuilder >> withCardDealer: aCallable [
 { #category : 'configuration' }
 GameTestBuilder >> withDeckCyclingThrough: cardClasses [
     ^ self configureBoardWith: [ :board | board useCardDealerCyclingThrough: cardClasses ]
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withEffect: anEffect at: aPosition [
+    ^ self configureBoardWith: [ :board | board cells at: aPosition put: anEffect ]
 ]
