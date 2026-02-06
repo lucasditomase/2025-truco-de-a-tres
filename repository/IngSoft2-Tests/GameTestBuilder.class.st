@@ -29,9 +29,8 @@ GameTestBuilder class >> withShipNames: aCollection [
     ^ self new withShipNames: aCollection
 ]
 
-{ #category : 'configuration' }
 GameTestBuilder >> withShipNames: aCollection [
-    shipNames := aCollection.
+    shipNames := aCollection asOrderedCollection.
     ^ self
 ]
 
@@ -95,7 +94,11 @@ GameTestBuilder >> build [
     | theShips board dice game |
     theShips := ships ifNil: [ 
         shipNames ifEmpty: [ shipNames addAll: #('Alpha' 'Beta') ].
-        shipNames size = 1 ifTrue: [ shipNames add: 'Beta' ].
+        shipNames size = 1 ifTrue: [ 
+            | autoShip |
+            autoShip := 'Beta'.
+            (shipNames includes: autoShip) ifTrue: [ autoShip := 'Gamma' ].
+            shipNames add: autoShip ].
         shipNames collect: [ :each | Spaceship withName: each ] ].
     
     board := boardFactory value.
