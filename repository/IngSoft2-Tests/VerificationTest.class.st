@@ -88,8 +88,7 @@ VerificationTest >> testTimeMachineInProductionScenario [
     
     initialFuel := ship1 fuel.
     
-    game playTurn.
-    game playTurn.
+    4 timesRepeat: [ game playTurn ].
     
     tmCard := TimeMachineCard new.
     ship1 addCard: tmCard.
