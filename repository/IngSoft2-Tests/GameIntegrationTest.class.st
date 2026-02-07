@@ -33,14 +33,14 @@ GameIntegrationTest >> testAtomicBombEffectResetsPositionsButKeepsLaps [
         withShipNamed: 'Blue' at: 3;
         withShipNamed: 'Green' at: 9;
         withEffect: AtomicBombEffect new at: 5;
-        withDice: (DeterministicDie withValues: { 2 } sides: 100); "Blue will land on 5"
+        withDice: (DeterministicDie withValues: { 2 } sides: 100); 
         build.
     
     game := scenario game.
-    "Ensure Blue's turn"
+    
     self ensureTurnOf: (scenario shipNamed: 'Blue') inGame: game.
     
-    game playTurn. "Blue moves 3->5, triggers Atomic Bomb"
+    game playTurn. 
     
     self assert: (game positionOf: (scenario shipNamed: 'Red')) equals: 0.
     self assert: (game positionOf: (scenario shipNamed: 'Blue')) equals: 0.
@@ -58,9 +58,9 @@ GameIntegrationTest >> testBlackHoleEffectMovesSpaceshipBackwards [
         build.
     
     game := scenario game.
-    game playTurn. "Lucas moves 2->4, triggers Black Hole (-4 cells, -4 fuel)"
+    game playTurn. 
     
-    "Board is 10 cells. Moving back 4 from 4 is 0."
+    
     self assert: (game positionOf: (scenario shipNamed: 'Lucas')) equals: 0.
 ]
 
@@ -74,7 +74,7 @@ GameIntegrationTest >> testMoonWalkEffectMovesOtherSpaceshipsBackwards [
         withShipNamed: 'P2' at: 2;
         withShipNamed: 'P3' at: 8;
         withEffect: (MoonWalkEffect withSteps: 3) at: 4;
-        withDice: (DeterministicDie withValues: { 2 } sides: 100); "P2 will move 2->4"
+        withDice: (DeterministicDie withValues: { 2 } sides: 100); 
         build.
     
     game := scenario game.
@@ -82,8 +82,8 @@ GameIntegrationTest >> testMoonWalkEffectMovesOtherSpaceshipsBackwards [
     game playTurn.
     
     self assert: (game positionOf: (scenario shipNamed: 'P2')) equals: 4.
-    self assert: (game positionOf: (scenario shipNamed: 'P1')) equals: 2. "5-3"
-    self assert: (game positionOf: (scenario shipNamed: 'P3')) equals: 5. "8-3"
+    self assert: (game positionOf: (scenario shipNamed: 'P1')) equals: 2. 
+    self assert: (game positionOf: (scenario shipNamed: 'P3')) equals: 5. 
 ]
 
 { #category : 'tests' }
@@ -97,9 +97,9 @@ GameIntegrationTest >> testHyperJumpEffectJumpsShipForward [
         build.
     
     game := scenario game.
-    game playTurn. "Apollo moves 5->6, triggers HyperJump of 3 moves"
+    game playTurn. 
     
-    "Apollo should be at 9 (6+3)"
+    
     self assert: (game positionOf: (scenario shipNamed: 'Apollo')) equals: 9.
 ]
 
@@ -114,12 +114,12 @@ GameIntegrationTest >> testHyperGravityPreventsMovementWhenRollIsInsufficient [
         build.
     
     game := scenario game.
-    game playTurn. "Lucas rolls 2, wants to land on 4. Required is 5."
+    game playTurn. 
     
-    "Lucas should stay at 2 because it couldn't enter cell 4"
-    "Wait, let's check HyperGravity behavior. Usually it stops BEFORE or AT the cell?"
-    "In BoardNavigationTest: testBoardPreventsEntryToHyperGravityCellWithLowRoll says newPosition equals 3 if moving from 2 to 4."
-    "So it stops at 3."
+    
+    
+    
+    
     self assert: (game positionOf: (scenario shipNamed: 'Lucas')) equals: 3.
 ]
 
@@ -135,7 +135,7 @@ GameIntegrationTest >> testLapIncrementsWhenPassingLastCell [
     game := scenario game.
     ship := scenario shipNamed: 'Lucas'.
     
-    game playTurn. "8 + 3 = 11 -> position 1, lap 1"
+    game playTurn. 
     
     self assert: (game positionOf: ship) equals: 1.
     self assert: (scenario lapCountForShipNamed: 'Lucas') equals: 1.
@@ -153,7 +153,7 @@ GameIntegrationTest >> testWormholeTransportsCorrectly [
         build.
     
     game := scenario game.
-    game playTurn. "1 + 2 = 3, triggers wormhole to 7"
+    game playTurn. 
     
     self assert: (game positionOf: (scenario shipNamed: 'Solo')) equals: 7.
 ]
