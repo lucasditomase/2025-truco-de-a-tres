@@ -13,7 +13,7 @@ GameSimulationTest >> testFullGameSimulation [
 	ships := { 'Ship1'. 'Ship2'. 'Ship3' }.
 	builder := GameTestBuilder new
 		withShipNames: ships;
-		boardWithCells: 30;
+		boardFactory: [ Board of: 30 andWormholeAt: { Wormhole from: 2 to: 10 } ];
 		laps: 2;
 		withDeckCyclingThrough: Card allCardTypes;
 		withDice: (Die withSides: 6);
@@ -22,8 +22,7 @@ GameSimulationTest >> testFullGameSimulation [
 		withEffect: (MoonWalkEffect withSteps: 2) at: 8;
 		withEffect: (HyperGravityEffect new requiredRoll: 4) at: 12;
 		withEffect: BlackHoleEffect new at: 15;
-		withEffect: (HyperJumpEffect withValues: #(5 2)) at: 20;
-		withEffect: (Wormhole from: 2 to: 10) at: 25.
+		withEffect: (HyperJumpEffect withValues: #(5 2)) at: 20.
 	game := builder build game.
 
 	turnCount := 0.
@@ -79,7 +78,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     ship1 fuel: 0.
     game playTurn. "Ship1 attempts to move but has 0 fuel -> Penalty"
     self assert: (game isPenalized: ship1) description: 'Ship1 should be penalized due to lack of fuel'.
-    self assert: ship1 position equals: 0 description: 'Ship1 should be reset to 0'.
+    self assert: ship1 position equals: 0.
     
     "5. Card Play: Ship2 uses Acceleration"
     "Ensure Ship2 has a card (dealt at start or turn?)"
@@ -93,7 +92,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     
     self assert: game isOver description: 'Game should be over after Ship2 crosses finish line'.
     winner := game winner.
-    self assert: winner name equals: 'Winner' description: 'Ship2 (Winner) should win'.
+    self assert: winner name equals: 'Winner'.
     self assert: (game isPenalized: ship1) description: 'Loser should still be penalized or in bad state'.
 ]
 
