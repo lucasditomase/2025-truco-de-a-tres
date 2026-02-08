@@ -45,7 +45,7 @@ GameSimulationTest >> testFullGameSimulation [
 	self assert: game isOver.
 	winner := game winner.
 	self assert: (ships includes: winner name).
-	self assert: winner lap >= 2.
+	self assert: (game lapTrackerFor: winner) lapCount >= 2.
 ]
 
 { #category : 'tests' }
@@ -57,7 +57,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
         withShipNames: #('Winner' 'Loser');
         boardWithCells: 10;
         laps: 1;
-        withDice: (DeterministicDie withValues: #(101 102 103 104 105 106 107 108 109 110));
+        withDice: (DeterministicDie withValues: #(6 1 2 3 4 5 6 7 8 9 10 20));
         withDeckCyclingThrough: { AccelerationCard. OverloadCard };
         withEffect: AtomicBombEffect new at: 5.
     game := builder build game.
@@ -67,11 +67,11 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     
     "2. Ship1 Turn"
     game playTurn. 
-    self assert: ship1 position equals: 999.
+    self assert: ship1 position equals: 1.
     
     "3. Ship2 Turn"
     game playTurn.
-    self assert: ship2 position equals: 888.
+    self assert: ship2 position equals: 2.
     
     "4. Force Penalization on Ship1"
     "Drain fuel to force penalty on next move"
