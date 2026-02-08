@@ -35,42 +35,12 @@ GameSimulationTest >> testFullGameSimulation [
 		self assert: turnCount < 1000 description: 'Game took too long'.
 		
 		currentShip := game currentShip.
-		cardsInHand := currentShip cards.
-		
-		"3. AI Strategy: Play a card with 50% chance if available"
-		(cardsInHand isNotEmpty and: [ (1 to: 100) atRandom <= 50 ]) ifTrue: [
-			cardToPlay := cardsInHand atRandom.
-			
-			"4. Configure Card Targets (Simulate User Input)"
-			(cardToPlay isKindOf: AllyCard) ifTrue: [
-				cardToPlay allyShip: ((game spaceShips copyWithout: currentShip) atRandom).
-			].
-			(cardToPlay isKindOf: OverloadCard) ifTrue: [
-				cardToPlay targetShip: ((game spaceShips copyWithout: currentShip) atRandom).
-			].
-			(cardToPlay isKindOf: RepeatCard) ifTrue: [
-				"Repeat effect on a random ship"
-				cardToPlay targetShip: (game spaceShips atRandom).
-			].
-			(cardToPlay isKindOf: CancellationCard) ifTrue: [
-				"Cancel a random active card if any exist"
-				game activeCards ifNotEmpty: [ 
-					itemToCancel := game activeCards atRandom.
-					cardToPlay cardToCancel: itemToCancel.
-				] ifEmpty: [
-					cardToPlay := nil. "Don't play if no target"
-				].
-			].
-			
-			"Play the card if valid"
-			cardToPlay ifNotNil: [
-				currentShip playCard: cardToPlay inGame: game.
-			].
-		].
-		
-		"5. Play Turn (Roll & Move)"
-		game playTurn.
-	].
+        
+        self playAIStrategyFor: game.
+        
+        "5. Play Turn (Roll & Move)"
+        game playTurn.
+    ].
 
 	"6. Verification"
 	self assert: game isOver.
@@ -88,7 +58,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
         withShipNames: #('Winner' 'Loser');
         boardWithCells: 10;
         laps: 1;
-        withDice: (DeterministicDie withValues: #(1 2 3 4 5 6 1 2 3 4 5 6));
+        withDice: (DeterministicDie withValues: #(6 1 2 3 4 5 6 1 2 3 4 5 6));
         withDeckCyclingThrough: { AccelerationCard. OverloadCard };
         withEffect: AtomicBombEffect new at: 5.
     game := builder build game.
@@ -125,4 +95,37 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     winner := game winner.
     self assert: winner name equals: 'Winner' description: 'Ship2 (Winner) should win'.
     self assert: (game isPenalized: ship1) description: 'Loser should still be penalized or in bad state'.
+]
+
+{ #category : 'helpers' }
+GameSimulationTest >> playAIStrategyFor: game [
+    | currentShip cardToPlay cardsInHand itemToCancel |
+    currentShip := game currentShip.
+    cardsInHand := currentShip cards.
+    
+    (cardsInHand isNotEmpty and: [ (1 to: 100) atRandom <= 50 ]) ifTrue: [
+        cardToPlay := cardsInHand atRandom.
+        
+        (cardToPlay isKindOf: AllyCard) ifTrue: [
+            cardToPlay allyShip: ((game spaceShips copyWithout: currentShip) atRandom).
+        ].
+        (cardToPlay isKindOf: OverloadCard) ifTrue: [
+            cardToPlay targetShip: ((game spaceShips copyWithout: currentShip) atRandom).
+        ].
+        (cardToPlay isKindOf: RepeatCard) ifTrue: [
+            cardToPlay targetShip: (game spaceShips atRandom).
+        ].
+        (cardToPlay isKindOf: CancellationCard) ifTrue: [
+            game activeCards ifNotEmpty: [ 
+                itemToCancel := game activeCards atRandom.
+                cardToPlay cardToCancel: itemToCancel.
+            ] ifEmpty: [
+                cardToPlay := nil.
+            ].
+        ].
+        
+        cardToPlay ifNotNil: [
+            currentShip playCard: cardToPlay inGame: game.
+        ].
+    ].
 ]

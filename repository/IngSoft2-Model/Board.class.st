@@ -406,7 +406,9 @@ Board >> configureHyperGravityRequirementsWithMaxRoll: maxRoll [
         ifTrue: [ maxRoll ] 
         ifFalse: [ GameRules defaultMaxDiceRoll ].
     cells valuesDo: [ :effect |
-        effect configureWithMaxRoll: safeMax
+        (effect respondsTo: #configureWithMaxRoll:) ifTrue: [
+            effect configureWithMaxRoll: safeMax
+        ]
     ]
 ]
 
