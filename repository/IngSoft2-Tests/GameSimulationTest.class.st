@@ -1,0 +1,128 @@
+Class {
+	#name : 'GameSimulationTest',
+	#superclass : 'TestCase',
+	#category : 'IngSoft2-Tests',
+	#package : 'IngSoft2-Tests'
+}
+
+{ #category : 'tests' }
+GameSimulationTest >> testFullGameSimulation [
+	| game ships winner turnCount itemToCancel |
+	
+	"1. Setup Simulation"
+	ships := { 'Ship1'. 'Ship2'. 'Ship3' }.
+	game := GameTestBuilder new
+		withShipNames: ships;
+		boardWithCells: 30;
+		laps: 2;
+		withDeckCyclingThrough: Card allCardTypes;
+		withDice: (Die withSides: 6);
+		"Place all effects on the board"
+		withEffect: AtomicBombEffect new at: 5;
+		withEffect: (MoonWalkEffect withSteps: 2) at: 8;
+		withEffect: (HyperGravityEffect new requiredRoll: 4) at: 12;
+		withEffect: BlackHoleEffect new at: 15;
+		withEffect: (HyperJumpEffect withValues: #(5 2)) at: 20;
+		withEffect: (Wormhole from: 2 to: 10) at: 25;
+		build game.
+
+	turnCount := 0.
+	
+	"2. Run Simulation Loop"
+	[ game isOver ] whileFalse: [
+		| currentShip cardToPlay cardsInHand |
+		turnCount := turnCount + 1.
+		self assert: turnCount < 1000 description: 'Game took too long'.
+		
+		currentShip := game currentShip.
+		cardsInHand := currentShip cards.
+		
+		"3. AI Strategy: Play a card with 50% chance if available"
+		(cardsInHand isNotEmpty and: [ (1 to: 100) atRandom <= 50 ]) ifTrue: [
+			cardToPlay := cardsInHand atRandom.
+			
+			"4. Configure Card Targets (Simulate User Input)"
+			(cardToPlay isKindOf: AllyCard) ifTrue: [
+				cardToPlay allyShip: ((game spaceShips copyWithout: currentShip) atRandom).
+			].
+			(cardToPlay isKindOf: OverloadCard) ifTrue: [
+				cardToPlay targetShip: ((game spaceShips copyWithout: currentShip) atRandom).
+			].
+			(cardToPlay isKindOf: RepeatCard) ifTrue: [
+				"Repeat effect on a random ship"
+				cardToPlay targetShip: (game spaceShips atRandom).
+			].
+			(cardToPlay isKindOf: CancellationCard) ifTrue: [
+				"Cancel a random active card if any exist"
+				game activeCards ifNotEmpty: [ 
+					itemToCancel := game activeCards atRandom.
+					cardToPlay cardToCancel: itemToCancel.
+				] ifEmpty: [
+					cardToPlay := nil. "Don't play if no target"
+				].
+			].
+			
+			"Play the card if valid"
+			cardToPlay ifNotNil: [
+				currentShip playCard: cardToPlay inGame: game.
+			].
+		].
+		
+		"5. Play Turn (Roll & Move)"
+		game playTurn.
+	].
+
+	"6. Verification"
+	self assert: game isOver.
+	winner := game winner.
+	self assert: (ships includes: winner name).
+	self assert: winner lap >= 2.
+]
+
+{ #category : 'tests' }
+GameSimulationTest >> testFullGameScenarioDeterministic [
+    | game ship1 ship2 winner |
+    
+    "1. Setup with Deterministic Dice to control flow"
+    game := GameTestBuilder new
+        withShipNames: #('Winner' 'Loser');
+        boardWithCells: 10;
+        laps: 1;
+        withDice: (DeterministicDie withValues: #(1 2 3 4 5 6 1 2 3 4 5 6));
+        withDeckCyclingThrough: { AccelerationCard. OverloadCard };
+        withEffect: AtomicBombEffect new at: 5;
+        build game.
+        
+    ship1 := game spaceShips first.
+    ship2 := game spaceShips second.
+    
+    "2. Ship1 Turn: Rolls 1 -> Pos 1"
+    game playTurn. 
+    self assert: ship1 position equals: 1.
+    
+    "3. Ship2 Turn: Rolls 2 -> Pos 2"
+    game playTurn.
+    self assert: ship2 position equals: 2.
+    
+    "4. Force Penalization on Ship1"
+    "Drain fuel to force penalty on next move"
+    ship1 fuel: 0.
+    game playTurn. "Ship1 attempts to move but has 0 fuel -> Penalty"
+    self assert: (game isPenalized: ship1) description: 'Ship1 should be penalized due to lack of fuel'.
+    self assert: ship1 position equals: 0 description: 'Ship1 should be reset to 0'.
+    
+    "5. Card Play: Ship2 uses Acceleration"
+    "Ensure Ship2 has a card (dealt at start or turn?)"
+    ship2 addCard: AccelerationCard new.
+    ship2 playCard: ship2 cards last inGame: game.
+    self assert: (game activeCards anySatisfy: [ :c | c isKindOf: AccelerationCard ]).
+    
+    "6. Finish Game"
+    "Teleport Ship2 to winning condition to verify end game"
+    ship2 moveForward: 20. "Cross lap line"
+    
+    self assert: game isOver description: 'Game should be over after Ship2 crosses finish line'.
+    winner := game winner.
+    self assert: winner name equals: 'Winner' description: 'Ship2 (Winner) should win'.
+    self assert: (game isPenalized: ship1) description: 'Loser should still be penalized or in bad state'.
+]

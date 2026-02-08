@@ -34,10 +34,7 @@ GameFuelTest >> testFuelConsumptionIncludesBoardEffectMovement [
     scenario := self builder
         withShipNames: #('Pilot' 'Observer');
         boardWithCells: 10;
-        configureBoardWith: [ :board |
-            board cells
-                at: 4
-                put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 2 ]) ];
+        withEffect: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 2 ]) at: 4;
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(4) sides: 7 } ];
         laps: 5;
         build.
@@ -57,10 +54,7 @@ GameFuelTest >> testPenaltyWhenEffectConsumesRemainingFuel [
     scenario := self builder
         withShipNames: #('Striker' 'Witness');
         boardWithCells: 8;
-        configureBoardWith: [ :board |
-            board cells
-                at: 2
-                put: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 6 ]) ];
+        withEffect: (BlockEffect on: [ :ship :aBoard | aBoard moveShip: ship forward: 6 ]) at: 2;
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) sides: 3 } ];
         laps: 5;
         build.
@@ -178,8 +172,7 @@ GameFuelTest >> testAtomicBombEffectSkipsFuelConsumption [
     scenario := self builder
         withShipNames: #('A' 'B');
         boardWithCells: 4;
-        configureBoardWith: [ :board |
-            board cells at: 1 put: AtomicBombEffect new ];
+        withEffect: AtomicBombEffect new at: 1;
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
         laps: 5;
         build.

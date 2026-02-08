@@ -33,8 +33,7 @@ HyperJumpEffectTest >> testHyperJumpCyclesThroughValuesOnMultipleTriggers [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 30;
-        configureBoardWith: [ :aBoard |
-            aBoard cells at: 3 put: effect ];
+        withEffect: effect at: 3;
         build.
     game := scenario game.
     ship1 := scenario shipNamed: 'Alpha'.

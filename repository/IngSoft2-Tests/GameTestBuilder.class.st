@@ -129,5 +129,5 @@ GameTestBuilder >> withDeckCyclingThrough: cardClasses [
 
 { #category : 'configuration' }
 GameTestBuilder >> withEffect: anEffect at: aPosition [
-    ^ self configureBoardWith: [ :board | board cells at: aPosition put: anEffect ]
+    ^ self configureBoardWith: [ :board | board placeEffect: anEffect at: aPosition ]
 ]

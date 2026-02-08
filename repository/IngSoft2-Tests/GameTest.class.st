@@ -331,7 +331,7 @@ GameTest >> testHyperGravityRequirementsConfiguredWithDiceMaxRoll [
     scenario := self builder
         withShipNames: #('H1' 'H2');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: effect ];
+        withEffect: effect at: 1;
         diceWithSides: 1;
         build.
     game := scenario game.
@@ -400,7 +400,7 @@ GameTest >> testPlayTurnAppliesBoardEffect [
     scenario := self builder
         withShipNames: #('P1' 'P2');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withEffect: CardEffect new at: 1;
         diceWithSides: 1;
         build.
     game := scenario game.
@@ -417,7 +417,7 @@ GameTest >> testDeckCyclingConfigurationProvidesDeterministicCards [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withEffect: CardEffect new at: 1;
         withDeckCyclingThrough: { ShieldCard. AdvanceCard };
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
         build.
@@ -787,7 +787,7 @@ GameTest >> testRepeatLastEffectOnAppliesLastEffect [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withEffect: CardEffect new at: 1;
         diceWithSides: 1;
         build.
     game := scenario game.

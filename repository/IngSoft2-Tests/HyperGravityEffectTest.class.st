@@ -33,8 +33,7 @@ HyperGravityEffectTest >> testHyperGravityBlocksEntryWithLowRoll [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 5 put: effect ];
+        withEffect: effect at: 5;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
@@ -55,8 +54,7 @@ HyperGravityEffectTest >> testHyperGravityAllowsEntryWithSufficientRoll [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 6 put: effect ];
+        withEffect: effect at: 6;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.

@@ -16,8 +16,7 @@ ReversedEffectTest >> testReversedBlackHoleMovesShipForward [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 4 put: reversed ];
+        withEffect: reversed at: 4;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
@@ -87,8 +86,7 @@ ReversedEffectTest >> testReversedMoonWalkMovesOthersForward [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 3 put: reversed ];
+        withEffect: reversed at: 3;
         build.
     game := scenario game.
     ship1 := scenario shipNamed: 'Alpha'.
@@ -113,8 +111,7 @@ ReversedEffectTest >> testReversedAtomicBombDoesNothing [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 3 put: reversed ];
+        withEffect: reversed at: 3;
         build.
     game := scenario game.
     ship1 := scenario shipNamed: 'Alpha'.
@@ -139,8 +136,7 @@ ReversedEffectTest >> testReversedCardGiverDiscardsCard [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 3 put: reversed ];
+        withEffect: reversed at: 3;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.

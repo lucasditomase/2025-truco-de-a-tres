@@ -337,6 +337,11 @@ Board >> populateRandomEffects [
     ^ self
 ]
 
+{ #category : 'effects' }
+Board >> placeEffect: anEffect at: aPosition [
+    cells at: aPosition put: anEffect
+]
+
 { #category : 'spaceships' }
 Board >> registerShips: someShips [
     positionManager := PositionManager forShips: someShips.

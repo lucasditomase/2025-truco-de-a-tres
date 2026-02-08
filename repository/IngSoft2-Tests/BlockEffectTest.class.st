@@ -33,8 +33,7 @@ BlockEffectTest >> testBlockEffectExecutesActionWhenShipLandsOnCell [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 4 put: effect ];
+        withEffect: effect at: 4;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.

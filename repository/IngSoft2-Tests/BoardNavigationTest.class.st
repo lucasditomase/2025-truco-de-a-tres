@@ -48,7 +48,7 @@ BoardNavigationTest >> testReverseEffectAtReplacesEffect [
     | board effect |
     board := Board of: 5 andWormholeAt: {}.
     effect := BlackHoleEffect new.
-    board cells at: 2 put: effect.
+    board placeEffect: effect at: 2.
     board reverseEffectAt: 2.
     self assert: (board effectAt: 2) class equals: ReversedEffect.
 ]
@@ -58,7 +58,7 @@ BoardNavigationTest >> testReverseEffectAtSkipsAtomicBomb [
     | board effect |
     board := Board of: 5 andWormholeAt: {}.
     effect := AtomicBombEffect new.
-    board cells at: 3 put: effect.
+    board placeEffect: effect at: 3.
     board reverseEffectAt: 3.
     self assert: (board effectAt: 3) class equals: AtomicBombEffect.
 ]
