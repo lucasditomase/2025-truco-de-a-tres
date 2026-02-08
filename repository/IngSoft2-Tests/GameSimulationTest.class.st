@@ -7,11 +7,11 @@ Class {
 
 { #category : 'tests' }
 GameSimulationTest >> testFullGameSimulation [
-	| game ships winner turnCount itemToCancel |
+	| game ships winner turnCount itemToCancel builder |
 	
 	"1. Setup Simulation"
 	ships := { 'Ship1'. 'Ship2'. 'Ship3' }.
-	game := GameTestBuilder new
+	builder := GameTestBuilder new
 		withShipNames: ships;
 		boardWithCells: 30;
 		laps: 2;
@@ -23,8 +23,8 @@ GameSimulationTest >> testFullGameSimulation [
 		withEffect: (HyperGravityEffect new requiredRoll: 4) at: 12;
 		withEffect: BlackHoleEffect new at: 15;
 		withEffect: (HyperJumpEffect withValues: #(5 2)) at: 20;
-		withEffect: (Wormhole from: 2 to: 10) at: 25;
-		build game.
+		withEffect: (Wormhole from: 2 to: 10) at: 25.
+	game := builder build game.
 
 	turnCount := 0.
 	
@@ -81,17 +81,17 @@ GameSimulationTest >> testFullGameSimulation [
 
 { #category : 'tests' }
 GameSimulationTest >> testFullGameScenarioDeterministic [
-    | game ship1 ship2 winner |
+    | game ship1 ship2 winner builder |
     
     "1. Setup with Deterministic Dice to control flow"
-    game := (GameTestBuilder new)
+    builder := GameTestBuilder new
         withShipNames: #('Winner' 'Loser');
         boardWithCells: 10;
         laps: 1;
         withDice: (DeterministicDie withValues: #(1 2 3 4 5 6 1 2 3 4 5 6));
         withDeckCyclingThrough: { AccelerationCard. OverloadCard };
-        withEffect: AtomicBombEffect new at: 5;
-        build game.
+        withEffect: AtomicBombEffect new at: 5.
+    game := builder build game.
         
     ship1 := game spaceShips first.
     ship2 := game spaceShips second.
