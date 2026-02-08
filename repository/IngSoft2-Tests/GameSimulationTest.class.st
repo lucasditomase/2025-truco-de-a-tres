@@ -57,7 +57,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
         withShipNames: #('Winner' 'Loser');
         boardWithCells: 10;
         laps: 1;
-        withDice: (DeterministicDie withValues: #(6 1 0 2 0 3 0 4 0 5 0 6));
+        withDice: (DeterministicDie withValues: #(6 1 0 2 0 3 0 4 0 5 0 20));
         withDeckCyclingThrough: { AccelerationCard. OverloadCard };
         withEffect: AtomicBombEffect new at: 5.
     game := builder build game.
@@ -88,7 +88,9 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     
     "6. Finish Game"
     "Teleport Ship2 to winning condition to verify end game"
-    ship2 moveForward: 20. "Cross lap line"
+    "6. Finish Game"
+    "Teleport Ship2 to winning condition to verify end game"
+    game playTurn. "Cross lap line with roll of 20"
     
     self assert: game isOver description: 'Game should be over after Ship2 crosses finish line'.
     winner := game winner.
@@ -113,6 +115,9 @@ GameSimulationTest >> playAIStrategyFor: game [
         ].
         (cardToPlay isKindOf: RepeatCard) ifTrue: [
             cardToPlay targetShip: (game spaceShips atRandom).
+        ].
+        (cardToPlay isKindOf: TimeMachineCard) ifTrue: [
+             (game canUseTimeMachine: currentShip) ifFalse: [ cardToPlay := nil ].
         ].
         (cardToPlay isKindOf: CancellationCard) ifTrue: [
             game activeCards ifNotEmpty: [ 
