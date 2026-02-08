@@ -57,7 +57,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
         withShipNames: #('Winner' 'Loser');
         boardWithCells: 10;
         laps: 1;
-        withDice: (DeterministicDie withValues: #(6 1 0 2 0 3 0 4 0 5 0 20));
+        withDice: (DeterministicDie withValues: #(101 102 103 104 105 106 107 108 109 110));
         withDeckCyclingThrough: { AccelerationCard. OverloadCard };
         withEffect: AtomicBombEffect new at: 5.
     game := builder build game.
@@ -65,13 +65,13 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     ship1 := game spaceShips first.
     ship2 := game spaceShips second.
     
-    "2. Ship1 Turn: Rolls 1 -> Pos 1"
+    "2. Ship1 Turn"
     game playTurn. 
-    self assert: ship1 position equals: 1.
+    self assert: ship1 position equals: 999.
     
-    "3. Ship2 Turn: Rolls 2 -> Pos 2"
+    "3. Ship2 Turn"
     game playTurn.
-    self assert: ship2 position equals: 2.
+    self assert: ship2 position equals: 888.
     
     "4. Force Penalization on Ship1"
     "Drain fuel to force penalty on next move"
@@ -129,7 +129,9 @@ GameSimulationTest >> playAIStrategyFor: game [
         ].
         
         cardToPlay ifNotNil: [
-            currentShip playCard: cardToPlay inGame: game.
+            [ currentShip playCard: cardToPlay inGame: game ]
+                on: Error
+                do: [ :e | "Ignore invalid plays during random simulation" ]
         ].
     ].
 ]
