@@ -272,6 +272,11 @@ Game >> lapTrackerFor: aShip [
     ^ allShipStatuses at: aShip
 ]
 
+{ #category : 'testing' }
+Game >> isOver [
+    ^ state whenFinishedDo: [ :winner | true ] whenInProgressDo: [ false ]
+]
+
 { #category : 'accessing' }
 Game >> lastCardPlayed [
     ^ turnData lastCardPlayed

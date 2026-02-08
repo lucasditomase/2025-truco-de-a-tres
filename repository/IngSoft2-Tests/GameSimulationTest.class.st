@@ -58,7 +58,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
         withShipNames: #('Winner' 'Loser');
         boardWithCells: 10;
         laps: 1;
-        withDice: (DeterministicDie withValues: #(6 1 2 3 4 5 6 1 2 3 4 5 6));
+        withDice: (DeterministicDie withValues: #(6 1 0 2 0 3 0 4 0 5 0 6));
         withDeckCyclingThrough: { AccelerationCard. OverloadCard };
         withEffect: AtomicBombEffect new at: 5.
     game := builder build game.
