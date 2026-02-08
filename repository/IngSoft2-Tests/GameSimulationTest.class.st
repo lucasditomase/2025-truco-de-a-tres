@@ -54,7 +54,7 @@ GameSimulationTest >> testFullGameScenarioDeterministic [
     
     "1. Setup with Deterministic Dice to control flow"
     builder := GameTestBuilder new
-        withShipNames: #('Winner' 'Loser');
+        withShipNames: #('Loser' 'Winner');
         boardWithCells: 10;
         laps: 1;
         withDice: (DeterministicDie withValues: #(7 1 7 2 7 3 7 20));
