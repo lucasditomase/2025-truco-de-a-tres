@@ -59,8 +59,8 @@ BoardNavigationTest >> testBoardDelegatesMovementQuery [
     ship := Spaceship withName: 'Test'.
     board registerShips: { ship }.
     
-    "Test lastMoveFor: delegation"
-    self assert: (board lastMoveFor: ship) isNil.
+    "Test lastMoveFor: delegation returns 0 by default (not nil)"
+    self assert: (board lastMoveFor: ship) equals: 0.
     
     "Test clearLastMoves delegation (should not raise error)"
     board clearLastMoves.
