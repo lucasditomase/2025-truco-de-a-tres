@@ -14,6 +14,15 @@ TurnDataTest >> shipNamed: aName withFuel: fuelAmount [
     ^ ship
 ]
 
+{ #category : 'support' }
+TurnDataTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: errorMessage ]
+]
+
 { #category : 'tests' }
 TurnDataTest >> testInitializeFuelHistoryStoresInitialFuelValues [
     | data shipA shipB |
@@ -101,4 +110,43 @@ TurnDataTest >> testLastEffectiveCardSetterStoresCard [
     data lastEffectiveCard: card.
 
     self assert: data lastEffectiveCard equals: card.
+]
+
+{ #category : 'tests' }
+TurnDataTest >> testFuelAtStartOfPenultimateTurnWithInsufficientHistory [
+    | data ship |
+    data := TurnData new.
+    ship := self shipNamed: 'Empty' withFuel: 10.
+    data initializeFuelHistoryForShips: { ship }.
+
+    self
+        should: [ data fuelAtStartOfPenultimateTurnFor: ship ]
+        raise: Error
+        withMessageText: 'Insufficient fuel history for Time Machine'.
+]
+
+{ #category : 'tests' }
+TurnDataTest >> testFuelAtStartOfPenultimateTurnWithExactlyTwoEntries [
+    | data ship |
+    data := TurnData new.
+    ship := self shipNamed: 'TwoEntry' withFuel: 5.
+    data initializeFuelHistoryForShips: { ship }.
+    ship fuel: 3.
+    data recordFuelFor: ship.
+
+    self assert: (data fuelAtStartOfPenultimateTurnFor: ship) equals: 5.
+]
+
+{ #category : 'tests' }
+TurnDataTest >> testFuelAtStartOfPenultimateTurnWithThreeEntries [
+    | data ship |
+    data := TurnData new.
+    ship := self shipNamed: 'ThreeEntry' withFuel: 10.
+    data initializeFuelHistoryForShips: { ship }.
+    ship fuel: 8.
+    data recordFuelFor: ship.
+    ship fuel: 6.
+    data recordFuelFor: ship.
+
+    self assert: (data fuelAtStartOfPenultimateTurnFor: ship) equals: 10.
 ]

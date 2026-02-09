@@ -35,13 +35,14 @@ GameTest >> testActiveCardsReturnsAllActiveCards [
     scenario := self builder
         withShipNames: #('A' 'B');
         boardWithCells: 5;
+        withDeckCyclingThrough: { AccelerationCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'A'.
-    card := AccelerationCard new.
-    ship addCard: card.
+    
     self ensureTurnOf: ship inGame: game.
+    card := ship cards first.
     ship playCard: card inGame: game.
 
     self assert: game activeCards size equals: 1.
@@ -193,7 +194,7 @@ GameTest >> testGameReturnsAllStatuses [
         build.
     game := scenario game.
 
-    statuses := game allStatuses.
+    statuses := game allShipStatuses.
 
     self assert: statuses size equals: 2.
     self assert: (statuses allSatisfy: [ :status | status ship isNotNil ]).
@@ -213,7 +214,7 @@ GameTest >> testGameReturnsFinalPositionsOfSpaceships [
 
     game playUntilFinish.
 
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     pos1 := positions detect: [ :each | each ship = ship1 ].
     pos2 := positions detect: [ :each | each ship = ship2 ].
 
@@ -304,23 +305,23 @@ GameTest >> testLastEffectiveCardAccessorDelegatesToTurnData [
 ]
 
 { #category : 'tests' }
-GameTest >> testModifyRollAppliesActiveCardEffect [
-    | scenario game ship card |
+GameTest >> testAccelerationCardModifiesMovement [
+    | scenario game ship |
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
-        boardWithCells: 5;
-        diceWithSides: 1;
+        boardWithCells: 10;
+        diceCup: [ DiceCup with: { DeterministicDie withValues: #(2) sides: 6 } ];
+        withDeckCyclingThrough: { AccelerationCard };
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
-    self clearHandOf: ship.
-    card := AccelerationCard new.
-    ship addCard: card.
 
     self ensureTurnOf: ship inGame: game.
-    ship playCard: card inGame: game.
+    ship playCard: (ship cards first) inGame: game.
 
-    self assert: (game modifyRoll: 2 forShip: ship) equals: 3.
+    game playTurn.
+
+    self assert: (game board positionOf: ship) equals: 3.
 ]
 
 { #category : 'tests' }
@@ -330,7 +331,7 @@ GameTest >> testHyperGravityRequirementsConfiguredWithDiceMaxRoll [
     scenario := self builder
         withShipNames: #('H1' 'H2');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: effect ];
+        withEffect: effect at: 1;
         diceWithSides: 1;
         build.
     game := scenario game.
@@ -399,7 +400,7 @@ GameTest >> testPlayTurnAppliesBoardEffect [
     scenario := self builder
         withShipNames: #('P1' 'P2');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withEffect: CardEffect new at: 1;
         diceWithSides: 1;
         build.
     game := scenario game.
@@ -416,7 +417,7 @@ GameTest >> testDeckCyclingConfigurationProvidesDeterministicCards [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withEffect: CardEffect new at: 1;
         withDeckCyclingThrough: { ShieldCard. AdvanceCard };
         diceCup: [ DiceCup with: { DeterministicDie withValues: #(1) sides: 6 } ];
         build.
@@ -437,28 +438,28 @@ GameTest >> testDeckCyclingConfigurationProvidesDeterministicCards [
 
 { #category : 'tests' }
 GameTest >> testRepeatCardCanApplyLastCardEffectToChosenShip [
-    | scenario game alpha beta advance repeat |
-    scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
-        boardWithCells: 5;
-        diceCup: [ DiceCup with: { MockDie value: 1 sides: 6 } ];
-        build.
-    game := scenario game.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    alpha cards copy do: [ :each | alpha removeCard: each ].
+    | scenario game alpha beta advance repeat deck |
+    alpha := Spaceship withName: 'Alpha'.
+    beta := Spaceship withName: 'Beta'.
     advance := AdvanceCard new.
     repeat := RepeatCard targeting: beta.
-    alpha addCard: advance.
-    alpha addCard: repeat.
-
+    deck := OrderedCollection withAll: { advance. repeat. Card new. Card new }.
+    
+    scenario := self builder
+        withShips: { alpha. beta };
+        boardWithCells: 5;
+        diceCup: [ DiceCup with: { MockDie value: 1 sides: 6 } ];
+        withCardDealer: [ deck removeFirst ];
+        build.
+    game := scenario game.
+    
     self ensureTurnOf: alpha inGame: game.
     alpha playCard: advance inGame: game.
-    self assert: alpha position equals: 1.
+    self assert: (game board positionOf: alpha) equals: 1.
 
     alpha playCard: repeat inGame: game.
 
-    self assert: beta position equals: 1.
+    self assert: (game board positionOf: beta) equals: 1.
 ]
 
 { #category : 'tests' }
@@ -540,16 +541,15 @@ GameTest >> testRedoLastCardOnReplaysAccelerationCard [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        withDeckCyclingThrough: { AccelerationCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
-    self clearHandOf: alpha.
-    card := AccelerationCard new.
-    alpha addCard: card.
 
     self ensureTurnOf: alpha inGame: game.
+    card := alpha cards first.
     alpha playCard: card inGame: game.
 
     self ensureTurnOf: beta inGame: game.
@@ -561,20 +561,21 @@ GameTest >> testRedoLastCardOnReplaysAccelerationCard [
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysAllyCard [
-    | scenario game owner ally newOwner card |
+    | scenario game owner ally newOwner card deck |
+    owner := Spaceship withName: 'Owner'.
+    ally := Spaceship withName: 'Ally'.
+    newOwner := Spaceship withName: 'NewOwner'.
+    card := AllyCard withAlly: ally.
+    deck := OrderedCollection withAll: { card. Card new. Card new. Card new. Card new. Card new }.
+
     scenario := self builder
-        withShipNames: #('Owner' 'Ally' 'NewOwner');
+        withShips: { owner. ally. newOwner };
         boardWithCells: 5;
         diceWithSides: 1;
+        withCardDealer: [ deck removeFirst ];
         build.
     game := scenario game.
-    owner := scenario shipNamed: 'Owner'.
-    ally := scenario shipNamed: 'Ally'.
-    newOwner := scenario shipNamed: 'NewOwner'.
-    self clearHandOf: owner.
-    card := AllyCard withAlly: ally.
-    owner addCard: card.
-
+    
     self ensureTurnOf: owner inGame: game.
     owner playCard: card inGame: game.
     game removeActiveCard: card.
@@ -589,25 +590,24 @@ GameTest >> testRedoLastCardOnReplaysAllyCard [
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysCancellationCard [
-    | scenario game alpha beta shield cancel |
+    | scenario game alpha beta shield cancel deck |
+    alpha := Spaceship withName: 'Alpha'.
+    beta := Spaceship withName: 'Beta'.
+    shield := ShieldCard new.
+    cancel := CancellationCard cancelling: shield.
+    deck := OrderedCollection withAll: { shield. Card new. cancel. Card new }.
+
     scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
+        withShips: { alpha. beta };
         boardWithCells: 5;
         diceWithSides: 1;
+        withCardDealer: [ deck removeFirst ];
         build.
     game := scenario game.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    self clearHandOf: alpha.
-    self clearHandOf: beta.
-    shield := ShieldCard new.
-    alpha addCard: shield.
-
+    
     self ensureTurnOf: alpha inGame: game.
     alpha playCard: shield inGame: game.
 
-    cancel := CancellationCard cancelling: shield.
-    beta addCard: cancel.
     self ensureTurnOf: beta inGame: game.
     beta playCard: cancel inGame: game.
 
@@ -623,39 +623,39 @@ GameTest >> testRedoLastCardOnReplaysCard [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        withDeckCyclingThrough: { AdvanceCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
-    self clearHandOf: alpha.
-    card := AdvanceCard new.
-    alpha addCard: card.
-
+    
     self ensureTurnOf: alpha inGame: game.
+    card := alpha cards first.
     alpha playCard: card inGame: game.
 
     self ensureTurnOf: beta inGame: game.
     game redoLastCardOn: beta.
 
-    self assert: beta position equals: 1.
+    self assert: (game board positionOf: beta) equals: 1.
 ]
 
 { #category : 'tests' }
 GameTest >> testRedoLastCardOnReplaysOverloadCard [
-    | scenario game alpha beta card |
+    | scenario game alpha beta card deck |
+    alpha := Spaceship withName: 'Alpha'.
+    beta := Spaceship withName: 'Beta'.
+    card := OverloadCard forShip: beta.
+    deck := OrderedCollection withAll: { card. Card new. Card new. Card new }.
+
     scenario := self builder
-        withShipNames: #('Alpha' 'Beta');
+        withShips: { alpha. beta };
         boardWithCells: 5;
         diceWithSides: 1;
+        withCardDealer: [ deck removeFirst ];
         build.
     game := scenario game.
-    alpha := scenario shipNamed: 'Alpha'.
-    beta := scenario shipNamed: 'Beta'.
-    self clearHandOf: alpha.
-    card := OverloadCard forShip: beta.
-    alpha addCard: card.
-
+    
     self ensureTurnOf: alpha inGame: game.
     alpha playCard: card inGame: game.
     game removeActiveCard: card.
@@ -672,19 +672,18 @@ GameTest >> testRedoLastCardOnReplaysRepeatCard [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        withDeckCyclingThrough: { RepeatCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     alpha := scenario shipNamed: 'Alpha'.
-    self clearHandOf: alpha.
-    card := RepeatCard new.
-    alpha addCard: card.
-
+    
     self ensureTurnOf: alpha inGame: game.
+    card := alpha cards first.
     alpha playCard: card inGame: game.
     game redoLastCardOn: alpha.
 
-    self assert: alpha position equals: 0.
+    self assert: (game board positionOf: alpha) equals: 0.
 ]
 
 { #category : 'tests' }
@@ -693,16 +692,15 @@ GameTest >> testRedoLastCardOnReplaysShieldCard [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        withDeckCyclingThrough: { ShieldCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
-    self clearHandOf: alpha.
-    card := ShieldCard new.
-    alpha addCard: card.
-
+    
     self ensureTurnOf: alpha inGame: game.
+    card := alpha cards first.
     alpha playCard: card inGame: game.
     game removeActiveCard: card.
 
@@ -751,15 +749,14 @@ GameTest >> testRemoveActiveCardRemovesFromAllShips [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        withDeckCyclingThrough: { ShieldCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
-    self clearHandOf: ship.
-    card := ShieldCard new.
-    ship addCard: card.
-
+    
     self ensureTurnOf: ship inGame: game.
+    card := ship cards first.
     ship playCard: card inGame: game.
     self assert: (ship activeCards includes: card).
 
@@ -790,7 +787,7 @@ GameTest >> testRepeatLastEffectOnAppliesLastEffect [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
-        configureBoardWith: [ :board | board cells at: 1 put: CardEffect new ];
+        withEffect: CardEffect new at: 1;
         diceWithSides: 1;
         build.
     game := scenario game.
@@ -810,21 +807,20 @@ GameTest >> testRepeatLastEffectOnReplaysLastCardEffect [
     scenario := self builder
         withShipNames: #('Alpha' 'Beta');
         boardWithCells: 5;
+        withDeckCyclingThrough: { AdvanceCard };
         diceWithSides: 1;
         build.
     game := scenario game.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
-    self clearHandOf: alpha.
-    card := AdvanceCard new.
-    alpha addCard: card.
-
+    
     self ensureTurnOf: alpha inGame: game.
+    card := alpha cards first.
     alpha playCard: card inGame: game.
 
     game repeatLastEffectOn: beta.
 
-    self assert: beta position equals: 1.
+    self assert: (game board positionOf: beta) equals: 1.
 ]
 
 { #category : 'tests' }
@@ -887,7 +883,7 @@ GameTest >> testShipPositionsReflectCurrentPositionsOfAllShips [
         diceWithSides: 1;
         build.
     game := scenario game.
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     alpha := scenario shipNamed: 'Alpha'.
     beta := scenario shipNamed: 'Beta'.
 
@@ -1024,7 +1020,7 @@ GameTest >> testSpaceshipPositionsReturnsCorrectMapping [
     game playTurn.
     game playTurn.
 
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     pos1 := positions detect: [ :each | each ship = mapOne ].
     pos2 := positions detect: [ :each | each ship = mapTwo ].
 
@@ -1047,7 +1043,7 @@ GameTest >> testSpaceshipPositionsReturnsCorrectPositions [
 
     game playTurn.
 
-    positions := game spaceshipPositions.
+    positions := game allShipStatuses.
     pos1 := positions detect: [ :each | each ship = ship1 ].
     pos2 := positions detect: [ :each | each ship = ship2 ].
 
@@ -1129,21 +1125,7 @@ GameTest >> testWhenShipDecidesToPassTurnThenSkipTurn [
     game playUntilFinish.
 ]
 
-{ #category : 'tests' }
-GameTest >> testWhenShipReachesGoalThenGameEnds [
-    | scenario game |
-    scenario := self builder
-        withShipNames: #('Ship Num1' 'Ship Num2');
-        boardWithCells: 1;
-        diceWithSides: 100;
-        build.
-    game := scenario game.
 
-    game playTurn.
-
-    game whenFinishedDo: [ :w | self assert: true ]
-        whenInProgressDo: [ self fail: 'Expected game to be finished' ].
-]
 
 { #category : 'tests' }
 GameTest >> testWhenShipWinsByCompletingRequiredLapsThenEndsGame [

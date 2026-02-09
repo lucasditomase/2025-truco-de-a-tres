@@ -12,19 +12,19 @@ Class {
 }
 
 { #category : 'instance creation' }
-GameCoordinator class >> forBoard: aBoard withShips: someShips statuses: shipStatuses andDice: aDiceCup [
+GameCoordinator class >> forBoard: aBoard withShips: someShips statuses: allShipStatuses andDice: aDiceCup [
     
     
     
     ^ self new
         initializeForBoard: aBoard
         withShips: someShips
-        statuses: shipStatuses
+        statuses: allShipStatuses
         andDice: aDiceCup
 ]
 
 { #category : 'initialization' }
-GameCoordinator >> initializeForBoard: aBoard withShips: someShips statuses: shipStatuses andDice: aDiceCup [
+GameCoordinator >> initializeForBoard: aBoard withShips: someShips statuses: allShipStatuses andDice: aDiceCup [
     
     
     
@@ -32,10 +32,10 @@ GameCoordinator >> initializeForBoard: aBoard withShips: someShips statuses: shi
     
     lapTracker := LapTracker
         forBoard: aBoard
-        statuses: shipStatuses.
+        statuses: allShipStatuses.
     
     penaltyPolicy := PenaltyPolicy
-        withStatuses: shipStatuses
+        withStatuses: allShipStatuses
         restoreFuelWith: [ :ship | ship restoreFuel ].
     
     fuelManager := FuelManager

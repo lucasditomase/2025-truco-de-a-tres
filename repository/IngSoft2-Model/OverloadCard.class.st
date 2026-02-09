@@ -34,6 +34,11 @@ OverloadCard >> targetShip [
     ^ targetShip
 ]
 
+{ #category : 'accessing' }
+OverloadCard >> targetShip: aShip [
+    targetShip := aShip
+]
+
 { #category : 'effects' }
 OverloadCard >> modifyRoll: aNumber forShip: aShip inGame: aGame [
     aShip = targetShip ifTrue: [ ^ aNumber - 2 ].

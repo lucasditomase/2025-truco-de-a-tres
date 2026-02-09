@@ -45,6 +45,11 @@ AllyCard >> allyShip [
 ]
 
 { #category : 'accessing' }
+AllyCard >> allyShip: aShip [
+    allyShip := aShip
+]
+
+{ #category : 'accessing' }
 AllyCard >> ownerShip [
     ^ ownerShip
 ]

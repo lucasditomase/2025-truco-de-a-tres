@@ -23,8 +23,7 @@ BlackHoleEffectTest >> testBlackHoleMovesShipBackBy4Positions [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 6 put: BlackHoleEffect new ];
+        withEffect: BlackHoleEffect new at: 6;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.
@@ -43,8 +42,7 @@ BlackHoleEffectTest >> testBlackHoleDoesNotMoveBelowZero [
         withShipNames: #('Alpha' 'Beta');
         diceCup: [ DiceCup with: { deterministicDie } ];
         boardWithCells: 20;
-        configureBoardWith: [ :board |
-            board cells at: 3 put: BlackHoleEffect new ];
+        withEffect: BlackHoleEffect new at: 3;
         build.
     game := scenario game.
     ship := scenario shipNamed: 'Alpha'.

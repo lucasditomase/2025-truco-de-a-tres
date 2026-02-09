@@ -2,7 +2,7 @@ Class {
     #name : 'PenaltyPolicy',
     #superclass : 'Object',
     #instVars : [
-        'shipStatuses',
+        'allShipStatuses',
         'fuelRestorer'
     ],
     #category : 'IngSoft2-Model',
@@ -48,7 +48,7 @@ PenaltyPolicy class >> invalidFuelRestorerMessage [
 
 { #category : 'initialization' }
 PenaltyPolicy >> initializeWithStatuses: aDictionary restoreFuelWith: aBlock [
-    shipStatuses := self class ensureStatusesFrom: aDictionary.
+    allShipStatuses := self class ensureStatusesFrom: aDictionary.
     fuelRestorer := self class ensureFuelRestorerFrom: aBlock.
     ^ self
 ]
@@ -68,5 +68,5 @@ PenaltyPolicy >> reducePenaltyFor: aShip [
 
 { #category : 'private' }
 PenaltyPolicy >> statusFor: aShip [
-    ^ shipStatuses at: aShip
+    ^ allShipStatuses at: aShip
 ]

@@ -3,9 +3,11 @@ Class {
     #superclass : 'Object',
     #instVars : [
         'shipNames',
+        'ships',
         'boardFactory',
         'boardConfigurators',
         'diceFactory',
+        'shipPositions',
         'laps'
     ],
     #category : 'IngSoft2-Tests',
@@ -14,10 +16,11 @@ Class {
 
 { #category : 'initialization' }
 GameTestBuilder >> initialize [
-    shipNames := #('Alpha' 'Beta').
+    shipNames := OrderedCollection new.
     boardFactory := [ Board of: 10 andWormholeAt: #() ].
     boardConfigurators := OrderedCollection new.
     diceFactory := [ DiceCup with: { Die withSides: 1 } ].
+    shipPositions := Dictionary new.
     laps := 1.
 ]
 
@@ -26,15 +29,27 @@ GameTestBuilder class >> withShipNames: aCollection [
     ^ self new withShipNames: aCollection
 ]
 
-{ #category : 'configuration' }
 GameTestBuilder >> withShipNames: aCollection [
-    shipNames := aCollection.
+    shipNames := aCollection asOrderedCollection.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withShips: aCollection [
+    ships := aCollection.
     ^ self
 ]
 
 { #category : 'configuration' }
 GameTestBuilder >> laps: aNumber [
     laps := aNumber.
+    ^ self
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withShipNamed: aName at: aPosition [
+    (shipNames includes: aName) ifFalse: [ shipNames add: aName ].
+    shipPositions at: aName put: aPosition.
     ^ self
 ]
 
@@ -68,19 +83,38 @@ GameTestBuilder >> diceCup: aBlock [
     ^ self
 ]
 
+{ #category : 'configuration' }
+GameTestBuilder >> withDice: aDie [
+    diceFactory := [ DiceCup with: { aDie } ].
+    ^ self
+]
+
 { #category : 'instance creation' }
 GameTestBuilder >> build [
-    | ships board dice game |
-    ships := shipNames collect: [ :each | Spaceship withName: each ].
+    | theShips board dice game |
+    theShips := ships ifNil: [ 
+        shipNames ifEmpty: [ shipNames addAll: #('Alpha' 'Beta') ].
+        shipNames size = 1 ifTrue: [ 
+            | autoShip |
+            autoShip := 'Beta'.
+            (shipNames includes: autoShip) ifTrue: [ autoShip := 'Gamma' ].
+            shipNames add: autoShip ].
+        shipNames collect: [ :each | Spaceship withName: each ] ].
+    
     board := boardFactory value.
+    board registerShips: theShips.
+    
+    shipPositions keysAndValuesDo: [ :name :pos |
+        board moveShip: (theShips detect: [ :s | s name = name ]) to: pos ].
+
     boardConfigurators do: [ :config | config value: board ].
     dice := diceFactory value.
     game := Game
-        startWithShips: ships
+        startWithShips: theShips
         board: board
         dice: dice
         laps: laps.
-    ^ GameTestScenario withGame: game ships: ships
+    ^ GameTestScenario withGame: game ships: theShips
 ]
 
 { #category : 'configuration' }
@@ -91,4 +125,9 @@ GameTestBuilder >> withCardDealer: aCallable [
 { #category : 'configuration' }
 GameTestBuilder >> withDeckCyclingThrough: cardClasses [
     ^ self configureBoardWith: [ :board | board useCardDealerCyclingThrough: cardClasses ]
+]
+
+{ #category : 'configuration' }
+GameTestBuilder >> withEffect: anEffect at: aPosition [
+    ^ self configureBoardWith: [ :board | board placeEffect: anEffect at: aPosition ]
 ]

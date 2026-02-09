@@ -1,19 +1,9 @@
 Class {
     #name : 'ReversalCardTest',
-    #superclass : 'TestCase',
+    #superclass : 'GameIntegrationTest',
     #category : 'IngSoft2-Tests',
     #package : 'IngSoft2-Tests'
 }
-
-{ #category : 'support' }
-ReversalCardTest >> builder [
-    ^ GameTestBuilder new
-]
-
-{ #category : 'support' }
-ReversalCardTest >> ensureTurnOf: aShip inGame: aGame [
-    [ aGame currentShip = aShip ] whileFalse: [ aGame advanceTurn ]
-]
 
 { #category : 'support' }
 ReversalCardTest >> playReversalFor: aShip inGame: aGame [
@@ -30,7 +20,7 @@ ReversalCardTest >> testActivateForReversesBlackHoleEffect [
     | scenario game board ship |
     scenario := self builder
         boardWithCells: 15;
-        configureBoardWith: [ :b | b cells at: 5 put: BlackHoleEffect new ];
+        withEffect: BlackHoleEffect new at: 5;
         build.
     game := scenario game.
     board := game board.
@@ -65,7 +55,7 @@ ReversalCardTest >> testActivateForReversesHyperGravityEffect [
     | scenario game board ship |
     scenario := self builder
         boardWithCells: 15;
-        configureBoardWith: [ :b | b cells at: 4 put: HyperGravityEffect new ];
+        withEffect: HyperGravityEffect new at: 4;
         build.
     game := scenario game.
     board := game board.
@@ -84,7 +74,7 @@ ReversalCardTest >> testActivateForReversesHyperJumpEffect [
     effect := HyperJumpEffect withValues: #(2).
     scenario := self builder
         boardWithCells: 10;
-        configureBoardWith: [ :b | b cells at: 4 put: effect ];
+        withEffect: effect at: 4;
         build.
     game := scenario game.
     board := game board.
@@ -104,7 +94,7 @@ ReversalCardTest >> testActivateForReversesMoonWalkEffect [
     effect := MoonWalkEffect withSteps: 2.
     scenario := self builder
         boardWithCells: 10;
-        configureBoardWith: [ :b | b cells at: 5 put: effect ];
+        withEffect: effect at: 5;
         build.
     game := scenario game.
     board := game board.
@@ -125,7 +115,7 @@ ReversalCardTest >> testActivateForReversesCardEffect [
     | scenario game board ship removalCard |
     scenario := self builder
         boardWithCells: 10;
-        configureBoardWith: [ :b | b cells at: 5 put: CardEffect new ];
+        withEffect: CardEffect new at: 5;
         build.
     game := scenario game.
     board := game board.
@@ -146,7 +136,7 @@ ReversalCardTest >> testActivateForDoesNothingWithAtomicBombEffect [
     | scenario game board alpha beta |
     scenario := self builder
         boardWithCells: 10;
-        configureBoardWith: [ :b | b cells at: 5 put: AtomicBombEffect new ];
+        withEffect: AtomicBombEffect new at: 5;
         build.
     game := scenario game.
     board := game board.

@@ -30,7 +30,7 @@ NullWormholeTest >> testReverseOnBoardReversesEffectAtPosition [
     | worm board |
     worm := NullWormhole new.
     board := Board of: 5 andWormholeAt: {}.
-    board cells at: 2 put: NoEffect new.
+    board placeEffect: NoEffect new at: 2.
     worm reverseOnBoard: board at: 2.
-    self assert: (board cells at: 2) class equals: ReversedEffect.
+    self assert: (board effectAt: 2) class equals: ReversedEffect.
 ]

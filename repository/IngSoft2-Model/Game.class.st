@@ -10,7 +10,7 @@ Class {
         'wantsToPassTurn',
         'totalLaps',
         'state',
-        'shipStatuses',
+        'allShipStatuses',
         'turnData',
         'rankingService'
         ],
@@ -112,13 +112,18 @@ Game >> advanceTurn [
 ]
 
 { #category : 'process actions' }
-Game >> allStatuses [
+Game >> allShipStatuses [
     ^ self spaceShips collect: [ :ship | self statusFor: ship ]
 ]
 
 { #category : 'accessing' }
 Game >> board [
     ^ board
+]
+
+{ #category : 'accessing' }
+Game >> positionOf: aSpaceship [
+    ^ board positionOf: aSpaceship
 ]
 
 { #category : 'validation' }
@@ -192,7 +197,7 @@ Game >> initializeWithShips: someShips board: aBoard dice: someDices laps: aNumb
         initializeFuelForShips;
         initializeHyperGravityRequirements;
         initializeTurnManager;
-        initializeShipStatuses;
+        initializeAllShipStatuses;
         initializeManagers;
         initializeTurnData.
     ^ self
@@ -203,7 +208,7 @@ Game >> initializeManagers [
     coordinator := GameCoordinator
         forBoard: board
         withShips: spaceShips
-        statuses: shipStatuses
+        statuses: allShipStatuses
         andDice: dice.
     rankingService := RankingService new
 ]
@@ -238,14 +243,15 @@ Game >> initializeTurnManager [
 ]
 
 { #category : 'initialization' }
-Game >> initializeShipStatuses [
-    shipStatuses := Dictionary new.
+Game >> initializeAllShipStatuses [
+    allShipStatuses := Dictionary new.
     spaceShips do: [ :ship |
-        shipStatuses at: ship put: (ShipStatus
+        allShipStatuses at: ship put: (ShipStatus
             for: ship
             position: 0
             laps: 0
-            penalized: false).
+            penalized: false
+            fuel: ship fuel).
         2 timesRepeat: [ ship addCard: board drawCard ] ]
 ]
 
@@ -263,7 +269,12 @@ Game >> isPenalized: aShip [
 
 { #category : 'testing' }
 Game >> lapTrackerFor: aShip [
-    ^ shipStatuses at: aShip
+    ^ allShipStatuses at: aShip
+]
+
+{ #category : 'testing' }
+Game >> isOver [
+    ^ state whenFinishedDo: [ :winner | true ] whenInProgressDo: [ false ]
 ]
 
 { #category : 'accessing' }
@@ -357,7 +368,7 @@ Game >> playUntilFinish [
 
 { #category : 'process actions' }
 Game >> ranking [
-    ^ rankingService rankingFor: self allStatuses
+    ^ rankingService rankingFor: self allShipStatuses
 ]
 
 { #category : 'process actions' }
@@ -459,6 +470,8 @@ Game >> applyEffectOfCurrentCell [
         during: [ board applyEffectTo: self currentShip ]
 ]
 
+
+
 { #category : 'private' }
 Game >> applyEffectSkippingFuel: skipFuel during: effectBlock [
     
@@ -487,18 +500,6 @@ Game >> spaceShips [
     ^ spaceShips asOrderedCollection
 ]
 
-{ #category : 'process actions' }
-Game >> spaceshipPositions [
-    ^ spaceShips collect: [ :ship |
-        | tracker |
-        tracker := self lapTrackerFor: ship.
-        ShipStatus
-            for: ship
-            position: ship position
-            laps: tracker lapCount
-            penalized: tracker isPenalized ]
-]
-
 { #category : 'testing' }
 Game >> stateOf: aShip [
     ^ aShip state
@@ -511,6 +512,7 @@ Game >> statusFor: aShip [
 
     status position: (board positionOf: aShip).
     status penalized: (self isPenalized: aShip).
+    status fuel: aShip fuel.
     ^ status
 ]
 
@@ -535,4 +537,14 @@ Game >> whenFinishedDo: finishedBlock whenInProgressDo: inProgressBlock [
 { #category : 'accessing' }
 Game >> winner [
     ^ state whenFinishedDo: [ :w | w ] whenInProgressDo: [ NullSpaceship new ]
+]
+
+{ #category : 'time machine' }
+Game >> canUseTimeMachine: aShip [
+    ^ turnData hasHistoryForTimeMachine: aShip
+]
+
+{ #category : 'time machine' }
+Game >> antepenultimateFuelFor: aShip [
+    ^ turnData antepenultimateFuelFor: aShip
 ]
