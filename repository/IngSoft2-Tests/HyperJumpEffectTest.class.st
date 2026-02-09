@@ -81,13 +81,13 @@ HyperJumpEffectTest >> testHyperJumpSequenceIsDescending [
     | effect |
     effect := HyperJumpEffect withValues: { Distance parsecs: 10 . Distance parsecs: 30 . Distance parsecs: 20 }.
     
-    "First jump should be largest (30)"
+    
     self assert: effect nextJumpValue equals: (Distance parsecs: 30).
     
-    "Second jump should be middle (20)"
+    
     self assert: effect nextJumpValue equals: (Distance parsecs: 20).
     
-    "Third jump should be smallest (10)"
+    
     self assert: effect nextJumpValue equals: (Distance parsecs: 10).
 ]
 
@@ -96,10 +96,10 @@ HyperJumpEffectTest >> testResetJumpIndexRestartsSequence [
     | effect |
     effect := HyperJumpEffect withValues: { Distance parsecs: 10 . Distance parsecs: 20 }.
     
-    effect nextJumpValue. "Consume 20"
-    effect nextJumpValue. "Consume 10"
+    effect nextJumpValue. 
+    effect nextJumpValue. 
     
-     "Should wrap around or reset"
+     
     effect resetJumpIndex.
     self assert: effect nextJumpValue equals: (Distance parsecs: 20).
 ]
@@ -137,7 +137,7 @@ HyperJumpEffectTest >> testApplyToInBoardDelegatesToApplyEffect [
     ship := Spaceship withName: 'Test'.
     board registerShips: { ship }.
     
-    "Calling applyTo:inBoard: should eventually move the ship via applyEffectTo:inBoard:"
+    
     effect applyTo: ship inBoard: board.
     
     self deny: (board positionOf: ship) equals: 0.

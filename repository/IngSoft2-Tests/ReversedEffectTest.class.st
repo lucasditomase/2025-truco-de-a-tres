@@ -153,7 +153,7 @@ ReversedEffectTest >> testApplyToShipWithoutBoard [
     reversed := ReversedEffect of: effect.
     ship := Spaceship withName: 'Test'.
     
-    "Should not raise error"
+    
     reversed applyTo: ship.
 ]
 

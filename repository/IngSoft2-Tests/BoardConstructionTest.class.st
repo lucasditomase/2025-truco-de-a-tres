@@ -84,7 +84,7 @@ BoardConstructionTest >> testValidateLengthConsistencyChecksMismatch [
 BoardConstructionTest >> testRandomEffectDistributionFallback [
     | board effect |
     board := Board of: 10 andWormholeAt: #().
-    "Force fallback by providing a roll larger than any cumulative weight"
+    
     effect := board randomEffectForRoll: 99999.
     self assert: effect class equals: AtomicBombEffect.
 ]
@@ -115,16 +115,16 @@ BoardConstructionTest >> testBoardHelpersAndAccessors [
     | board |
     board := Board of: 10 length: (Distance parsecs: 100) andWormholeAt: #().
     
-    "Test clearLastMoves (no error)"
+    
     board clearLastMoves.
     
-    "Test totalLengthInParsecs"
+    
     self assert: board totalLengthInParsecs value equals: 100.
     
-    "Test totalEffectWeight"
+    
     self assert: board totalEffectWeight > 0.
     
-    "Test invalidEffectMessage"
+    
     self assert: Board invalidEffectMessage equals: 'Board cells must contain effects'.
 ]
 

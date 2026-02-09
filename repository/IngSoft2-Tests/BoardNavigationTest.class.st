@@ -59,10 +59,10 @@ BoardNavigationTest >> testBoardDelegatesMovementQuery [
     ship := Spaceship withName: 'Test'.
     board registerShips: { ship }.
     
-    "Test lastMoveFor: delegation returns 0 by default (not nil)"
+    
     self assert: (board lastMoveFor: ship) equals: 0.
     
-    "Test clearLastMoves delegation (should not raise error)"
+    
     board clearLastMoves.
 ]
 
@@ -135,7 +135,7 @@ BoardNavigationTest >> testShipCompletesLap [
     ship := Spaceship withName: 'Test'.
     status := ShipStatus for: ship position: 8 laps: 0 penalized: false.
     
-    "Calculate new position from 8 moving 4 steps (wraps to 2)"
+    
     newPosition := board calculateNewPositionFrom: 8 after: 4 moves: status.
     
     self assert: newPosition equals: 2.

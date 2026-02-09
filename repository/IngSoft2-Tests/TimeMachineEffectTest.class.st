@@ -17,10 +17,10 @@ TimeMachineEffectTest >> testApplyToRestoresFuel [
     
     initialFuel := (game statusFor: ship) fuel.
     
-    "Advance turns to build history (needs at least 2 past turns)"
+    
     4 timesRepeat: [ game playTurn ].
     
-    "Consume some fuel manually to ensure restoration is needed"
+    
     ship fuel: 0.
     currentFuel := (game statusFor: ship) fuel.
     self deny: currentFuel equals: initialFuel.
@@ -40,7 +40,7 @@ TimeMachineEffectTest >> testTimeMachineRaisesErrorWhenAppliedTooEarly [
     ship := scenario shipNamed: 'Alpha'.
     effect := TimeMachineEffect new.
     
-    "Turn 1: Not enough history"
+    
     self
         should: [ effect applyTo: ship inGame: game ]
         raise: Error
@@ -59,7 +59,7 @@ TimeMachineEffectTest >> testRestoredFuelAccessHelper [
     
     4 timesRepeat: [ game playTurn ].
     
-    "Helper should return expected fuel amount (Game logic handles value)"
+    
     restoredFuel := effect restoredFuelFor: ship inGame: game.
     self assert: restoredFuel >= 0.
 ]
