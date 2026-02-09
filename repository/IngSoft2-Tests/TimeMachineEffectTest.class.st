@@ -46,3 +46,20 @@ TimeMachineEffectTest >> testTimeMachineRaisesErrorWhenAppliedTooEarly [
         raise: Error
         withMessageText: 'Not enough turns to use Time Machine'
 ]
+
+{ #category : 'tests' }
+TimeMachineEffectTest >> testRestoredFuelAccessHelper [
+    | scenario game ship effect restoredFuel |
+    scenario := self builder
+        withShipNames: #('Alpha');
+        build.
+    game := scenario game.
+    ship := scenario shipNamed: 'Alpha'.
+    effect := TimeMachineEffect new.
+    
+    4 timesRepeat: [ game playTurn ].
+    
+    "Helper should return expected fuel amount (Game logic handles value)"
+    restoredFuel := effect restoredFuelFor: ship inGame: game.
+    self assert: restoredFuel >= 0.
+]

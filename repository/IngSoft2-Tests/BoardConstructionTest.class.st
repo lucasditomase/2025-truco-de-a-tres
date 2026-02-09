@@ -135,3 +135,10 @@ BoardConstructionTest >> testBoardWithEmptyCells [
     board cells: Dictionary new.
     self assert: board cellCount isNil.
 ]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testAsGameBoardReturnsSelf [
+    | board |
+    board := Board of: 10 andWormholeAt: #().
+    self assert: board asGameBoard equals: board.
+]

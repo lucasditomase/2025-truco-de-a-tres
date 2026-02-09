@@ -174,3 +174,14 @@ ReversedEffectTest >> testOriginalAccessorReturnsDecoratedEffect [
     
     self assert: reversed original equals: effect.
 ]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyEffectToInBoardReturnsSelf [
+    | effect reversed board ship |
+    effect := NoEffect new.
+    reversed := ReversedEffect of: effect.
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    
+    self assert: (reversed applyEffectTo: ship inBoard: board) equals: reversed.
+]
