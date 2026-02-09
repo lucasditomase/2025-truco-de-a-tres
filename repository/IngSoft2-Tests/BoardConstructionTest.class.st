@@ -142,3 +142,12 @@ BoardConstructionTest >> testAsGameBoardReturnsSelf [
     board := Board of: 10 andWormholeAt: #().
     self assert: board asGameBoard equals: board.
 ]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testInitializeWithCellsAndWormholesDefaultsLength [
+    | board |
+    board := Board new.
+    board initializeWithCells: 10 andWormholes: #().
+    
+    self assert: board totalLengthInParsecsOrZero value equals: 10.
+]
