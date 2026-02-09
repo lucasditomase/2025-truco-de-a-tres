@@ -33,6 +33,14 @@ BoardConstructionTest >> testBoardCellsContainRecognizedEffects [
 ]
 
 { #category : 'tests - instance' }
+BoardConstructionTest >> testBoardCreationWithLightYearsConvertsToParsecs [
+    | board |
+    board := Board of: 10 length: (Distance lightYears: 30) andWormholeAt: #().
+    
+    self assert: board totalLengthInParsecsOrZero value equals: 10.
+]
+
+{ #category : 'tests - instance' }
 BoardConstructionTest >> testBoardCreationWithDistanceConversions [
     | board |
     board := Board of: 10 length: (Distance parsecs: 10) andWormholeAt: #().

@@ -165,3 +165,12 @@ ReversedEffectTest >> testReversedReturnsOriginal [
     
     self assert: reversed reversed equals: effect.
 ]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testOriginalAccessorReturnsDecoratedEffect [
+    | effect reversed |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    
+    self assert: reversed original equals: effect.
+]

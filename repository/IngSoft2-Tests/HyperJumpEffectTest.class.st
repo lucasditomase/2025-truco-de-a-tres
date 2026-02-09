@@ -113,6 +113,15 @@ HyperJumpEffectTest >> testReversedVersionTarget [
 ]
 
 { #category : 'tests' }
+HyperJumpEffectTest >> testHyperJumpEffectInitializesCorrectly [
+    | effect |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    
+    self assert: effect currentIndex equals: 1.
+    self assert: effect values size equals: 1.
+]
+
+{ #category : 'tests' }
 HyperJumpEffectTest >> testHyperJumpOnZeroLengthBoard [
     self
         should: [ Board of: 10 length: 0 andWormholeAt: #() ]
