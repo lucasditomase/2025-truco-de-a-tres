@@ -7,19 +7,10 @@ Class {
 
 { #category : 'application' }
 TimeMachineEffect >> applyTo: aShip inGame: aGame [
-	| targets restoredFuel |
-	targets := self targetsFor: aShip.
-
-	restoredFuel := Dictionary new.
-	targets do: [ :ship |
-		(self canBeAppliedTo: ship inGame: aGame)
-			ifFalse: [ self error: 'Not enough turns to use Time Machine' ].
-		restoredFuel at: ship put: (aGame antepenultimateFuelFor: ship).
-	].
-
-	restoredFuel keysAndValuesDo: [ :ship :fuel |
-		ship restoreFuelTo: fuel
-	]
+    | targets |
+    targets := self targetsFor: aShip.
+    self validate: targets inGame: aGame.
+    self restoreFuelFor: targets inGame: aGame
 ]
 
 { #category : 'private' }

@@ -150,3 +150,23 @@ TurnDataTest >> testFuelAtStartOfPenultimateTurnWithThreeEntries [
 
     self assert: (data fuelAtStartOfPenultimateTurnFor: ship) equals: 10.
 ]
+
+{ #category : 'tests' }
+TurnDataTest >> testFuelHistorySemantics [
+    self assert: TurnData new fuelHistorySemantics equals: 'fuelHistory: oldest..newest; first is antepenultimate when size=3.'.
+]
+
+{ #category : 'tests' }
+TurnDataTest >> testSetters [
+    | data |
+    data := TurnData new.
+    
+    data lastSteps: 5.
+    self assert: data lastSteps equals: 5.
+    
+    data lastPreviousPosition: 7.
+    self assert: data lastPreviousPosition equals: 7.
+    
+    data lastEffectWasCard: true.
+    self assert: data lastEffectWasCard.
+]

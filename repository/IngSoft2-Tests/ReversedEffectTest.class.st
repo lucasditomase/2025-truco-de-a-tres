@@ -145,3 +145,43 @@ ReversedEffectTest >> testReversedCardGiverDiscardsCard [
     initialCardCount := (game activeCards select: [:c | true]) size.
     initialCardCount := (game activeCards) size.
 ]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyToShipWithoutBoard [
+    | effect reversed ship |
+    effect := NoEffect new.
+    reversed := ReversedEffect of: effect.
+    ship := Spaceship withName: 'Test'.
+    
+    
+    reversed applyTo: ship.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testReversedReturnsOriginal [
+    | effect reversed |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    
+    self assert: reversed reversed equals: effect.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testOriginalAccessorReturnsDecoratedEffect [
+    | effect reversed |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    
+    self assert: reversed original equals: effect.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyEffectToInBoardReturnsSelf [
+    | effect reversed board ship |
+    effect := NoEffect new.
+    reversed := ReversedEffect of: effect.
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    
+    self assert: (reversed applyEffectTo: ship inBoard: board) equals: reversed.
+]

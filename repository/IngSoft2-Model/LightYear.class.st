@@ -14,3 +14,13 @@ LightYear >> asLightYears: aNumber [
 LightYear >> asParsecs: aNumber [
     ^ aNumber / Parsec lightYearsInOne
 ]
+
+{ #category : 'comparing' }
+LightYear >> = anObject [
+    ^ self class = anObject class
+]
+
+{ #category : 'comparing' }
+LightYear >> hash [
+    ^ self class hash
+]

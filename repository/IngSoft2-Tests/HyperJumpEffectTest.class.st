@@ -77,111 +77,68 @@ HyperJumpEffectTest >> testApplyToRaisesErrorWithoutBoard [
 ]
 
 { #category : 'tests' }
-HyperJumpEffectTest >> testInitializeWithSortsValuesDescending [
-    | effect values |
-    effect := HyperJumpEffect withValues: { 
-        Distance parsecs: 10 . 
-        Distance parsecs: 30 . 
-        Distance parsecs: 20 
-    }.
+HyperJumpEffectTest >> testHyperJumpSequenceIsDescending [
+    | effect |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 . Distance parsecs: 30 . Distance parsecs: 20 }.
     
-    values := effect values.
-    self assert: (values first) asParsecs >= (values second) asParsecs.
-    self assert: (values second) asParsecs >= (values third) asParsecs.
+    
+    self assert: effect nextJumpValue equals: (Distance parsecs: 30).
+    
+    
+    self assert: effect nextJumpValue equals: (Distance parsecs: 20).
+    
+    
+    self assert: effect nextJumpValue equals: (Distance parsecs: 10).
 ]
 
 { #category : 'tests' }
-HyperJumpEffectTest >> testInitializeSetsCurrentIndexToOne [
+HyperJumpEffectTest >> testResetJumpIndexRestartsSequence [
+    | effect |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 . Distance parsecs: 20 }.
+    
+    effect nextJumpValue. 
+    effect nextJumpValue. 
+    
+     
+    effect resetJumpIndex.
+    self assert: effect nextJumpValue equals: (Distance parsecs: 20).
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testReversedVersionTarget [
+    | effect reversed |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    reversed := effect reversedVersion.
+    self assert: reversed class equals: BlockEffect.
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testHyperJumpEffectInitializesCorrectly [
     | effect |
     effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
-    self assert: effect currentIndex equals: 1.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testResetJumpIndexResetsToOne [
-    | effect |
-    effect := HyperJumpEffect withValues: { 
-        Distance parsecs: 10 . 
-        Distance parsecs: 20 . 
-        Distance parsecs: 30 
-    }.
-    
-    
-    effect nextJumpValue.
-    effect nextJumpValue.
-    self assert: effect currentIndex equals: 3.
-    
-    
-    effect resetJumpIndex.
-    self assert: effect currentIndex equals: 1.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testResetJumpIndexResortsValues [
-    | effect values |
-    effect := HyperJumpEffect withValues: { 
-        Distance parsecs: 10 . 
-        Distance parsecs: 30 . 
-        Distance parsecs: 20 
-    }.
-    
-    values := effect values.
-    
-    self assert: (values first) asParsecs >= (values second) asParsecs.
-    
-    
-    effect resetJumpIndex.
-    values := effect values.
-    self assert: (values first) asParsecs >= (values second) asParsecs.
-    self assert: (values second) asParsecs >= (values third) asParsecs.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testValuesReturnsJumpValues [
-    | effect values expectedValues |
-    expectedValues := { 
-        Distance parsecs: 30 . 
-        Distance parsecs: 20 . 
-        Distance parsecs: 10 
-    }.
-    effect := HyperJumpEffect withValues: expectedValues.
-    
-    values := effect values.
-    self assert: values notNil.
-    self assert: values size equals: 3.
-    
-    self assert: (values first) asParsecs >= (values second) asParsecs.
-]
-
-{ #category : 'tests' }
-HyperJumpEffectTest >> testCurrentIndexReturnsCurrentIndex [
-    | effect |
-    effect := HyperJumpEffect withValues: { 
-        Distance parsecs: 10 . 
-        Distance parsecs: 20 
-    }.
     
     self assert: effect currentIndex equals: 1.
-    
-    effect nextJumpValue.
-    self assert: effect currentIndex equals: 2.
+    self assert: effect values size equals: 1.
 ]
 
 { #category : 'tests' }
-HyperJumpEffectTest >> testSortDescendingPreservingOrderSortsCorrectly [
-    | effect values sortedValues |
-    effect := HyperJumpEffect withValues: { 
-        Distance parsecs: 10 . 
-        Distance parsecs: 30 . 
-        Distance parsecs: 20 
-    }.
+HyperJumpEffectTest >> testHyperJumpOnZeroLengthBoard [
+    self
+        should: [ Board of: 10 length: 0 andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Board length must be provided as a positive Distance or numeric value'
+]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testApplyToInBoardDelegatesToApplyEffect [
+    | effect board ship |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    board := Board of: 20 length: (Distance parsecs: 20) andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    board registerShips: { ship }.
     
-    values := { 5 . 1 . 3 . 9 . 2 }.
-    sortedValues := effect sortDescendingPreservingOrder: values.
     
-    self assert: sortedValues first equals: 9.
-    self assert: sortedValues second equals: 5.
-    self assert: sortedValues third equals: 3.
-    self assert: sortedValues fourth equals: 2.
-    self assert: sortedValues fifth equals: 1.
+    effect applyTo: ship inBoard: board.
+    
+    self deny: (board positionOf: ship) equals: 0.
 ]

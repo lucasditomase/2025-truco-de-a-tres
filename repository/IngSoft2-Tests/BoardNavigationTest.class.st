@@ -5,6 +5,15 @@ Class {
     #package : 'IngSoft2-Tests'
 }
 
+{ #category : 'asserting' }
+BoardNavigationTest >> should: anErrorBlock raise: anErrorClass withMessageText: errorMessage [
+    self
+        should: anErrorBlock
+        raise: anErrorClass
+        withExceptionDo: [ :error |
+            self assert: error messageText equals: errorMessage ]
+]
+
 { #category : 'tests - instance' }
 BoardNavigationTest >> testEffectAtHandlesBoundaryCases [
     | board |
@@ -43,6 +52,20 @@ BoardNavigationTest >> testReverseAtReversesWormhole [
     self assert: (board applyWormholeIfPresentAt: 4) equals: 6.
 ]
 
+{ #category : 'tests' }
+BoardNavigationTest >> testBoardDelegatesMovementQuery [
+    | board ship |
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    board registerShips: { ship }.
+    
+    
+    self assert: (board lastMoveFor: ship) equals: 0.
+    
+    
+    board clearLastMoves.
+]
+
 { #category : 'tests - instance' }
 BoardNavigationTest >> testReverseEffectAtReplacesEffect [
     | board effect |
@@ -79,4 +102,42 @@ BoardNavigationTest >> testUseCardDealerCyclingThroughReturnsCardsInSequence [
     board useCardDealerCyclingThrough: { AdvanceCard. ShieldCard }.
     self assert: board drawCard class equals: AdvanceCard.
     self assert: board drawCard class equals: ShieldCard.
+]
+
+{ #category : 'tests - instance' }
+BoardNavigationTest >> testConfigureHyperGravityRequirementsWithInvalidMaxRoll [
+    | board effect defaultMax |
+    board := Board of: 10 andWormholeAt: {}.
+    effect := HyperGravityEffect new.
+    board placeEffect: effect at: 5.
+    
+    board configureHyperGravityRequirementsWithMaxRoll: -5.
+    
+    defaultMax := GameRules defaultMaxDiceRoll.
+    self deny: (effect allowsEntryWithRoll: defaultMax - 1).
+    self assert: (effect allowsEntryWithRoll: defaultMax).
+]
+
+{ #category : 'tests - instance' }
+BoardNavigationTest >> testValidateCardDealerChecksWaitMessage [
+    | board |
+    board := Board of: 10 andWormholeAt: {}.
+    self
+        should: [ board useCardDealer: Object new ]
+        raise: Error
+        withMessageText: 'Card dealer must respond to #value'
+]
+
+{ #category : 'tests - instance' }
+BoardNavigationTest >> testShipCompletesLap [
+    | board ship status newPosition |
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    status := ShipStatus for: ship position: 8 laps: 0 penalized: false.
+    
+    
+    newPosition := board calculateNewPositionFrom: 8 after: 4 moves: status.
+    
+    self assert: newPosition equals: 2.
+    self assert: status lapCount equals: 1.
 ]

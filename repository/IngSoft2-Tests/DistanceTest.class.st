@@ -70,3 +70,28 @@ DistanceTest >> testParsecsInitializationFailsForInvalidNumber [
     self should: [ Distance parsecs: 'bar' ] raise: Error.
     self should: [ Distance parsecs: 0 ] raise: Error
 ]
+
+{ #category : 'tests - instance' }
+DistanceTest >> testEqualityAndHash [
+    | dist1 dist2 dist3 |
+    
+    
+    dist1 := Distance parsecs: 10.
+    dist2 := Distance parsecs: 10.
+    dist3 := Distance parsecs: 20.
+    
+    self assert: dist1 equals: dist2.
+    self assert: dist1 hash equals: dist2 hash.
+    self deny: dist1 equals: dist3.
+    
+    
+    self assert: Parsec new equals: Parsec new.
+    self assert: Parsec new hash equals: Parsec new hash.
+    
+    
+    self assert: LightYear new equals: LightYear new.
+    self assert: LightYear new hash equals: LightYear new hash.
+    
+    
+    self deny: Parsec new equals: LightYear new.
+]

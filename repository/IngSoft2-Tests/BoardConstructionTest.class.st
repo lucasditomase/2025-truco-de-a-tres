@@ -33,6 +33,14 @@ BoardConstructionTest >> testBoardCellsContainRecognizedEffects [
 ]
 
 { #category : 'tests - instance' }
+BoardConstructionTest >> testBoardCreationWithLightYearsConvertsToParsecs [
+    | board |
+    board := Board of: 10 length: (Distance lightYears: 30) andWormholeAt: #().
+    
+    self assert: board totalLengthInParsecsOrZero value equals: 10.
+]
+
+{ #category : 'tests - instance' }
 BoardConstructionTest >> testBoardCreationWithDistanceConversions [
     | board |
     board := Board of: 10 length: (Distance parsecs: 10) andWormholeAt: #().
@@ -54,4 +62,92 @@ BoardConstructionTest >> testInvalidBoardWithInvalidWormholeRaisesError [
         should: [ Board of: 10 andWormholeAt: Object new ]
         raise: Error
         withMessageText: 'All wormholes must be valid objects'
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardStepsFromParsecsCheckZeroLength [
+    self
+        should: [ Board of: 10 length: 0 andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Board length must be provided as a positive Distance or numeric value'
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testValidateLengthConsistencyChecksMismatch [
+    self
+        should: [ Board of: 10 length: (Distance parsecs: 10) lengthLightYears: 29 andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Length mismatch between parsecs and light years'
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testRandomEffectDistributionFallback [
+    | board effect |
+    board := Board of: 10 andWormholeAt: #().
+    
+    effect := board randomEffectForRoll: 99999.
+    self assert: effect class equals: AtomicBombEffect.
+]
+
+{ #category : 'tests - class' }
+BoardConstructionTest >> testBoardClassConvertToParsecs [
+    | parsecs |
+    parsecs := Board convertToParsecs: (Distance lightYears: 30).
+    self assert: parsecs value equals: 10.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardCreationWithRandomEffects [
+    | board |
+    board := Board of: 10 andWormholeAt: #() withRandomEffects: true.
+    self assert: (board cells anySatisfy: [ :effect | effect class ~= NoEffect ]).
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardCreationWithLightYearLength [
+    | board |
+    board := Board of: 10 lengthLightYears: 30 andWormholeAt: #().
+    self assert: board totalLengthInParsecsOrZero value equals: 10.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardHelpersAndAccessors [
+    | board |
+    board := Board of: 10 length: (Distance parsecs: 100) andWormholeAt: #().
+    
+    
+    board clearLastMoves.
+    
+    
+    self assert: board totalLengthInParsecs value equals: 100.
+    
+    
+    self assert: board totalEffectWeight > 0.
+    
+    
+    self assert: Board invalidEffectMessage equals: 'Board cells must contain effects'.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardWithEmptyCells [
+    | board |
+    board := Board new.
+    board cells: Dictionary new.
+    self assert: board cellCount isNil.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testAsGameBoardReturnsSelf [
+    | board |
+    board := Board of: 10 andWormholeAt: #().
+    self assert: board asGameBoard equals: board.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testInitializeWithCellsAndWormholesDefaultsLength [
+    | board |
+    board := Board new.
+    board initializeWithCells: 10 andWormholes: #().
+    
+    self assert: board totalLengthInParsecsOrZero value equals: 10.
 ]
