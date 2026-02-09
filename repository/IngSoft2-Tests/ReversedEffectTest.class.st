@@ -145,3 +145,23 @@ ReversedEffectTest >> testReversedCardGiverDiscardsCard [
     initialCardCount := (game activeCards select: [:c | true]) size.
     initialCardCount := (game activeCards) size.
 ]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testApplyToShipWithoutBoard [
+    | effect reversed ship |
+    effect := NoEffect new.
+    reversed := ReversedEffect of: effect.
+    ship := Spaceship withName: 'Test'.
+    
+    "Should not raise error"
+    reversed applyTo: ship.
+]
+
+{ #category : 'tests' }
+ReversedEffectTest >> testReversedReturnsOriginal [
+    | effect reversed |
+    effect := BlackHoleEffect new.
+    reversed := ReversedEffect of: effect.
+    
+    self assert: reversed reversed equals: effect.
+]

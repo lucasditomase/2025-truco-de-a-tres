@@ -80,3 +80,27 @@ BoardNavigationTest >> testUseCardDealerCyclingThroughReturnsCardsInSequence [
     self assert: board drawCard class equals: AdvanceCard.
     self assert: board drawCard class equals: ShieldCard.
 ]
+
+{ #category : 'tests - instance' }
+BoardNavigationTest >> testConfigureHyperGravityRequirementsWithInvalidMaxRoll [
+    | board effect defaultMax |
+    board := Board of: 10 andWormholeAt: {}.
+    effect := HyperGravityEffect new.
+    board placeEffect: effect at: 5.
+    
+    board configureHyperGravityRequirementsWithMaxRoll: -5.
+    
+    defaultMax := GameRules defaultMaxDiceRoll.
+    self deny: (effect allowsEntryWithRoll: defaultMax - 1).
+    self assert: (effect allowsEntryWithRoll: defaultMax).
+]
+
+{ #category : 'tests - instance' }
+BoardNavigationTest >> testValidateCardDealerChecksWaitMessage [
+    | board |
+    board := Board of: 10 andWormholeAt: {}.
+    self
+        should: [ board useCardDealer: Object new ]
+        raise: Error
+        withMessageText: 'Card dealer must respond to #value'
+]

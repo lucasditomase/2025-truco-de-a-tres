@@ -55,3 +55,18 @@ BoardConstructionTest >> testInvalidBoardWithInvalidWormholeRaisesError [
         raise: Error
         withMessageText: 'All wormholes must be valid objects'
 ]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardStepsFromParsecsCheckZeroLength [
+    | board |
+    board := Board of: 10 length: 0 andWormholeAt: #().
+    self assert: (board stepsFromParsecs: 10) equals: 0.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testValidateLengthConsistencyChecksMismatch [
+    self
+        should: [ Board of: 10 length: (Distance parsecs: 10) lengthLightYears: 30 andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Length mismatch between parsecs and light years'
+]
