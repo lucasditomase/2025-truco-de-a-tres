@@ -70,3 +70,14 @@ Distance class >> parsecValueOf: anObject [
         on: MessageNotUnderstood
         do: [ anObject ]
 ]
+
+{ #category : 'comparing' }
+Distance >> = anObject [
+    (anObject isKindOf: Distance) ifFalse: [ ^ false ].
+    ^ value = anObject value and: [ unit = anObject unit ]
+]
+
+{ #category : 'comparing' }
+Distance >> hash [
+    ^ value hash bitXor: unit hash
+]

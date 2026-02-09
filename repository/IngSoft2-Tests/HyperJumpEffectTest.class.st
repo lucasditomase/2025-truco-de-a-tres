@@ -114,32 +114,8 @@ HyperJumpEffectTest >> testReversedVersionTarget [
 
 { #category : 'tests' }
 HyperJumpEffectTest >> testHyperJumpOnZeroLengthBoard [
-    | effect board ship |
-    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
-    board := Board of: 10 length: 0 andWormholeAt: #().
-    ship := Spaceship withName: 'Test'.
-    board placeEffect: effect at: 0.
-    
-    "Apply effect (simulated by having ship at position)"
-    effect applyEffectTo: ship inBoard: board.
-    
-    "Should move 0 steps because board length is 0 (avoid div by zero)"
-    "We need to verify ship position didn't change relative to start, 
-     but applyEffectTo: moves ship. 
-     If board length is 0, steps should be 0."
-     
-     "Let's assume ship is at 0. After effect, should be at 0."
-     
-     "Wait, we need to check if movement happened. 
-      Board >> moveShip:forward: calls movementService."
-     
-     "If steps is 0, it moves 0."
-     
-     "Since we can't easily check 'steps calculated' without mocking,
-      we rely on the fact that no error is raised and ship stays put implies 0 steps or safe handling."
-      
-    self assert: (board positionOf: ship) equals: 0. "Initial position"
+    self
+        should: [ Board of: 10 length: 0 andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Board length must be provided as a positive Distance or numeric value'
 ]
-
-
-

@@ -58,9 +58,10 @@ BoardConstructionTest >> testInvalidBoardWithInvalidWormholeRaisesError [
 
 { #category : 'tests - instance' }
 BoardConstructionTest >> testBoardStepsFromParsecsCheckZeroLength [
-    | board |
-    board := Board of: 10 length: 0 andWormholeAt: #().
-    self assert: (board stepsFromParsecs: 10) equals: 0.
+    self
+        should: [ Board of: 10 length: 0 andWormholeAt: #() ]
+        raise: Error
+        withMessageText: 'Board length must be provided as a positive Distance or numeric value'
 ]
 
 { #category : 'tests - instance' }
