@@ -79,3 +79,19 @@ BoardConstructionTest >> testValidateLengthConsistencyChecksMismatch [
         raise: Error
         withMessageText: 'Length mismatch between parsecs and light years'
 ]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testRandomEffectDistributionFallback [
+    | board effect |
+    board := Board of: 10 andWormholeAt: #().
+    "Force fallback by providing a roll larger than any cumulative weight"
+    effect := board randomEffectForRoll: 99999.
+    self assert: effect class equals: AtomicBombEffect.
+]
+
+{ #category : 'tests - class' }
+BoardConstructionTest >> testBoardClassConvertToParsecs [
+    | parsecs |
+    parsecs := Board convertToParsecs: (Distance lightYears: 30).
+    self assert: parsecs value equals: 10.
+]

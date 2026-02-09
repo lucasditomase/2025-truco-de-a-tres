@@ -128,3 +128,17 @@ HyperJumpEffectTest >> testHyperJumpOnZeroLengthBoard [
         raise: Error
         withMessageText: 'Board length must be provided as a positive Distance or numeric value'
 ]
+
+{ #category : 'tests' }
+HyperJumpEffectTest >> testApplyToInBoardDelegatesToApplyEffect [
+    | effect board ship |
+    effect := HyperJumpEffect withValues: { Distance parsecs: 10 }.
+    board := Board of: 20 length: (Distance parsecs: 20) andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    board registerShips: { ship }.
+    
+    "Calling applyTo:inBoard: should eventually move the ship via applyEffectTo:inBoard:"
+    effect applyTo: ship inBoard: board.
+    
+    self deny: (board positionOf: ship) equals: 0.
+]

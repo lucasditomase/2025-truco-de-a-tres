@@ -52,6 +52,20 @@ BoardNavigationTest >> testReverseAtReversesWormhole [
     self assert: (board applyWormholeIfPresentAt: 4) equals: 6.
 ]
 
+{ #category : 'tests' }
+BoardNavigationTest >> testBoardDelegatesMovementQuery [
+    | board ship |
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    board registerShips: { ship }.
+    
+    "Test lastMoveFor: delegation"
+    self assert: (board lastMoveFor: ship) isNil.
+    
+    "Test clearLastMoves delegation (should not raise error)"
+    board clearLastMoves.
+]
+
 { #category : 'tests - instance' }
 BoardNavigationTest >> testReverseEffectAtReplacesEffect [
     | board effect |
