@@ -95,3 +95,43 @@ BoardConstructionTest >> testBoardClassConvertToParsecs [
     parsecs := Board convertToParsecs: (Distance lightYears: 30).
     self assert: parsecs value equals: 10.
 ]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardCreationWithRandomEffects [
+    | board |
+    board := Board of: 10 andWormholeAt: #() withRandomEffects: true.
+    self assert: (board cells anySatisfy: [ :effect | effect class ~= NoEffect ]).
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardCreationWithLightYearLength [
+    | board |
+    board := Board of: 10 lengthLightYears: 30 andWormholeAt: #().
+    self assert: board totalLengthInParsecsOrZero value equals: 10.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardHelpersAndAccessors [
+    | board |
+    board := Board of: 10 length: (Distance parsecs: 100) andWormholeAt: #().
+    
+    "Test clearLastMoves (no error)"
+    board clearLastMoves.
+    
+    "Test totalLengthInParsecs"
+    self assert: board totalLengthInParsecs value equals: 100.
+    
+    "Test totalEffectWeight"
+    self assert: board totalEffectWeight > 0.
+    
+    "Test invalidEffectMessage"
+    self assert: Board invalidEffectMessage equals: 'Board cells must contain effects'.
+]
+
+{ #category : 'tests - instance' }
+BoardConstructionTest >> testBoardWithEmptyCells [
+    | board |
+    board := Board new.
+    board cells: Dictionary new.
+    self assert: board cellCount isNil.
+]

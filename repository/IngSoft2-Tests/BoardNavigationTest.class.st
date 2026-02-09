@@ -127,3 +127,22 @@ BoardNavigationTest >> testValidateCardDealerChecksWaitMessage [
         raise: Error
         withMessageText: 'Card dealer must respond to #value'
 ]
+
+{ #category : 'tests - instance' }
+BoardNavigationTest >> testShipCompletesLap [
+    | board ship status |
+    board := Board of: 10 andWormholeAt: #().
+    ship := Spaceship withName: 'Test'.
+    board registerShips: { ship }.
+    
+    "Move from 0 to 8"
+    board moveShip: ship to: 8.
+    
+    "Move forward 4 (wraps to 2)"
+    board moveShip: ship forward: 4.
+    
+    status := board positionManager statusFor: ship.
+    
+    self assert: (board positionOf: ship) equals: 2.
+    self assert: status lapCount equals: 1.
+]
