@@ -67,7 +67,7 @@ BoardConstructionTest >> testBoardStepsFromParsecsCheckZeroLength [
 { #category : 'tests - instance' }
 BoardConstructionTest >> testValidateLengthConsistencyChecksMismatch [
     self
-        should: [ Board of: 10 length: (Distance parsecs: 10) lengthLightYears: 30 andWormholeAt: #() ]
+        should: [ Board of: 10 length: (Distance parsecs: 10) lengthLightYears: 29 andWormholeAt: #() ]
         raise: Error
         withMessageText: 'Length mismatch between parsecs and light years'
 ]
