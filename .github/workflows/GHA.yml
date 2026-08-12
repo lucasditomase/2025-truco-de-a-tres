@@ -4,6 +4,9 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 on: [push, pull_request]
+
+permissions:
+  contents: read
       
 jobs:
   build:
